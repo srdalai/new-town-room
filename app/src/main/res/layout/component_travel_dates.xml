@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardUseCompatPadding="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:id="@+id/textViewTravelDates"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Travel dates and Guests"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/detailsLinear"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/travel_dates_guests_bg"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewTravelDates">
+
+                <RelativeLayout
+                    android:id="@+id/dateRelative"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:paddingStart="@dimen/dimen_12dp"
+                    android:paddingTop="@dimen/dimen_12dp"
+                    android:paddingBottom="@dimen/dimen_12dp">
+
+                    <ImageView
+                        android:id="@+id/imageViewCal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:tint="@color/colorPrimary"
+                        app:srcCompat="@drawable/ic_action_event" />
+
+                    <TextView
+                        android:id="@+id/txtStayTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignTop="@id/imageViewCal"
+                        android:layout_alignBottom="@id/imageViewCal"
+                        android:layout_marginStart="@dimen/dimen_8dp"
+                        android:layout_toEndOf="@id/imageViewCal"
+                        android:gravity="center_vertical"
+                        android:text="Today - Tomorrow" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:layout_alignTop="@id/imageViewCal"
+                        android:layout_alignBottom="@id/imageViewCal"
+                        android:layout_alignParentEnd="true"
+                        android:background="@color/keep_in_mind_box_border_color" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/guestRelative"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:padding="@dimen/dimen_12dp">
+
+                    <ImageView
+                        android:id="@+id/imageViewPerson"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:tint="@color/colorPrimary"
+                        app:srcCompat="@drawable/ic_action_person" />
+
+                    <TextView
+                        android:id="@+id/txtRoomsGuests"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignTop="@id/imageViewPerson"
+                        android:layout_alignBottom="@id/imageViewPerson"
+                        android:layout_marginStart="@dimen/dimen_8dp"
+                        android:layout_toEndOf="@id/imageViewPerson"
+                        android:gravity="center_vertical"
+                        android:text="1 Room, 1 Guest" />
+
+                </RelativeLayout>
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+</FrameLayout>
