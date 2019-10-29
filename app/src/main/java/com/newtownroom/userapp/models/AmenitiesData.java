@@ -48,4 +48,28 @@ public class AmenitiesData {
     public void setAvailable(boolean available) {
         isAvailable = available;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getIconImage() {
+        return iconImage;
+    }
+
+    public void setIconImage(String iconImage) {
+        this.iconImage = iconImage;
+    }
 }

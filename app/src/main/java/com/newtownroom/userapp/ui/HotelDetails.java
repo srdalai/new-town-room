@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.graphics.Paint;
+import android.media.Image;
 import android.os.Bundle;
 
 import com.google.android.material.button.MaterialButton;
@@ -33,10 +34,12 @@ import com.newtownroom.userapp.models.AmenitiesData;
 import com.newtownroom.userapp.models.HotelData;
 import com.newtownroom.userapp.models.HotelDetailsInputModel;
 import com.newtownroom.userapp.models.HotelDetailsResponseModel;
+import com.newtownroom.userapp.models.ImageModel;
 import com.newtownroom.userapp.models.PriceData;
 import com.newtownroom.userapp.models.ServiceData;
 import com.newtownroom.userapp.rest.GetDataService;
 import com.newtownroom.userapp.rest.RetrofitClientInstance;
+import com.stfalcon.imageviewer.StfalconImageViewer;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ImageListener;
 
@@ -122,7 +125,7 @@ public class HotelDetails extends AppCompatActivity {
 
         prepareAmenitiesData();
 
-        amenitiesAdapter = new AmenitiesAdapter(this, amenitiesList);
+        amenitiesAdapter = new AmenitiesAdapter(this, amenitiesList, false);
         amenitiesRecycler.setLayoutManager(layoutManager);
         amenitiesRecycler.setAdapter(amenitiesAdapter);
 
@@ -444,7 +447,7 @@ public class HotelDetails extends AppCompatActivity {
         updateUI();
     }
 
-    private void prepareImages(ArrayList<String> images) {
+    private void prepareImages(ArrayList<ImageModel> images) {
 
     }
 

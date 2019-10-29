@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--<com.alespero.expandablecardview.ExpandableCardView
+        android:id="@+id/roomCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:animationDuration="300"
+        app:expandOnClick="true"
+        app:icon="@drawable/ic_action_home"
+        app:inner_view="@layout/item_guest_details_layout"
+        app:startExpanded="false"
+        app:title="Room" />-->
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardUseCompatPadding="true"
+        android:elevation="4dp"
+        android:translationZ="4dp"
+        app:cardCornerRadius="4dp"
+        android:layout_margin="4dp">
+
+
+        <include layout="@layout/item_guest_details_layout"/>
+
+    </androidx.cardview.widget.CardView>
+
+</FrameLayout>

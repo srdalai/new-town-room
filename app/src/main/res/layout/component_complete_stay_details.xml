@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/imageViewSuccess"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/dimen_12dp"
+                    android:tint="@color/colorPrimary"
+                    app:srcCompat="@drawable/ic_action_check_circle" />
+
+                <TextView
+                    android:id="@+id/textSuccessMsg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/imageViewSuccess"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center"
+                    android:minLines="2"
+                    android:textColor="@color/colorPrimary"
+                    android:lineSpacingMultiplier="1.2"
+                    android:textAllCaps="true"
+                    android:textStyle="bold"
+                    android:text="Success! Your stay is confirmed\nBooking ID : BN102" />
+
+                <TextView
+                    android:id="@+id/textCheckInTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@id/matBtnUpdate"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@id/matBtnUpdate"
+                    android:text="Check-in time: 12:00 PM onwards" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/matBtnUpdate"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/textSuccessMsg"
+                    android:layout_alignParentEnd="true"
+                    android:text="Update"
+                    android:textColor="@color/material_red" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/matBtnSave"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/matBtnUpdate"
+                    android:layout_marginTop="@dimen/dimen_12dp"
+                    android:layout_marginBottom="@dimen/dimen_8dp"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:drawableEnd="@drawable/ic_action_call"
+                    android:text="Want to save more on this booking?" />
+
+                <TextView
+                    android:id="@+id/txtUserName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/matBtnSave"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true"
+                    android:gravity="center_horizontal"
+                    android:textSize="@dimen/dimen_16sp"
+                    android:text="Tapan Nandy" />
+
+                <TextView
+                    android:id="@+id/txtStartDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@id/txtNumOfNights"
+                    android:layout_toStartOf="@id/txtNumOfNights"
+                    android:text="Sat, 19 Oct" />
+
+                <TextView
+                    android:id="@+id/txtNumOfNights"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txtUserName"
+                    android:layout_centerHorizontal="true"
+                    android:layout_margin="@dimen/dimen_12dp"
+                    android:background="@drawable/badge_background"
+                    android:paddingStart="4dp"
+                    android:paddingTop="2dp"
+                    android:paddingEnd="4dp"
+                    android:paddingBottom="2dp"
+                    android:text="1 Night"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/txtEndDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@id/txtNumOfNights"
+                    android:layout_toEndOf="@id/txtNumOfNights"
+                    android:text="Sun, 20 Oct" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/dimen_8dp"
+                android:layout_marginBottom="@dimen/dimen_8dp"
+                android:background="@color/default_grey"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_toStartOf="@+id/imageViewHotel"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView14"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:text="M. S. Residency" />
+
+                    <TextView
+                        android:id="@+id/textView15"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="ZOYO 10439 MS Residency" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/imageViewHotel"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_alignParentEnd="true"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/hotel_1" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/grey_bg_one"
+                    android:layout_margin="8dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="@dimen/dimen_12dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:textSize="16sp"
+                        android:textAllCaps="true"
+                        android:textColor="@color/material_red"
+                        android:text="Guests" />
+
+                    <TextView
+                        android:id="@+id/txtNumGuests"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="1"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/grey_bg_one"
+                    android:layout_margin="8dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="@dimen/dimen_12dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:text="Rooms"
+                        android:textAllCaps="true"
+                        android:textColor="@color/material_red"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/txtRomDetails"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="1 Clasic (2X)"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/grey_bg_one"
+                    android:layout_margin="8dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="@dimen/dimen_12dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:text="Price"
+                        android:textAllCaps="true"
+                        android:textColor="@color/material_red"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/txtPrice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="\u20B9 1077"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp">
+
+                <ImageView
+                    android:id="@+id/iconLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_action_location_on"
+                    android:layout_margin="4dp"/>
+
+                <TextView
+                    android:id="@+id/textView18"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_toEndOf="@+id/iconLocation"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:minLines="2"
+                    android:text="M. S Residency. HIG-4, Nandan Vihar,\nBhubaneswar" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipChildren="false"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:paddingTop="@dimen/dimen_12dp"
+                android:paddingBottom="@dimen/dimen_12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="@dimen/dimen_8dp"
+                    android:background="@drawable/white_elevated_button"
+                    android:clickable="true"
+                    android:drawableStart="@drawable/ic_action_directions"
+                    android:drawablePadding="@dimen/dimen_8dp"
+                    android:drawableTint="@color/black"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:text="Directions"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="@dimen/dimen_8dp"
+                    android:background="@drawable/white_elevated_button"
+                    android:clickable="true"
+                    android:drawableStart="@drawable/ic_action_call"
+                    android:drawablePadding="@dimen/dimen_8dp"
+                    android:drawableTint="@color/black"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:text="Call Hotel"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textView19"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Your booking details are sent as SMS to 8847824505 an in email to tapankumarnandy2@gmail.com" />
+
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</FrameLayout>

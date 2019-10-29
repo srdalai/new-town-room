@@ -32,8 +32,6 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/textViewDesc"
                 android:layout_marginTop="16dp"
-                android:ellipsize="end"
-                android:maxLines="3"
                 android:text="@string/large_text" />
 
             <com.google.android.material.button.MaterialButton
@@ -46,6 +44,18 @@
                 android:text="Read More"
                 android:textAllCaps="false"
                 android:textColor="@color/colorPrimary" />
+
+            <com.google.android.material.button.MaterialButton
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:id="@+id/btnDescLess"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtDescription"
+                android:layout_marginTop="8dp"
+                android:text="Show Less"
+                android:textAllCaps="false"
+                android:textColor="@color/colorPrimary"
+                android:visibility="gone"/>
 
 
         </RelativeLayout>

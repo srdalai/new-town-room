@@ -62,7 +62,7 @@
                         android:text="Coupon Applied" />
 
                     <TextView
-                        android:id="@+id/textView3"
+                        android:id="@+id/textViewCouponValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -85,6 +85,7 @@
                 </LinearLayout>
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/matBtnOffers"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -118,6 +119,7 @@
                         android:text="Additional Savings" />
 
                     <TextView
+                        android:id="@+id/txtViewSavings"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -157,7 +159,8 @@
                         android:text="\u20B9876"
                         android:textColor="@color/black"
                         android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:drawableEnd="@drawable/ic_action_arrow_drop_down"/>
 
                 </RelativeLayout>
 

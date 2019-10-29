@@ -75,7 +75,7 @@ public class HomeFragment extends Fragment {
         otherHotelsRecycler.setLayoutManager(gridLayoutManager);
         otherHotelsRecycler.setAdapter(hotelsListAdapter);
 
-        //getHotelsList();
+        getHotelsList();
 
     }
 

@@ -19,8 +19,8 @@ public class PriceData {
     @SerializedName("discount_type")
     private String discountType;
 
-    @SerializedName("amount")
-    private String amount;
+    @SerializedName("discount_amount")
+    private String discountAmount;
 
     @SerializedName("selling_price")
     private String sellingPrice;
@@ -28,13 +28,13 @@ public class PriceData {
     public PriceData() {
     }
 
-    public PriceData(String id, String hotelID, String guest, String price, String discountType, String amount, String sellingPrice) {
+    public PriceData(String id, String hotelID, String guest, String price, String discountType, String discountAmount, String sellingPrice) {
         this.id = id;
         this.hotelID = hotelID;
         this.guest = guest;
         this.price = price;
         this.discountType = discountType;
-        this.amount = amount;
+        this.discountAmount = discountAmount;
         this.sellingPrice = sellingPrice;
     }
 
@@ -78,12 +78,12 @@ public class PriceData {
         this.discountType = discountType;
     }
 
-    public String getAmount() {
-        return amount;
+    public String getDiscountAmount() {
+        return discountAmount;
     }
 
-    public void setAmount(String amount) {
-        this.amount = amount;
+    public void setDiscountAmount(String discountAmount) {
+        this.discountAmount = discountAmount;
     }
 
     public String getSellingPrice() {

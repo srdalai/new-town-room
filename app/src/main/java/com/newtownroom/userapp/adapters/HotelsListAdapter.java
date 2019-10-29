@@ -40,7 +40,7 @@ public class HotelsListAdapter extends RecyclerView.Adapter<HotelsListAdapter.Ho
 
     @Override
     public void onBindViewHolder(@NonNull HotelsListViewHolder holder, int position) {
-        /*HotelData hotelData = hotelDataList.get(holder.getAdapterPosition());
+        HotelData hotelData = hotelDataList.get(holder.getAdapterPosition());
 
         holder.txtHotelName.setText(hotelData.getTitle());
 
@@ -56,16 +56,16 @@ public class HotelsListAdapter extends RecyclerView.Adapter<HotelsListAdapter.Ho
 
 
         TextView txtOriginalPrice = holder.txtOriginalPrice;
-        txtOriginalPrice.setPaintFlags(txtOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);*/
+        txtOriginalPrice.setPaintFlags(txtOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
-        /*Glide.with(mContext)
+        Glide.with(mContext)
                 .load(hotelData.getImage())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(holder.hotelImage);*/
+                .into(holder.hotelImage);
         holder.itemView.setOnClickListener((view) -> {
             Intent intent = new Intent(mContext, HotelDetailsNew.class);
-            /*intent.putExtra("hotel_id", hotelData.getId());
-            intent.putExtra("rating", formattedRating);*/
+            intent.putExtra("hotel_id", hotelData.getId());
+            intent.putExtra("rating", formattedRating);
             mContext.startActivity(intent);
         });
 
@@ -73,7 +73,7 @@ public class HotelsListAdapter extends RecyclerView.Adapter<HotelsListAdapter.Ho
 
     @Override
     public int getItemCount() {
-        return 10;
+        return hotelDataList.size();
     }
 
     public class HotelsListViewHolder extends RecyclerView.ViewHolder {

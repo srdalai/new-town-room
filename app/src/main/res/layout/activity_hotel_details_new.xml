@@ -2,11 +2,12 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parentView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#E8E8E8"
     tools:context=".ui.HotelDetailsNew"
-    tools:showIn="@layout/activity_hotel_details_new"
-    android:background="#E8E8E8">
+    tools:showIn="@layout/activity_hotel_details_new">
 
 
     <androidx.core.widget.NestedScrollView
@@ -33,27 +34,39 @@
                 app:strokeWidth="1dp" />
 
             <include
-                layout="@layout/component_amenities"
+                layout="@layout/component_hotel_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
+            <include
+                layout="@layout/component_amenities"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"/>
 
             <include
                 layout="@layout/component_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"/>
+                android:layout_marginTop="4dp" />
 
             <include
                 layout="@layout/component_travel_dates"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"/>
+                android:layout_marginTop="4dp" />
 
             <include
                 layout="@layout/component_pricing_details_new"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"/>
+                android:layout_marginTop="4dp" />
+
+            <include
+                layout="@layout/component_policies_rules"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp" />
 
         </LinearLayout>
 
@@ -104,6 +117,7 @@
                 </RelativeLayout>
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnProceed"
                     style="@style/Widget.MaterialComponents.Button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

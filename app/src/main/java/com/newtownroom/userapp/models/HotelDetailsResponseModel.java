@@ -12,14 +12,17 @@ public class HotelDetailsResponseModel {
     @SerializedName("price")
     private ArrayList<PriceData> priceDataList;
 
-    //@SerializedName("images")
-    private ArrayList<String> imageList;
+    @SerializedName("images")
+    private ArrayList<ImageModel> imageList;
 
     @SerializedName("amenities")
     private ArrayList<AmenitiesData> amenitiesList;
 
     @SerializedName("extra_services")
     private ArrayList<ServiceData> extraServicesList;
+
+    @SerializedName("hotel_rules")
+    private ArrayList<RulesData> rulesDataList;
 
     public HotelDetailsResponseModel() {
     }
@@ -40,11 +43,11 @@ public class HotelDetailsResponseModel {
         this.priceDataList = priceDataList;
     }
 
-    public ArrayList<String> getImageList() {
+    public ArrayList<ImageModel> getImageList() {
         return imageList;
     }
 
-    public void setImageList(ArrayList<String> imageList) {
+    public void setImageList(ArrayList<ImageModel> imageList) {
         this.imageList = imageList;
     }
 
@@ -62,5 +65,13 @@ public class HotelDetailsResponseModel {
 
     public void setExtraServicesList(ArrayList<ServiceData> extraServicesList) {
         this.extraServicesList = extraServicesList;
+    }
+
+    public ArrayList<RulesData> getRulesDataList() {
+        return rulesDataList;
+    }
+
+    public void setRulesDataList(ArrayList<RulesData> rulesDataList) {
+        this.rulesDataList = rulesDataList;
     }
 }

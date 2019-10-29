@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.newtownroom.userapp.R;
 import com.newtownroom.userapp.models.AmenitiesData;
 
@@ -19,10 +20,15 @@ public class AmenitiesAdapter extends RecyclerView.Adapter<AmenitiesAdapter.Amen
 
     private Context mContext;
     private ArrayList<AmenitiesData> dataList;
+    private boolean showAll;
+    private int[] sampleImages = {R.drawable.ic_action_ac_unit, R.drawable.ic_action_live_tv, R.drawable.ic_action_power,
+                                    R.drawable.ic_action_credit_card, R.drawable.ic_action_videocam,
+                                        R.drawable.ic_action_ac_unit, R.drawable.ic_action_live_tv, R.drawable.ic_action_power};
 
-    public AmenitiesAdapter(Context mContext, ArrayList<AmenitiesData> dataList) {
+    public AmenitiesAdapter(Context mContext, ArrayList<AmenitiesData> dataList, boolean showAll) {
         this.mContext = mContext;
         this.dataList = dataList;
+        this.showAll = showAll;
     }
 
     @NonNull
@@ -38,13 +44,20 @@ public class AmenitiesAdapter extends RecyclerView.Adapter<AmenitiesAdapter.Amen
 
         holder.textView.setText(data.getName());
 
-        holder.imageView.setImageResource(data.getIconDrawable());
+        Glide.with(mContext)
+                .load(data.getIconImage())
+                .error(sampleImages[position])
+                .into(holder.imageView);
 
     }
 
     @Override
     public int getItemCount() {
-        return dataList.size();
+        if (dataList.size() <= 4 || showAll) {
+            return dataList.size();
+        } else {
+            return 4;
+        }
     }
 
     public class AmenitiesViewHolder extends RecyclerView.ViewHolder {

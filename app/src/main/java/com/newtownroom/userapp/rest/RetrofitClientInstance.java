@@ -6,7 +6,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClientInstance {
 
     public static final String BASE_URL = "https://app.newtownroom.com/rest/";
+    public static final String PAY_U_BASE_URL = "https://www.payumoney.com/sandbox/payment/payment/";
     private static Retrofit retrofit = null;
+    private static Retrofit payURetrofit = null;
 
 
     public static Retrofit getRetrofitInstance() {
@@ -17,5 +19,15 @@ public class RetrofitClientInstance {
                     .build();
         }
         return retrofit;
+    }
+
+    public static Retrofit getPayURetrofitInstance() {
+        if (payURetrofit==null) {
+            payURetrofit = new Retrofit.Builder()
+                    .baseUrl(PAY_U_BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+        }
+        return payURetrofit;
     }
 }

@@ -15,8 +15,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:allowBackup">
-        <activity android:name=".ui.CheckOutDetails"
-            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".ui.AmenitiesListing"></activity>
+        <activity android:name=".ui.CouponsActivity" />
+        <activity android:name=".ui.BookingComplete" />
+        <activity
+            android:name=".ui.GuestDetails"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.CheckOutDetails"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.HotelDetailsNew"
             android:theme="@style/AppTheme.NoActionBar" />
