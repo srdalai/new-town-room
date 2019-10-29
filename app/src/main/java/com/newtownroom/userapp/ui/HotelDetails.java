@@ -4,16 +4,13 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.graphics.Paint;
-import android.media.Image;
 import android.os.Bundle;
 
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,10 +18,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -32,20 +27,18 @@ import com.newtownroom.userapp.R;
 import com.newtownroom.userapp.adapters.AmenitiesAdapter;
 import com.newtownroom.userapp.models.AmenitiesData;
 import com.newtownroom.userapp.models.HotelData;
-import com.newtownroom.userapp.models.HotelDetailsInputModel;
-import com.newtownroom.userapp.models.HotelDetailsResponseModel;
+import com.newtownroom.userapp.restmodels.HotelDetailsInputModel;
+import com.newtownroom.userapp.restmodels.HotelDetailsResponseModel;
 import com.newtownroom.userapp.models.ImageModel;
 import com.newtownroom.userapp.models.PriceData;
 import com.newtownroom.userapp.models.ServiceData;
 import com.newtownroom.userapp.rest.GetDataService;
 import com.newtownroom.userapp.rest.RetrofitClientInstance;
-import com.stfalcon.imageviewer.StfalconImageViewer;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ImageListener;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

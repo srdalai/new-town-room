@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,7 @@ import com.newtownroom.userapp.utils.PreferenceManager;
 
 public class AccountFragment extends Fragment {
 
-    private MaterialButton loginButton, logoutButton;
+    private MaterialButton loginButton, logoutButton, editButton, updateButton;
     private PreferenceManager preferenceManager;
     private ProgressDialog progressDialog;
     private LinearLayout linearLayout;
@@ -46,21 +47,14 @@ public class AccountFragment extends Fragment {
         progressDialog = new ProgressDialog(requireContext());
         progressDialog.setMessage("Loading....");
 
-        loginButton = view.findViewById(R.id.loginButton);
-        logoutButton = view.findViewById(R.id.logoutButton);
-        linearLayout = view.findViewById(R.id.linearLayout);
-        editTextEmail = view.findViewById(R.id.editTextEmail);
-        editTextMobile = view.findViewById(R.id.editTextMobile);
-        editTextName = view.findViewById(R.id.editTextName);
+        initView(view);
 
         if (preferenceManager.isLoggedIn()) {
             loginButton.setVisibility(View.GONE);
-            logoutButton.setVisibility(View.VISIBLE);
             linearLayout.setVisibility(View.VISIBLE);
         } else {
             loginButton.setVisibility(View.VISIBLE);
             linearLayout.setVisibility(View.GONE);
-            logoutButton.setVisibility(View.GONE);
 
         }
 
@@ -75,6 +69,22 @@ public class AccountFragment extends Fragment {
         if (preferenceManager.getName() != null) {
             editTextName.setText(preferenceManager.getName());
         }
+
+        setUpOnClickListeners();
+    }
+
+    private void initView(View view) {
+        loginButton = view.findViewById(R.id.loginButton);
+        logoutButton = view.findViewById(R.id.logoutButton);
+        linearLayout = view.findViewById(R.id.linearLayout);
+        editTextEmail = view.findViewById(R.id.editTextEmail);
+        editTextMobile = view.findViewById(R.id.editTextMobile);
+        editTextName = view.findViewById(R.id.editTextName);
+        editButton = view.findViewById(R.id.editButton);
+        updateButton = view.findViewById(R.id.updateButton);
+    }
+
+    private void setUpOnClickListeners() {
 
         loginButton.setOnClickListener((v -> {
             startActivity(new Intent(requireContext(), UserAuthentication.class));
@@ -93,5 +103,35 @@ public class AccountFragment extends Fragment {
                 }
             }, 2000);
         });
+
+        editButton.setOnClickListener((v -> {
+
+            editTextEmail.setClickable(true);
+            editTextEmail.setFocusable(true);
+            editTextEmail.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+
+            editTextName.setClickable(true);
+            editTextName.setFocusable(true);
+            editTextName.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+
+            logoutButton.setVisibility(View.GONE);
+            editButton.setVisibility(View.GONE);
+            updateButton.setVisibility(View.VISIBLE);
+        }));
+
+        updateButton.setOnClickListener((view -> {
+
+            editTextEmail.setClickable(false);
+            editTextEmail.setFocusable(false);
+            editTextEmail.setInputType(InputType.TYPE_NULL);
+
+            editTextName.setClickable(false);
+            editTextName.setFocusable(false);
+            editTextName.setInputType(InputType.TYPE_NULL);
+
+            logoutButton.setVisibility(View.VISIBLE);
+            editButton.setVisibility(View.VISIBLE);
+            updateButton.setVisibility(View.GONE);
+        }));
     }
 }

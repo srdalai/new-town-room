@@ -12,19 +12,17 @@ import androidx.navigation.Navigation;
 
 import android.os.Handler;
 import android.util.Log;
-import android.util.TimeUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.newtownroom.userapp.R;
-import com.newtownroom.userapp.models.OtpInputModel;
-import com.newtownroom.userapp.models.OtpResponseModel;
+import com.newtownroom.userapp.restmodels.OtpInputModel;
+import com.newtownroom.userapp.restmodels.OtpResponseModel;
 import com.newtownroom.userapp.rest.GetDataService;
 import com.newtownroom.userapp.rest.RetrofitClientInstance;
 import com.newtownroom.userapp.utils.AppConstants;

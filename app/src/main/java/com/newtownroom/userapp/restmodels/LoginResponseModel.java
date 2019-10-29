@@ -1,8 +1,8 @@
-package com.newtownroom.userapp.models;
+package com.newtownroom.userapp.restmodels;
 
 import com.google.gson.annotations.SerializedName;
 
-public class SignUpResponseModel {
+public class LoginResponseModel {
 
     @SerializedName("code")
     private  int responseCode;
@@ -10,20 +10,21 @@ public class SignUpResponseModel {
     @SerializedName("status")
     private String status;
 
+    @SerializedName("phone")
+    private String phoneNumber;
+
     @SerializedName("msg")
     private String message;
 
-    @SerializedName("user_id")
-    private String userID;
+    public LoginResponseModel() {
 
-    public SignUpResponseModel() {
     }
 
-    public SignUpResponseModel(int responseCode, String status, String message, String userID) {
+    public LoginResponseModel(int responseCode, String status, String phoneNumber, String message) {
         this.responseCode = responseCode;
         this.status = status;
+        this.phoneNumber = phoneNumber;
         this.message = message;
-        this.userID = userID;
     }
 
     public int getResponseCode() {
@@ -42,19 +43,19 @@ public class SignUpResponseModel {
         this.status = status;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
     public String getMessage() {
         return message;
     }
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public String getUserID() {
-        return userID;
-    }
-
-    public void setUserID(String userID) {
-        this.userID = userID;
     }
 }

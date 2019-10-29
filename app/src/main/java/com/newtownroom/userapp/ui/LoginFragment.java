@@ -1,7 +1,6 @@
 package com.newtownroom.userapp.ui;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -19,12 +18,10 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.newtownroom.userapp.R;
-import com.newtownroom.userapp.models.LoginInputModel;
-import com.newtownroom.userapp.models.LoginResponseModel;
-import com.newtownroom.userapp.models.SignUpResponseModel;
+import com.newtownroom.userapp.restmodels.LoginInputModel;
+import com.newtownroom.userapp.restmodels.LoginResponseModel;
 import com.newtownroom.userapp.rest.GetDataService;
 import com.newtownroom.userapp.rest.RetrofitClientInstance;
-import com.newtownroom.userapp.utils.AppConstants;
 import com.newtownroom.userapp.utils.PreferenceManager;
 
 import retrofit2.Call;

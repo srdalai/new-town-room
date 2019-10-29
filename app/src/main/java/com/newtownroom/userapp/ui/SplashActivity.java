@@ -9,7 +9,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.newtownroom.userapp.R;
-import com.newtownroom.userapp.models.TxnStatusResponse;
+import com.newtownroom.userapp.restmodels.TxnStatusResponse;
 import com.newtownroom.userapp.rest.GetDataService;
 import com.newtownroom.userapp.rest.RetrofitClientInstance;
 import com.newtownroom.userapp.utils.PreferenceManager;

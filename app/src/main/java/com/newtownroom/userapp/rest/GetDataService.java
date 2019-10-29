@@ -1,17 +1,17 @@
 package com.newtownroom.userapp.rest;
 
-import com.newtownroom.userapp.models.BookingInputModel;
-import com.newtownroom.userapp.models.BookingOutputModel;
+import com.newtownroom.userapp.restmodels.BookingInputModel;
+import com.newtownroom.userapp.restmodels.BookingOutputModel;
 import com.newtownroom.userapp.models.HotelData;
-import com.newtownroom.userapp.models.HotelDetailsInputModel;
-import com.newtownroom.userapp.models.HotelDetailsResponseModel;
-import com.newtownroom.userapp.models.LoginInputModel;
-import com.newtownroom.userapp.models.LoginResponseModel;
-import com.newtownroom.userapp.models.OtpInputModel;
-import com.newtownroom.userapp.models.OtpResponseModel;
-import com.newtownroom.userapp.models.SignUpInputModel;
-import com.newtownroom.userapp.models.SignUpResponseModel;
-import com.newtownroom.userapp.models.TxnStatusResponse;
+import com.newtownroom.userapp.restmodels.HotelDetailsInputModel;
+import com.newtownroom.userapp.restmodels.HotelDetailsResponseModel;
+import com.newtownroom.userapp.restmodels.LoginInputModel;
+import com.newtownroom.userapp.restmodels.LoginResponseModel;
+import com.newtownroom.userapp.restmodels.OtpInputModel;
+import com.newtownroom.userapp.restmodels.OtpResponseModel;
+import com.newtownroom.userapp.restmodels.SignUpInputModel;
+import com.newtownroom.userapp.restmodels.SignUpResponseModel;
+import com.newtownroom.userapp.restmodels.TxnStatusResponse;
 
 import java.util.ArrayList;
 import java.util.Map;

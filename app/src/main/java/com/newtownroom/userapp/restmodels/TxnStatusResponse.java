@@ -1,4 +1,4 @@
-package com.newtownroom.userapp.models;
+package com.newtownroom.userapp.restmodels;
 
 import com.google.gson.annotations.SerializedName;
 

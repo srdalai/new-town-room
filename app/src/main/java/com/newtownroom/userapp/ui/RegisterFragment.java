@@ -34,12 +34,10 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.newtownroom.userapp.R;
-import com.newtownroom.userapp.models.OtpResponseModel;
-import com.newtownroom.userapp.models.SignUpInputModel;
-import com.newtownroom.userapp.models.SignUpResponseModel;
+import com.newtownroom.userapp.restmodels.SignUpInputModel;
+import com.newtownroom.userapp.restmodels.SignUpResponseModel;
 import com.newtownroom.userapp.rest.GetDataService;
 import com.newtownroom.userapp.rest.RetrofitClientInstance;
-import com.newtownroom.userapp.utils.AppConstants;
 import com.newtownroom.userapp.utils.PreferenceManager;
 import com.newtownroom.userapp.utils.Utilities;
 

@@ -1,6 +1,7 @@
-package com.newtownroom.userapp.models;
+package com.newtownroom.userapp.restmodels;
 
 import com.google.gson.annotations.SerializedName;
+import com.newtownroom.userapp.models.RoomData;
 
 import java.util.ArrayList;
 
