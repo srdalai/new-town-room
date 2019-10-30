@@ -18,8 +18,8 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.newtownroom.userapp.R;
-import com.newtownroom.userapp.restmodels.LoginInputModel;
-import com.newtownroom.userapp.restmodels.LoginResponseModel;
+import com.newtownroom.userapp.restmodels.LoginInput;
+import com.newtownroom.userapp.restmodels.LoginResponse;
 import com.newtownroom.userapp.rest.GetDataService;
 import com.newtownroom.userapp.rest.RetrofitClientInstance;
 import com.newtownroom.userapp.utils.PreferenceManager;
@@ -109,14 +109,14 @@ public class LoginFragment extends Fragment {
     }
 
     private void processLoginData(String phoneNumber) {
-        Call<LoginResponseModel> call = service.postLoginRequest(new LoginInputModel(phoneNumber));
-        call.enqueue(new Callback<LoginResponseModel>() {
+        Call<LoginResponse> call = service.postLoginRequest(new LoginInput(phoneNumber));
+        call.enqueue(new Callback<LoginResponse>() {
             @Override
-            public void onResponse(Call<LoginResponseModel> call, Response<LoginResponseModel> response) {
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if (!isAdded()) return;
                 progressDialog.dismiss();
                 if (response.isSuccessful() && response.code() == 200) {
-                    LoginResponseModel logInModel = response.body();
+                    LoginResponse logInModel = response.body();
                     if(logInModel != null) {
                         Log.d("Response = > ", response.raw().toString());
                         int code = response.body().getResponseCode();
@@ -138,7 +138,7 @@ public class LoginFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<LoginResponseModel> call, Throwable t) {
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
                 if (!isAdded()) return;
                 Log.d("Error", t.toString());
                 Snackbar.make(requireView(), "Something went wrong...Please try later!", Snackbar.LENGTH_LONG).show();

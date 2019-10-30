@@ -7,14 +7,14 @@ import com.google.gson.annotations.SerializedName;
 public class SingleBookingID {
 
     @SerializedName("booking_id")
-    private Long bookingId;
+    private int bookingId;
 
-    public Long getBookingId() {
+    public int getBookingId() {
         return bookingId;
     }
 
-    public void setBookingId(Long bookingId) {
-        bookingId = bookingId;
+    public void setBookingId(int bookingId) {
+        this.bookingId = bookingId;
     }
 
 }

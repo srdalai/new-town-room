@@ -26,7 +26,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -39,12 +38,14 @@ import com.newtownroom.userapp.adapters.RulesAdapter;
 import com.newtownroom.userapp.models.AmenitiesData;
 import com.newtownroom.userapp.models.AmenitiesListData;
 import com.newtownroom.userapp.models.Coupon;
-import com.newtownroom.userapp.restmodels.BookingInputModel;
-import com.newtownroom.userapp.restmodels.BookingOutputModel;
+import com.newtownroom.userapp.restmodels.BookingInput;
+import com.newtownroom.userapp.restmodels.BookingResponse;
 import com.newtownroom.userapp.models.GuestData;
 import com.newtownroom.userapp.models.HotelData;
-import com.newtownroom.userapp.restmodels.HotelDetailsInputModel;
-import com.newtownroom.userapp.restmodels.HotelDetailsResponseModel;
+import com.newtownroom.userapp.restmodels.CheckAvailInput;
+import com.newtownroom.userapp.restmodels.CheckAvailResponse;
+import com.newtownroom.userapp.restmodels.HotelDetailsInput;
+import com.newtownroom.userapp.restmodels.HotelDetailsResponse;
 import com.newtownroom.userapp.models.ImageModel;
 import com.newtownroom.userapp.models.PriceData;
 import com.newtownroom.userapp.models.RoomData;
@@ -106,6 +107,7 @@ public class HotelDetailsNew extends AppCompatActivity {
     GetDataService service;
     ProgressDialog progressDialog;
     SimpleDateFormat dateFormat = new SimpleDateFormat("E, dd MMM", Locale.getDefault());
+    SimpleDateFormat apiDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
     Calendar checkInCal, checkOutCal;
     PreferenceManager preferenceManager;
     Coupon appliedCoupon, removedCoupon;
@@ -118,13 +120,14 @@ public class HotelDetailsNew extends AppCompatActivity {
     int maxAdult = 0, maxChild = 0;
     int nights = 0;
     float price = 0, sellingPrice = 0, totalAmount = 0, couponDiscount = 0, grandTotal = 0, defaultDiscount = 0;
-    String checkInDate = "", checkOutDate = "";
+    String checkInDate = "", checkOutDate = "", apiCheckInDate = "", apiCheckOutDate = "";
     String hotelId, rating;
     ArrayList<PriceData> priceList = new ArrayList<>();
     ArrayList<RoomData> roomDataArrayList = null;
     ArrayList<String> imageUrls = new ArrayList<>();
     int lineCount = 4;
     String fullText = "", truncatedText = "";
+    boolean bookingAvailable = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -243,17 +246,8 @@ public class HotelDetailsNew extends AppCompatActivity {
         }));
 
         btnProceed.setOnClickListener((view -> {
-            Intent intent = new Intent(HotelDetailsNew.this, BookingComplete.class);
-            intent.putExtra("price", price*nights);
-            intent.putExtra("discount", ((defaultDiscount*nights) + couponDiscount));
-            intent.putExtra("sellingPrice", sellingPrice*nights);
-            intent.putExtra("numOfGuests", guestNum);
-            intent.putExtra("numOfRooms", roomNum);
-            intent.putExtra("nights", nights);
-            intent.putExtra("checkInDate", checkInDate);
-            intent.putExtra("checkOutDate", checkOutDate);
-            startActivity(intent);
-            //continueToBook();
+            //bookingCompleted();
+            startBookingFlow();
         }));
 
         matBtnOffers.setOnClickListener((view) ->{
@@ -282,11 +276,25 @@ public class HotelDetailsNew extends AppCompatActivity {
                     appliedCoupon = removedCoupon;
                 } else {
                     appliedCoupon = null;
+                    updateUI();
                 }
-                updateUI();
+                /*updateUI();*/
             }
         });
 
+    }
+
+    private void bookingCompleted() {
+        Intent intent = new Intent(HotelDetailsNew.this, BookingComplete.class);
+        intent.putExtra("price", price*nights);
+        intent.putExtra("discount", (defaultDiscount + couponDiscount));
+        intent.putExtra("sellingPrice", grandTotal);
+        intent.putExtra("numOfGuests", guestNum);
+        intent.putExtra("numOfRooms", roomNum);
+        intent.putExtra("nights", nights);
+        intent.putExtra("checkInDate", checkInDate);
+        intent.putExtra("checkOutDate", checkOutDate);
+        startActivity(intent);
     }
 
     private void showImageSlider() {
@@ -295,7 +303,10 @@ public class HotelDetailsNew extends AppCompatActivity {
             @Override
             public void loadImage(ImageView imageView, String image) {
                 //load your image here
-                Glide.with(HotelDetailsNew.this).load(image).into(imageView);
+                Glide.with(HotelDetailsNew.this)
+                        .load(image)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(imageView);
             }
         }).show();
     }
@@ -316,39 +327,13 @@ public class HotelDetailsNew extends AppCompatActivity {
         }
     };
 
-    ImageListener imageListener = new ImageListener() {
-        @Override
-        public void setImageForPosition(int position, ImageView imageView) {
-            imageView.setImageResource(sampleImages[position]);
-        }
-    };
-
-    public void prepareAmenitiesData() {
-        AmenitiesData amenitiesData = new AmenitiesData(R.drawable.ic_action_wifi, "Free Wifi", true);
-        amenitiesList.add(amenitiesData);
-
-        amenitiesData = new AmenitiesData(R.drawable.ic_action_ac_unit, "AC", true);
-        amenitiesList.add(amenitiesData);
-
-        amenitiesData = new AmenitiesData(R.drawable.ic_action_live_tv, "TV", true);
-        amenitiesList.add(amenitiesData);
-
-        amenitiesData = new AmenitiesData(R.drawable.ic_action_power, "Power Backup", true);
-        amenitiesList.add(amenitiesData);
-
-        amenitiesData = new AmenitiesData(R.drawable.ic_action_credit_card, "Card Payment", true);
-        amenitiesList.add(amenitiesData);
-
-        amenitiesData = new AmenitiesData(R.drawable.ic_action_videocam, "CCTV Cameras", true);
-        amenitiesList.add(amenitiesData);
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case GUEST_ACTIVITY_REQUEST_CODE:
                 processRoomResult(data);
+                bookingAvailable = false;
                 break;
             case COUPON_ACTIVITY_REQUEST_CODE:
                 processCouponResult(data);
@@ -396,14 +381,18 @@ public class HotelDetailsNew extends AppCompatActivity {
                 selectedCal.clear();
                 selectedCal.set(year, month, dayOfMonth);
                 String setDate = dateFormat.format(selectedCal.getTime());
+                String setAPIDate = apiDateFormat.format(selectedCal.getTime());
 
                 if (type.equals("checkin")) {
                     checkInDate = setDate;
+                    apiCheckInDate = setAPIDate;
                     checkInCal = selectedCal;
                     showDatePicker("checkout");
                 } else {
                     checkOutDate = setDate;
+                    apiCheckOutDate = setAPIDate;
                     checkOutCal = selectedCal;
+                    bookingAvailable = false;
                     updateUI();
                 }
 
@@ -519,7 +508,7 @@ public class HotelDetailsNew extends AppCompatActivity {
                     }
                 }
             }
-            defaultDiscount = price - sellingPrice;
+            defaultDiscount = (price - sellingPrice)*nights;
         }
 
         if (appliedCoupon != null) {
@@ -527,11 +516,10 @@ public class HotelDetailsNew extends AppCompatActivity {
             couponDiscount = sellingPrice*(discountPercent/100);
             couponDesc.setText(appliedCoupon.getCode() + " applied");
             couponLinear.setVisibility(View.VISIBLE);
+            couponCheckBox.setChecked(true);
         } else {
             couponLinear.setVisibility(View.GONE);
         }
-
-
 
 
         //Updating Price Details
@@ -543,18 +531,18 @@ public class HotelDetailsNew extends AppCompatActivity {
             textPrice.setVisibility(View.VISIBLE);
         }
 
-        textPrice.setText(getResources().getString(R.string.rupees_sign) + price);
+        textPrice.setText(getResources().getString(R.string.rupees_sign) + (price*nights));
         textSellingPrice.setText(getResources().getString(R.string.rupees_sign) + grandTotal);
         txtViewSavings.setText(getResources().getString(R.string.rupees_sign) + (couponDiscount + defaultDiscount));
         defCouponValue.setText("-"+getResources().getString(R.string.rupees_sign) + defaultDiscount);
         couponValue.setText("-"+getResources().getString(R.string.rupees_sign) + couponDiscount);
         txtTotalPrice.setText(getResources().getString(R.string.rupees_sign) + grandTotal);
 
-        if (guestNum == 0 || roomNum == 0 || nights == 0) {
-            btnProceed.setVisibility(View.GONE);
-        } else {
-            btnProceed.setVisibility(View.VISIBLE);
+        if (guestNum != 0 && roomNum != 0 && nights != 0 && !bookingAvailable) {
+            checkAvailability();
         }
+
+        btnProceed.setVisibility(bookingAvailable ? View.VISIBLE : View.GONE);
 
         //Setting strikethrough Text
         textPrice.setPaintFlags(textPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
@@ -577,18 +565,18 @@ public class HotelDetailsNew extends AppCompatActivity {
 
     private void getHotelDetails() {
         progressDialog.show();
-        HotelDetailsInputModel hotelDetailsInputModel = new HotelDetailsInputModel(hotelId);
+        HotelDetailsInput hotelDetailsInput = new HotelDetailsInput(hotelId);
 
-        Call<HotelDetailsResponseModel> call = service.getHotelDetails(hotelDetailsInputModel);
+        Call<HotelDetailsResponse> call = service.getHotelDetails(hotelDetailsInput);
 
-        call.enqueue(new Callback<HotelDetailsResponseModel>() {
+        call.enqueue(new Callback<HotelDetailsResponse>() {
             @Override
-            public void onResponse(Call<HotelDetailsResponseModel> call, Response<HotelDetailsResponseModel> response) {
+            public void onResponse(Call<HotelDetailsResponse> call, Response<HotelDetailsResponse> response) {
                 progressDialog.dismiss();
                 if (HotelDetailsNew.this.isFinishing()) return;
                 if (response.isSuccessful() && response.code() == 200) {
                     if (response.body() != null) {
-                        HotelDetailsResponseModel hotelDetailsModel = response.body();
+                        HotelDetailsResponse hotelDetailsModel = response.body();
                         prepareHotelData(hotelDetailsModel.getHotelDataList().get(0));
                         preparePricing(hotelDetailsModel.getPriceDataList());
                         prepareImages(hotelDetailsModel.getImageList());
@@ -606,7 +594,7 @@ public class HotelDetailsNew extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<HotelDetailsResponseModel> call, Throwable t) {
+            public void onFailure(Call<HotelDetailsResponse> call, Throwable t) {
                 if (HotelDetailsNew.this.isFinishing()) return;
                 progressDialog.dismiss();
                 Log.d("Error", t.toString());
@@ -688,30 +676,92 @@ public class HotelDetailsNew extends AppCompatActivity {
         rulesAdapter.notifyDataSetChanged();
     }
 
-    private void continueToBook() {
-        BookingInputModel bookingInputModel = new BookingInputModel();
-        bookingInputModel.setCheckOutDate(checkInDate);
-        bookingInputModel.setCheckOutDate(checkOutDate);
-        bookingInputModel.setHotelID(Integer.parseInt(hotelId));
-        bookingInputModel.setUserID(Integer.parseInt("19"));
-        bookingInputModel.setTotalGuest(guestNum);
-        bookingInputModel.setRooms(roomDataArrayList);
-        bookingInputModel.setBookedPrice(grandTotal);
-        bookingInputModel.setExtraServices(new ArrayList<>());
+    private void startBookingFlow() {
+        BookingInput bookingInput = new BookingInput();
 
-        Call<BookingOutputModel> call = service.booking(bookingInputModel);
-        call.enqueue(new Callback<BookingOutputModel>() {
+        bookingInput.setUserID(preferenceManager.getUserID());
+        bookingInput.setUniqueID("cc62d0c419b0399cf2aae7745a88ad64");
+        bookingInput.setHotelID("5");
+        bookingInput.setCoupon("ZOYO50");
+        bookingInput.setTotalGuest(2);
+        bookingInput.setCheckInDate("2019-11-08");
+        bookingInput.setCheckOutDate("2019-11-10");
+        bookingInput.setRooms(roomDataArrayList);
+        bookingInput.setBookedPrice(1200);
+        bookingInput.setExtraServices(new ArrayList<>());
+
+        Call<BookingResponse> call = service.booking(bookingInput);
+        call.enqueue(new Callback<BookingResponse>() {
             @Override
-            public void onResponse(Call<BookingOutputModel> call, Response<BookingOutputModel> response) {
+            public void onResponse(Call<BookingResponse> call, Response<BookingResponse> response) {
                 if (response.isSuccessful() && response.code() == 200) {
                     Log.d("Success", response.toString());
+                    BookingResponse bookingResponse = response.body();
+                    if (bookingResponse != null) {
+                        if (bookingResponse.getCode() == 200) {
+                            showSuccessDialog(bookingResponse.getMsg(), false);
+                        } else {
+                            showErrorDialog(bookingResponse.getMsg(), true);
+                        }
+                    }
                 }
             }
 
             @Override
-            public void onFailure(Call<BookingOutputModel> call, Throwable t) {
+            public void onFailure(Call<BookingResponse> call, Throwable t) {
                 t.printStackTrace();
             }
         });
+    }
+
+    private void checkAvailability() {
+        CheckAvailInput checkAvailInput = new CheckAvailInput();
+        checkAvailInput.setUserId(2);
+        checkAvailInput.setUniqid("396a6a775553353534363037");
+        checkAvailInput.setHotelId("5");
+        checkAvailInput.setCheckin(apiCheckInDate);
+        checkAvailInput.setCheckout(apiCheckOutDate);
+        checkAvailInput.setRooms(roomDataArrayList);
+
+        Call<CheckAvailResponse> call = service.checkAvailability(checkAvailInput);
+        call.enqueue(new Callback<CheckAvailResponse>() {
+            @Override
+            public void onResponse(Call<CheckAvailResponse> call, Response<CheckAvailResponse> response) {
+                if (response.code() == 200) {
+                    CheckAvailResponse checkAvailResponse = response.body();
+                    if (checkAvailResponse != null) {
+                        bookingAvailable = checkAvailResponse.getAvailableStatus() == 1;
+                        Snackbar.make(parentView, checkAvailResponse.getMsg(), Snackbar.LENGTH_SHORT).show();
+                        updateUI();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CheckAvailResponse> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void showErrorDialog(String message, boolean shouldCancel) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(message);
+        builder.setCancelable(shouldCancel);
+        builder.setPositiveButton("Ok", null);
+        builder.create().show();
+    }
+
+    private void showSuccessDialog(String message, boolean shouldCancel) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(message);
+        builder.setCancelable(shouldCancel);
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                bookingCompleted();
+            }
+        });
+        builder.create().show();
     }
 }

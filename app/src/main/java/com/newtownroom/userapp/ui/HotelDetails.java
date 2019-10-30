@@ -27,8 +27,8 @@ import com.newtownroom.userapp.R;
 import com.newtownroom.userapp.adapters.AmenitiesAdapter;
 import com.newtownroom.userapp.models.AmenitiesData;
 import com.newtownroom.userapp.models.HotelData;
-import com.newtownroom.userapp.restmodels.HotelDetailsInputModel;
-import com.newtownroom.userapp.restmodels.HotelDetailsResponseModel;
+import com.newtownroom.userapp.restmodels.HotelDetailsInput;
+import com.newtownroom.userapp.restmodels.HotelDetailsResponse;
 import com.newtownroom.userapp.models.ImageModel;
 import com.newtownroom.userapp.models.PriceData;
 import com.newtownroom.userapp.models.ServiceData;
@@ -385,18 +385,18 @@ public class HotelDetails extends AppCompatActivity {
 
     private void getHotelDetails() {
         progressDialog.show();
-        HotelDetailsInputModel hotelDetailsInputModel = new HotelDetailsInputModel(hotelId);
+        HotelDetailsInput hotelDetailsInput = new HotelDetailsInput(hotelId);
 
-        Call<HotelDetailsResponseModel> call = service.getHotelDetails(hotelDetailsInputModel);
+        Call<HotelDetailsResponse> call = service.getHotelDetails(hotelDetailsInput);
 
-        call.enqueue(new Callback<HotelDetailsResponseModel>() {
+        call.enqueue(new Callback<HotelDetailsResponse>() {
             @Override
-            public void onResponse(Call<HotelDetailsResponseModel> call, Response<HotelDetailsResponseModel> response) {
+            public void onResponse(Call<HotelDetailsResponse> call, Response<HotelDetailsResponse> response) {
                 progressDialog.dismiss();
                 if (HotelDetails.this.isFinishing()) return;
                 if (response.isSuccessful() && response.code() == 200) {
                     if (response.body() != null) {
-                        HotelDetailsResponseModel hotelDetailsModel = response.body();
+                        HotelDetailsResponse hotelDetailsModel = response.body();
                         prepareHotelData(hotelDetailsModel.getHotelDataList().get(0));
                         preparePricing(hotelDetailsModel.getPriceDataList().get(0));
                         prepareImages(hotelDetailsModel.getImageList());
@@ -413,7 +413,7 @@ public class HotelDetails extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<HotelDetailsResponseModel> call, Throwable t) {
+            public void onFailure(Call<HotelDetailsResponse> call, Throwable t) {
                 if (HotelDetails.this.isFinishing()) return;
                 progressDialog.dismiss();
                 Log.d("Error", t.toString());

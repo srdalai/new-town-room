@@ -5,7 +5,7 @@ import com.newtownroom.userapp.models.RoomData;
 
 import java.util.ArrayList;
 
-public class BookingInputModel {
+public class BookingInput {
 
     @SerializedName("checkin")
     private String checkInDate;
@@ -14,7 +14,7 @@ public class BookingInputModel {
     private String CheckOutDate;
 
     @SerializedName("hotel_id")
-    private int hotelID;
+    private String hotelID;
 
     @SerializedName("user_id")
     private int userID;
@@ -37,7 +37,7 @@ public class BookingInputModel {
     @SerializedName("extra_services")
     private ArrayList<Integer> extraServices;
 
-    public BookingInputModel() {
+    public BookingInput() {
     }
 
     public String getCheckInDate() {
@@ -56,11 +56,11 @@ public class BookingInputModel {
         CheckOutDate = checkOutDate;
     }
 
-    public int getHotelID() {
+    public String getHotelID() {
         return hotelID;
     }
 
-    public void setHotelID(int hotelID) {
+    public void setHotelID(String hotelID) {
         this.hotelID = hotelID;
     }
 

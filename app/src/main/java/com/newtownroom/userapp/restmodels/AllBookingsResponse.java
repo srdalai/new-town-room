@@ -5,7 +5,7 @@ import com.newtownroom.userapp.models.BookingData;
 
 import java.util.ArrayList;
 
-public class AllBookingsOutput {
+public class AllBookingsResponse {
 
     @SerializedName("upcoming")
     private ArrayList<BookingData> upcomingBookings;
@@ -16,10 +16,10 @@ public class AllBookingsOutput {
     @SerializedName("canceled")
     private ArrayList<BookingData> canceledBookings;
 
-    public AllBookingsOutput() {
+    public AllBookingsResponse() {
     }
 
-    public AllBookingsOutput(ArrayList<BookingData> upcomingBookings, ArrayList<BookingData> completedBookings, ArrayList<BookingData> canceledBookings) {
+    public AllBookingsResponse(ArrayList<BookingData> upcomingBookings, ArrayList<BookingData> completedBookings, ArrayList<BookingData> canceledBookings) {
         this.upcomingBookings = upcomingBookings;
         this.completedBookings = completedBookings;
         this.canceledBookings = canceledBookings;

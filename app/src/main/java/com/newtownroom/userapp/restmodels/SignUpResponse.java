@@ -2,7 +2,7 @@ package com.newtownroom.userapp.restmodels;
 
 import com.google.gson.annotations.SerializedName;
 
-public class SignUpResponseModel {
+public class SignUpResponse {
 
     @SerializedName("code")
     private  int responseCode;
@@ -16,10 +16,10 @@ public class SignUpResponseModel {
     @SerializedName("user_id")
     private String userID;
 
-    public SignUpResponseModel() {
+    public SignUpResponse() {
     }
 
-    public SignUpResponseModel(int responseCode, String status, String message, String userID) {
+    public SignUpResponse(int responseCode, String status, String message, String userID) {
         this.responseCode = responseCode;
         this.status = status;
         this.message = message;

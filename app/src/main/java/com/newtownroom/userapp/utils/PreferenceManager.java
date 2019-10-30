@@ -22,12 +22,12 @@ public class PreferenceManager {
         editor = sharedPreferences.edit();
     }
 
-    public void setUserID(String userID) {
-        editor.putString(USER_ID, userID).commit();
+    public void setUserID(int userID) {
+        editor.putInt(USER_ID, userID).commit();
     }
 
-    public String getUserID() {
-        return sharedPreferences.getString(USER_ID, null);
+    public int getUserID() {
+        return sharedPreferences.getInt(USER_ID, 19);
     }
 
     public void setName(String name) {

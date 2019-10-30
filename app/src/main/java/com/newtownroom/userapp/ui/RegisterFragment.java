@@ -34,8 +34,8 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.newtownroom.userapp.R;
-import com.newtownroom.userapp.restmodels.SignUpInputModel;
-import com.newtownroom.userapp.restmodels.SignUpResponseModel;
+import com.newtownroom.userapp.restmodels.SignUpInput;
+import com.newtownroom.userapp.restmodels.SignUpResponse;
 import com.newtownroom.userapp.rest.GetDataService;
 import com.newtownroom.userapp.rest.RetrofitClientInstance;
 import com.newtownroom.userapp.utils.PreferenceManager;
@@ -325,7 +325,7 @@ public class RegisterFragment extends Fragment implements LocationListener {
     }
 
     private void processRegisterData(String name, String email, String phone) {
-        SignUpInputModel model = new SignUpInputModel();
+        SignUpInput model = new SignUpInput();
         model.setPhoneNumber(phone);
         model.setName(name);
         if (email.length() != 0) {
@@ -339,14 +339,14 @@ public class RegisterFragment extends Fragment implements LocationListener {
             model.setLongitude(lngString);
         }
 
-        Call<SignUpResponseModel> call = service.postSignUpRequest(model);
-        call.enqueue(new Callback<SignUpResponseModel>() {
+        Call<SignUpResponse> call = service.postSignUpRequest(model);
+        call.enqueue(new Callback<SignUpResponse>() {
             @Override
-            public void onResponse(Call<SignUpResponseModel> call, Response<SignUpResponseModel> response) {
+            public void onResponse(Call<SignUpResponse> call, Response<SignUpResponse> response) {
                 if (!isAdded()) return;
                 progressDialog.dismiss();
                 if (response.isSuccessful() && response.code() == 200) {
-                    SignUpResponseModel signUpModel = response.body();
+                    SignUpResponse signUpModel = response.body();
                     if(signUpModel != null) {
                         Log.d("Response = > ", response.raw().toString());
                         int code = signUpModel.getResponseCode();
@@ -367,7 +367,7 @@ public class RegisterFragment extends Fragment implements LocationListener {
             }
 
             @Override
-            public void onFailure(Call<SignUpResponseModel> call, Throwable t) {
+            public void onFailure(Call<SignUpResponse> call, Throwable t) {
                 if (!isAdded()) return;
                 progressDialog.dismiss();
                 Log.d("Error", t.toString());

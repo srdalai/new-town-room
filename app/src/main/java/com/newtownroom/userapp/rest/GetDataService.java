@@ -1,19 +1,25 @@
 package com.newtownroom.userapp.rest;
 
-import com.newtownroom.userapp.restmodels.BookingInputModel;
-import com.newtownroom.userapp.restmodels.BookingOutputModel;
+import com.newtownroom.userapp.restmodels.AllBookingsInput;
+import com.newtownroom.userapp.restmodels.AllBookingsResponse;
+import com.newtownroom.userapp.restmodels.BookingInput;
+import com.newtownroom.userapp.restmodels.BookingResponse;
 import com.newtownroom.userapp.models.HotelData;
+import com.newtownroom.userapp.restmodels.CheckAvailInput;
+import com.newtownroom.userapp.restmodels.CheckAvailResponse;
 import com.newtownroom.userapp.restmodels.CouponsInput;
-import com.newtownroom.userapp.restmodels.CouponsOutput;
-import com.newtownroom.userapp.restmodels.HotelDetailsInputModel;
-import com.newtownroom.userapp.restmodels.HotelDetailsResponseModel;
-import com.newtownroom.userapp.restmodels.LoginInputModel;
-import com.newtownroom.userapp.restmodels.LoginResponseModel;
-import com.newtownroom.userapp.restmodels.OtpInputModel;
-import com.newtownroom.userapp.restmodels.OtpResponseModel;
-import com.newtownroom.userapp.restmodels.SignUpInputModel;
-import com.newtownroom.userapp.restmodels.SignUpResponseModel;
+import com.newtownroom.userapp.restmodels.CouponsResponse;
+import com.newtownroom.userapp.restmodels.HotelDetailsInput;
+import com.newtownroom.userapp.restmodels.HotelDetailsResponse;
+import com.newtownroom.userapp.restmodels.LoginInput;
+import com.newtownroom.userapp.restmodels.LoginResponse;
+import com.newtownroom.userapp.restmodels.OtpInput;
+import com.newtownroom.userapp.restmodels.OtpResponse;
+import com.newtownroom.userapp.restmodels.SignUpInput;
+import com.newtownroom.userapp.restmodels.SignUpResponse;
 import com.newtownroom.userapp.restmodels.TxnStatusResponse;
+import com.newtownroom.userapp.restmodels.UpdateUserInput;
+import com.newtownroom.userapp.restmodels.UpdateUserResponse;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -27,28 +33,37 @@ import retrofit2.http.Query;
 public interface GetDataService {
 
     @POST("login")
-    Call<LoginResponseModel> postLoginRequest(@Body LoginInputModel loginInputModel);
+    Call<LoginResponse> postLoginRequest(@Body LoginInput loginInput);
 
     @POST("validateOTP")
-    Call<OtpResponseModel> validateOTP(@Body OtpInputModel otpInputModel);
+    Call<OtpResponse> validateOTP(@Body OtpInput otpInput);
 
     @POST("signup")
-    Call<SignUpResponseModel> postSignUpRequest(@Body SignUpInputModel signUpInputModel);
+    Call<SignUpResponse> postSignUpRequest(@Body SignUpInput signUpInput);
 
     @POST("resendOTP")
-    Call<LoginResponseModel> resendOTP(@Body LoginInputModel loginInputModel);
+    Call<LoginResponse> resendOTP(@Body LoginInput loginInput);
+
+    @POST("updateUser")
+    Call<UpdateUserResponse> updateUser(@Body UpdateUserInput updateUserInput);
 
     @POST("getHotelsList")
     Call<ArrayList<HotelData>> getHotelsList();
 
     @POST("getHotelDetails")
-    Call<HotelDetailsResponseModel> getHotelDetails(@Body HotelDetailsInputModel hotelDetailsInputModel);
+    Call<HotelDetailsResponse> getHotelDetails(@Body HotelDetailsInput hotelDetailsInput);
+
+    @POST("checkAvailability")
+    Call<CheckAvailResponse> checkAvailability(@Body CheckAvailInput checkAvailInput);
 
     @POST("booking")
-    Call<BookingOutputModel> booking(@Body BookingInputModel bookingInputModel);
+    Call<BookingResponse> booking(@Body BookingInput bookingInput);
 
     @POST("getCoupons")
-    Call<CouponsOutput> getAllCoupons(@Body CouponsInput couponsInput);
+    Call<CouponsResponse> getAllCoupons(@Body CouponsInput couponsInput);
+
+    @POST("getBookingList")
+    Call<AllBookingsResponse> getBookingList(@Body AllBookingsInput allBookingsInput);
 
     /*
     *   PayMoney API requests

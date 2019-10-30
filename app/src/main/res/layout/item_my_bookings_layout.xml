@@ -161,6 +161,7 @@
                 android:paddingBottom="8dp">
 
                 <RelativeLayout
+                    android:id="@+id/bookAgain"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:layout_gravity="center_vertical|start">
@@ -181,8 +182,8 @@
                         android:layout_centerVertical="true"
                         android:layout_toEndOf="@id/imageView"
                         android:text="Book Again"
-                        android:textSize="16sp"
-                        android:textColor="@color/book_again"/>
+                        android:textColor="@color/book_again"
+                        android:textSize="16sp" />
                 </RelativeLayout>
 
                 <TextView

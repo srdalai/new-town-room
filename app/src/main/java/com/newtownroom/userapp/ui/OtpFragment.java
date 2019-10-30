@@ -21,8 +21,8 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.newtownroom.userapp.R;
-import com.newtownroom.userapp.restmodels.OtpInputModel;
-import com.newtownroom.userapp.restmodels.OtpResponseModel;
+import com.newtownroom.userapp.restmodels.OtpInput;
+import com.newtownroom.userapp.restmodels.OtpResponse;
 import com.newtownroom.userapp.rest.GetDataService;
 import com.newtownroom.userapp.rest.RetrofitClientInstance;
 import com.newtownroom.userapp.utils.AppConstants;
@@ -112,22 +112,22 @@ public class OtpFragment extends Fragment {
     }
 
     private void processOTP(String phoneNumber, String otp) {
-        Call<OtpResponseModel> call = service.validateOTP(new OtpInputModel(phoneNumber, otp));
+        Call<OtpResponse> call = service.validateOTP(new OtpInput(phoneNumber, otp));
 
-        call.enqueue(new Callback<OtpResponseModel>() {
+        call.enqueue(new Callback<OtpResponse>() {
             @Override
-            public void onResponse(Call<OtpResponseModel> call, Response<OtpResponseModel> response) {
+            public void onResponse(Call<OtpResponse> call, Response<OtpResponse> response) {
                 if (!isAdded()) return;
                 progressDialog.dismiss();
                 if (response.isSuccessful() && response.code() == 200) {
-                    OtpResponseModel otpModel = response.body();
+                    OtpResponse otpModel = response.body();
                     if(otpModel != null) {
                         Log.d("Response = > ", response.body().getMessage());
                         int code = response.body().getResponseCode();
                         if (code == 200) {
                             preferenceManager.setIsLoggedIn(true);
                             preferenceManager.setName("Name");
-                            preferenceManager.setUserID(otpModel.getUserID());
+                            preferenceManager.setUserID(Integer.parseInt(otpModel.getUserID()));
                             startActivity(new Intent(requireContext(), MainActivity.class));
                             requireActivity().finish();
                         } else {
@@ -143,7 +143,7 @@ public class OtpFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<OtpResponseModel> call, Throwable t) {
+            public void onFailure(Call<OtpResponse> call, Throwable t) {
                 if (!isAdded()) return;
                 progressDialog.dismiss();
                 Log.d("Error", t.toString());

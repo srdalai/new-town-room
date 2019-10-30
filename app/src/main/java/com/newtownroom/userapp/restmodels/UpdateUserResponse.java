@@ -1,22 +1,20 @@
 
 package com.newtownroom.userapp.restmodels;
 
-import java.util.ArrayList;
-import java.util.List;
 import com.google.gson.annotations.Expose;
-import com.newtownroom.userapp.models.Coupon;
+import com.google.gson.annotations.SerializedName;
 
 @SuppressWarnings("unused")
-public class CouponsOutput {
+public class UpdateUserResponse {
 
     @Expose
     private Long code;
     @Expose
-    private ArrayList<Coupon> coupons;
-    @Expose
     private String msg;
     @Expose
     private String status;
+    @SerializedName("user_id")
+    private String userId;
 
     public Long getCode() {
         return code;
@@ -24,14 +22,6 @@ public class CouponsOutput {
 
     public void setCode(Long code) {
         this.code = code;
-    }
-
-    public ArrayList<Coupon> getCoupons() {
-        return coupons;
-    }
-
-    public void setCoupons(ArrayList<Coupon> coupons) {
-        this.coupons = coupons;
     }
 
     public String getMsg() {
@@ -48,6 +38,14 @@ public class CouponsOutput {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
 }

@@ -7,14 +7,24 @@ import com.google.gson.annotations.SerializedName;
 public class AllBookingsInput {
 
     @SerializedName("user_id")
-    private Long userId;
+    private int userId;
 
-    public Long getUserId() {
+    @SerializedName("uniqid")
+    private String uniqid;
+
+    public int getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
+    public String getUniqid() {
+        return uniqid;
+    }
+
+    public void setUniqid(String uniqid) {
+        this.uniqid = uniqid;
+    }
 }

@@ -10,7 +10,7 @@ import com.newtownroom.userapp.models.ServiceData;
 
 import java.util.ArrayList;
 
-public class HotelDetailsResponseModel {
+public class HotelDetailsResponse {
 
     @SerializedName("hotel")
     private ArrayList<HotelData> hotelDataList;
@@ -30,7 +30,7 @@ public class HotelDetailsResponseModel {
     @SerializedName("hotel_rules")
     private ArrayList<RulesData> rulesDataList;
 
-    public HotelDetailsResponseModel() {
+    public HotelDetailsResponse() {
     }
 
     public ArrayList<HotelData> getHotelDataList() {

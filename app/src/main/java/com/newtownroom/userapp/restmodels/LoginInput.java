@@ -2,20 +2,16 @@ package com.newtownroom.userapp.restmodels;
 
 import com.google.gson.annotations.SerializedName;
 
-public class OtpInputModel {
+public class LoginInput {
 
     @SerializedName("phone")
     private String phoneNumber;
 
-    @SerializedName("otp")
-    private String otp;
-
-    public OtpInputModel() {
+    public LoginInput() {
     }
 
-    public OtpInputModel(String phoneNumber, String otp) {
+    public LoginInput(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-        this.otp = otp;
     }
 
     public String getPhoneNumber() {
@@ -24,13 +20,5 @@ public class OtpInputModel {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }
-
-    public String getOtp() {
-        return otp;
-    }
-
-    public void setOtp(String otp) {
-        this.otp = otp;
     }
 }

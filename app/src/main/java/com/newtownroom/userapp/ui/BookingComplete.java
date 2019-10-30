@@ -197,4 +197,9 @@ public class BookingComplete extends AppCompatActivity {
         return hash.toString();
     }
 
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(this, MainActivity.class));
+        finish();
+    }
 }

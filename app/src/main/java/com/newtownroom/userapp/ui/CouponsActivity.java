@@ -1,7 +1,6 @@
 package com.newtownroom.userapp.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NavUtils;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,7 +17,7 @@ import com.newtownroom.userapp.models.Coupon;
 import com.newtownroom.userapp.rest.GetDataService;
 import com.newtownroom.userapp.rest.RetrofitClientInstance;
 import com.newtownroom.userapp.restmodels.CouponsInput;
-import com.newtownroom.userapp.restmodels.CouponsOutput;
+import com.newtownroom.userapp.restmodels.CouponsResponse;
 
 import java.util.ArrayList;
 
@@ -65,11 +64,11 @@ public class CouponsActivity extends AppCompatActivity {
         couponsInput.setUserId("2");
         couponsInput.setUniqid("396a6a775553353534363037");
 
-        Call<CouponsOutput> call = service.getAllCoupons(couponsInput);
+        Call<CouponsResponse> call = service.getAllCoupons(couponsInput);
 
-        call.enqueue(new Callback<CouponsOutput>() {
+        call.enqueue(new Callback<CouponsResponse>() {
             @Override
-            public void onResponse(Call<CouponsOutput> call, Response<CouponsOutput> response) {
+            public void onResponse(Call<CouponsResponse> call, Response<CouponsResponse> response) {
                 progressDialog.dismiss();
                 if (response.code() == 200 && response.body().getCode() == 200) {
                     coupons.clear();
@@ -79,7 +78,7 @@ public class CouponsActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<CouponsOutput> call, Throwable t) {
+            public void onFailure(Call<CouponsResponse> call, Throwable t) {
                 progressDialog.dismiss();
                 Log.d("Error", t.toString());
 

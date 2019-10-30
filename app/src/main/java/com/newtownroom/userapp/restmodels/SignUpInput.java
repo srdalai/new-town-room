@@ -2,7 +2,7 @@ package com.newtownroom.userapp.restmodels;
 
 import com.google.gson.annotations.SerializedName;
 
-public class SignUpInputModel {
+public class SignUpInput {
 
     @SerializedName("name")
     private String name;
@@ -19,10 +19,10 @@ public class SignUpInputModel {
     @SerializedName("long")
     private String longitude;
 
-    public SignUpInputModel() {
+    public SignUpInput() {
     }
 
-    public SignUpInputModel(String name, String phoneNumber, String emailAddress, String latitude, String longitude) {
+    public SignUpInput(String name, String phoneNumber, String emailAddress, String latitude, String longitude) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.emailAddress = emailAddress;

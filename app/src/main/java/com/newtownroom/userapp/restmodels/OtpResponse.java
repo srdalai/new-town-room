@@ -2,7 +2,7 @@ package com.newtownroom.userapp.restmodels;
 
 import com.google.gson.annotations.SerializedName;
 
-public class LoginResponseModel {
+public class OtpResponse {
 
     @SerializedName("code")
     private  int responseCode;
@@ -10,21 +10,20 @@ public class LoginResponseModel {
     @SerializedName("status")
     private String status;
 
-    @SerializedName("phone")
-    private String phoneNumber;
-
     @SerializedName("msg")
     private String message;
 
-    public LoginResponseModel() {
+    @SerializedName("user_id")
+    private String userID;
 
+    public OtpResponse() {
     }
 
-    public LoginResponseModel(int responseCode, String status, String phoneNumber, String message) {
+    public OtpResponse(int responseCode, String status, String message, String userID) {
         this.responseCode = responseCode;
         this.status = status;
-        this.phoneNumber = phoneNumber;
         this.message = message;
+        this.userID = userID;
     }
 
     public int getResponseCode() {
@@ -43,19 +42,19 @@ public class LoginResponseModel {
         this.status = status;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
     public String getMessage() {
         return message;
     }
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 }

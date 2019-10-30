@@ -2,15 +2,15 @@ package com.newtownroom.userapp.restmodels;
 
 import com.google.gson.annotations.SerializedName;
 
-public class HotelDetailsInputModel {
+public class HotelDetailsInput {
 
     @SerializedName("hotel_id")
     private String hotelID;
 
-    public HotelDetailsInputModel() {
+    public HotelDetailsInput() {
     }
 
-    public HotelDetailsInputModel(String hotelID) {
+    public HotelDetailsInput(String hotelID) {
         this.hotelID = hotelID;
     }
 
