@@ -24,9 +24,11 @@ public class BookingComplete extends AppCompatActivity {
     private static final String TAG = BookingComplete.class.getSimpleName();
 
     MaterialButton matBtnPayNow;
-    TextView textPrice, textDiscount, textSellingPrice, txtPrice, txtNumGuests, txtNumOfNights, txtRomDetails;
+    TextView textPrice, textDiscount, textSellingPrice, txtPrice, txtNumGuests, txtNumOfNights, txtRomDetails, txtStartDate, txtEndDate;
+    String checkInDate, checkOutDate;
 
-    int price = 0, discount = 0, sellingPrice = 0, numOfGuests = 0, numOfRooms = 0, nights = 0;
+    float price = 0, discount = 0, sellingPrice = 0;
+    int numOfGuests = 0, numOfRooms = 0, nights = 0;
     //PayU variables
     String key = "0lMDzMDB", salt = "48VSE2mGKk", txnid = "ORDER-OD-201900001", amount = "999", productinfo = "Hotel", firstname = "John", email = "user@email.com", udf1 = "", udf2 = "", udf3 = "", udf4 = "", udf5 = "";
 
@@ -37,12 +39,14 @@ public class BookingComplete extends AppCompatActivity {
 
         getSupportActionBar().setTitle("Booking Complete");
 
-        price = getIntent().getIntExtra("price", 0);
-        discount = getIntent().getIntExtra("discount", 0);
-        sellingPrice = getIntent().getIntExtra("sellingPrice", 0);
+        price = getIntent().getFloatExtra("price", 0);
+        discount = getIntent().getFloatExtra("discount", 0);
+        sellingPrice = getIntent().getFloatExtra("sellingPrice", 0);
         numOfGuests = getIntent().getIntExtra("numOfGuests", 0);
         numOfRooms = getIntent().getIntExtra("numOfRooms", 0);
         nights = getIntent().getIntExtra("nights", 0);
+        checkInDate = getIntent().getStringExtra("checkInDate");
+        checkOutDate = getIntent().getStringExtra("checkOutDate");
 
         amount = String.valueOf(sellingPrice);
 
@@ -54,6 +58,8 @@ public class BookingComplete extends AppCompatActivity {
         txtNumGuests = findViewById(R.id.txtNumGuests);
         txtNumOfNights = findViewById(R.id.txtNumOfNights);
         txtRomDetails = findViewById(R.id.txtRomDetails);
+        txtStartDate = findViewById(R.id.txtStartDate);
+        txtEndDate = findViewById(R.id.txtEndDate);
 
         textPrice.setText("\u20B9 " + price);
         textDiscount.setText("-\u20B9 " + discount);
@@ -63,6 +69,9 @@ public class BookingComplete extends AppCompatActivity {
         txtNumGuests.setText(String.valueOf(numOfGuests));
         txtNumOfNights.setText(nights+" Nights(s)");
         txtRomDetails.setText("1 Classic ("+ numOfRooms +"X)");
+
+        txtStartDate.setText(checkInDate);
+        txtEndDate.setText(checkOutDate);
 
         matBtnPayNow.setOnClickListener((view -> {
             processPayment();

@@ -19,8 +19,11 @@ public class BookingInputModel {
     @SerializedName("user_id")
     private int userID;
 
+    @SerializedName("uniqid")
+    private String uniqueID;
+
     @SerializedName("total_guest")
-    private String totalGuest;
+    private int totalGuest;
 
     @SerializedName("rooms")
     private ArrayList<RoomData> rooms;
@@ -65,15 +68,23 @@ public class BookingInputModel {
         return userID;
     }
 
+    public String getUniqueID() {
+        return uniqueID;
+    }
+
+    public void setUniqueID(String uniqueID) {
+        this.uniqueID = uniqueID;
+    }
+
     public void setUserID(int userID) {
         this.userID = userID;
     }
 
-    public String getTotalGuest() {
+    public int getTotalGuest() {
         return totalGuest;
     }
 
-    public void setTotalGuest(String totalGuest) {
+    public void setTotalGuest(int totalGuest) {
         this.totalGuest = totalGuest;
     }
 

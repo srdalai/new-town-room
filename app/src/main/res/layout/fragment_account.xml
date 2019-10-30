@@ -41,11 +41,8 @@
                         android:id="@+id/editTextEmail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:clickable="false"
                         android:drawableStart="@drawable/ic_action_mail_outline"
                         android:drawablePadding="16dp"
-                        android:focusable="false"
-                        android:inputType="none"
                         android:text="android@android.com" />
 
                 </com.google.android.material.textfield.TextInputLayout>

@@ -39,13 +39,14 @@
         android:layout_above="@id/btnApply"/>
 
     <com.google.android.material.button.MaterialButton
-        style="@style/Widget.MaterialComponents.Button"
         android:id="@+id/btnApply"
+        style="@style/Widget.MaterialComponents.Button"
+        app:backgroundTint="@color/colorPrimary"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="@dimen/dimen_8dp"
-        android:layout_marginEnd="@dimen/dimen_8dp"
         android:layout_marginTop="@dimen/dimen_4dp"
+        android:layout_marginEnd="@dimen/dimen_8dp"
         android:text="Apply" />
 </RelativeLayout>

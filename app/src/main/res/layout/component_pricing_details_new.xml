@@ -40,11 +40,14 @@
                 app:layout_constraintTop_toBottomOf="@id/textViewPricingDetails">
 
                 <LinearLayout
+                    android:id="@+id/defCouponLinear"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="visible">
 
                     <ImageView
+                        android:id="@+id/defCouponIcon"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:layout_gravity="center_vertical"
@@ -52,17 +55,17 @@
                         app:srcCompat="@drawable/ic_discount_sticker_with_percentage" />
 
                     <TextView
-                        android:id="@+id/textView2"
+                        android:id="@+id/defCouponDesc"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="Coupon Applied" />
+                        android:text="Default Coupon applied" />
 
                     <TextView
-                        android:id="@+id/textViewCouponValue"
+                        android:id="@+id/defCouponValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -74,7 +77,56 @@
                         android:textStyle="bold" />
 
                     <CheckBox
-                        android:id="@+id/checkBox"
+                        android:id="@+id/defCouponCheckBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:buttonTint="@color/colorPrimary"
+                        android:clickable="false"
+                        android:checked="true" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/couponLinear"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/couponIcon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center_vertical"
+                        android:tint="#FF9800"
+                        app:srcCompat="@drawable/ic_discount_sticker_with_percentage" />
+
+                    <TextView
+                        android:id="@+id/couponDesc"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="4dp"
+                        android:layout_weight="1"
+                        android:text="Coupon Applied" />
+
+                    <TextView
+                        android:id="@+id/couponValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/dimen_4dp"
+                        android:layout_marginEnd="@dimen/dimen_4dp"
+                        android:text="-\u20B9471"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/dimen_16sp"
+                        android:textStyle="bold" />
+
+                    <CheckBox
+                        android:id="@+id/couponCheckBox"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"

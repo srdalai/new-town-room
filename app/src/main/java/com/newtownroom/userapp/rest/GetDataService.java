@@ -3,6 +3,8 @@ package com.newtownroom.userapp.rest;
 import com.newtownroom.userapp.restmodels.BookingInputModel;
 import com.newtownroom.userapp.restmodels.BookingOutputModel;
 import com.newtownroom.userapp.models.HotelData;
+import com.newtownroom.userapp.restmodels.CouponsInput;
+import com.newtownroom.userapp.restmodels.CouponsOutput;
 import com.newtownroom.userapp.restmodels.HotelDetailsInputModel;
 import com.newtownroom.userapp.restmodels.HotelDetailsResponseModel;
 import com.newtownroom.userapp.restmodels.LoginInputModel;
@@ -44,6 +46,14 @@ public interface GetDataService {
 
     @POST("booking")
     Call<BookingOutputModel> booking(@Body BookingInputModel bookingInputModel);
+
+    @POST("getCoupons")
+    Call<CouponsOutput> getAllCoupons(@Body CouponsInput couponsInput);
+
+    /*
+    *   PayMoney API requests
+    *
+    * */
 
     @POST("chkMerchantTxnStatus")
     Call<TxnStatusResponse> checkTxnStatus(@HeaderMap Map<String, String> headers, @Query("merchantKey") String merchantKey, @Query("merchantTransactionIds") String merchantTransactionIds);

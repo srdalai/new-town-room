@@ -21,7 +21,7 @@
                 android:id="@+id/textViewTravelDates"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Travel dates and Guests"
+                android:text="Travel Dates and Guests"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold"

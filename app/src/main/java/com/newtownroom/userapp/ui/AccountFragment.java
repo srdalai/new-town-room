@@ -82,6 +82,10 @@ public class AccountFragment extends Fragment {
         editTextName = view.findViewById(R.id.editTextName);
         editButton = view.findViewById(R.id.editButton);
         updateButton = view.findViewById(R.id.updateButton);
+
+        editTextEmail.setClickable(false);
+        editTextEmail.setFocusable(false);
+        editTextEmail.setInputType(InputType.TYPE_NULL);
     }
 
     private void setUpOnClickListeners() {
@@ -113,6 +117,8 @@ public class AccountFragment extends Fragment {
             editTextName.setClickable(true);
             editTextName.setFocusable(true);
             editTextName.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+
+            editTextEmail.requestFocus();
 
             logoutButton.setVisibility(View.GONE);
             editButton.setVisibility(View.GONE);
