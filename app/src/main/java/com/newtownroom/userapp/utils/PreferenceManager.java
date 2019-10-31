@@ -44,7 +44,7 @@ public class PreferenceManager {
     }
 
     public boolean isLoggedIn() {
-        return sharedPreferences.getBoolean(IS_LOGGED_IN, true);
+        return sharedPreferences.getBoolean(IS_LOGGED_IN, false);
     }
 
     public void setPhoneNumber(String phoneNumber) {
