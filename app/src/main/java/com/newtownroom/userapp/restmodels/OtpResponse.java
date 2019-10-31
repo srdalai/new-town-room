@@ -13,6 +13,15 @@ public class OtpResponse {
     @SerializedName("msg")
     private String message;
 
+    @SerializedName("uniqid")
+    private String uniqid;
+
+    @SerializedName("name")
+    private String name;
+
+    @SerializedName("email")
+    private String email;
+
     @SerializedName("user_id")
     private String userID;
 
@@ -48,6 +57,30 @@ public class OtpResponse {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getUniqid() {
+        return uniqid;
+    }
+
+    public void setUniqid(String uniqid) {
+        this.uniqid = uniqid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getUserID() {

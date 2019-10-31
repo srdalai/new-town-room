@@ -32,13 +32,13 @@ import retrofit2.Response;
 
 public class HomeFragment extends Fragment {
 
-    CarouselView carouselView;
-    int[] sampleImages = {R.drawable.hotel_1, R.drawable.hotel_2, R.drawable.hotel_3, R.drawable.hotel_4, R.drawable.hotel_5};
-    RecyclerView ourHotelRecycler, otherHotelsRecycler;
-    ArrayList<HotelData> hotelList;
-    GetDataService service;
-    HotelsListAdapter hotelsListAdapter;
-    ProgressDialog progressDialog;
+    private CarouselView carouselView;
+    private int[] sampleImages = {R.drawable.hotel_1, R.drawable.hotel_2, R.drawable.hotel_3, R.drawable.hotel_4, R.drawable.hotel_5};
+    private RecyclerView ourHotelRecycler, otherHotelsRecycler;
+    private ArrayList<HotelData> hotelList;
+    private GetDataService service;
+    private HotelsListAdapter hotelsListAdapter;
+    private ProgressDialog progressDialog;
 
     @Nullable
     @Override

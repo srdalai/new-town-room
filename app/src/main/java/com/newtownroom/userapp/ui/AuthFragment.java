@@ -25,8 +25,8 @@ import static com.newtownroom.userapp.utils.AppConstants.FLOW_FROM_LOGIN;
  */
 public class AuthFragment extends Fragment {
 
-    MaterialButton btnLogin, btnSignup;
-    PreferenceManager preferenceManager;
+    private MaterialButton btnLogin, btnSignup;
+    private PreferenceManager preferenceManager;
 
 
     @Override

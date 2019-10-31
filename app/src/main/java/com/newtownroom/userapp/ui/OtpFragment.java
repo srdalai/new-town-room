@@ -44,21 +44,20 @@ import static com.newtownroom.userapp.utils.AppConstants.FLOW_FROM_LOGIN;
  */
 public class OtpFragment extends Fragment {
 
-    TextInputEditText editTextOTP;
-    MaterialButton btnSubmit, btnResend;
-    TextView textViewResendTime;
+    private TextInputEditText editTextOTP;
+    private MaterialButton btnSubmit, btnResend;
+    private TextView textViewResendTime;
 
-    String flowFrom = "", phoneNumber;
+    private String flowFrom = "", phoneNumber;
 
-    ProgressDialog progressDialog;
-    GetDataService service;
-    PreferenceManager preferenceManager;
+    private ProgressDialog progressDialog;
+    private GetDataService service;
+    private PreferenceManager preferenceManager;
 
     private Timer mTimer;
-    private TimerTask mTimerTask;
     private Handler mTimerHandler = new Handler();
 
-    int waitTime = 120;  //Wait time in seconds
+    private int waitTime = 120;  //Wait time in seconds
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -122,12 +121,14 @@ public class OtpFragment extends Fragment {
                 if (response.isSuccessful() && response.code() == 200) {
                     OtpResponse otpModel = response.body();
                     if(otpModel != null) {
-                        Log.d("Response = > ", response.body().getMessage());
-                        int code = response.body().getResponseCode();
+                        Log.d("Response = > ", otpModel.getMessage());
+                        int code = otpModel.getResponseCode();
                         if (code == 200) {
                             preferenceManager.setIsLoggedIn(true);
-                            preferenceManager.setName("Name");
                             preferenceManager.setUserID(Integer.parseInt(otpModel.getUserID()));
+                            preferenceManager.setName(otpModel.getName());
+                            preferenceManager.setEmail(otpModel.getEmail());
+                            preferenceManager.setUniqueID(otpModel.getUniqid());
                             startActivity(new Intent(requireContext(), MainActivity.class));
                             requireActivity().finish();
                         } else {
@@ -179,13 +180,14 @@ public class OtpFragment extends Fragment {
 
     private void startTimer(){
         mTimer = new Timer();
-        mTimerTask = new TimerTask() {
+        //TODO
+        TimerTask mTimerTask = new TimerTask() {
             public void run() {
                 mTimerHandler.post(new Runnable() {
-                    public void run(){
+                    public void run() {
                         //TODO
                         waitTime--;
-                        Log.d("Wait Time", waitTime+"");
+                        Log.d("Wait Time", waitTime + "");
                         updateUI();
                     }
                 });

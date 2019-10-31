@@ -59,22 +59,22 @@ import static com.newtownroom.userapp.utils.AppConstants.FLOW_FROM_REGISTER;
  */
 public class RegisterFragment extends Fragment implements LocationListener {
 
-    static final int REQUEST_PERMISSION_KEY = 899;
+    private static final int REQUEST_PERMISSION_KEY = 899;
     private LocationManager locationService;
     private LocationManager locationManager;
     private String provider;
-    String address = "Waiting for location...";
+    private String address = "Waiting for location...";
 
-    TextInputEditText editTextName, editTextPhone, editTextEmail, editTextPassword;
-    MaterialButton btnRegister, btnLogin;
-    String name, email, phone;
-    ProgressDialog progressDialog;
+    private TextInputEditText editTextName, editTextPhone, editTextEmail, editTextPassword;
+    private MaterialButton btnRegister, btnLogin;
+    private String name, email, phone;
+    private ProgressDialog progressDialog;
 
-    GetDataService service;
-    PreferenceManager preferenceManager;
-    String flowFrom = "";
-    double lat = 0, lng = 0;
-    boolean useLocation = true;
+    private GetDataService service;
+    private PreferenceManager preferenceManager;
+    private String flowFrom = "";
+    private double lat = 0, lng = 0;
+    private boolean useLocation = true;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

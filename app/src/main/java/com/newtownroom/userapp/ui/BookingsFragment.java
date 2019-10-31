@@ -30,12 +30,12 @@ import retrofit2.Response;
 
 public class BookingsFragment extends Fragment {
 
-    RecyclerView bookingsRecycler;
-    ArrayList<BookingData> bookingDataList = new ArrayList<>();
-    MyBookingsAdapter myBookingsAdapter;
-    GetDataService service;
-    ProgressDialog progressDialog;
-    PreferenceManager preferenceManager;
+    private RecyclerView bookingsRecycler;
+    private ArrayList<BookingData> bookingDataList = new ArrayList<>();
+    private MyBookingsAdapter myBookingsAdapter;
+    private GetDataService service;
+    private ProgressDialog progressDialog;
+    private PreferenceManager preferenceManager;
 
     @Nullable
     @Override
@@ -72,7 +72,7 @@ public class BookingsFragment extends Fragment {
 
         AllBookingsInput allBookingsInput = new AllBookingsInput();
         allBookingsInput.setUserId(preferenceManager.getUserID());
-        allBookingsInput.setUniqid("cc62d0c419b0399cf2aae7745a88ad62");
+        allBookingsInput.setUniqid(preferenceManager.getUniqueID());
         Call<AllBookingsResponse> call = service.getBookingList(allBookingsInput);
         call.enqueue(new Callback<AllBookingsResponse>() {
             @Override
