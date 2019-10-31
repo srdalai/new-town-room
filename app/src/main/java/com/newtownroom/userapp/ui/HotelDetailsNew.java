@@ -276,9 +276,8 @@ public class HotelDetailsNew extends AppCompatActivity {
                     appliedCoupon = removedCoupon;
                 } else {
                     appliedCoupon = null;
-                    updateUI();
                 }
-                /*updateUI();*/
+                updateUI();
             }
         });
 
@@ -487,7 +486,7 @@ public class HotelDetailsNew extends AppCompatActivity {
             price = 0;
             sellingPrice = 0;
             couponDiscount = 0;
-            defaultDiscount = 0;
+            /**/defaultDiscount = 0;
             for (int i = 0; i < roomDataArrayList.size(); i++) {
                 int numOfAdults = roomDataArrayList.get(i).getAdults();
 
@@ -508,7 +507,7 @@ public class HotelDetailsNew extends AppCompatActivity {
                     }
                 }
             }
-            defaultDiscount = (price - sellingPrice)*nights;
+            /**/defaultDiscount = (price - sellingPrice)*nights;
         }
 
         if (appliedCoupon != null) {
@@ -578,6 +577,7 @@ public class HotelDetailsNew extends AppCompatActivity {
                     if (response.body() != null) {
                         HotelDetailsResponse hotelDetailsModel = response.body();
                         prepareHotelData(hotelDetailsModel.getHotelDataList().get(0));
+                        //preparePreCoupon(hotelDetailsModel.getPre_coupon_code(), hotelDetailsModel.getPre_coupon_amount());
                         preparePricing(hotelDetailsModel.getPriceDataList());
                         prepareImages(hotelDetailsModel.getImageList());
                         prepareAmenities(hotelDetailsModel.getAmenitiesList());
@@ -623,6 +623,10 @@ public class HotelDetailsNew extends AppCompatActivity {
                 truncatedText = txtDescription.getText().toString();
             }
         });
+    }
+
+    private void preparePreCoupon(String coupon, float couponValue) {
+        defaultDiscount = couponValue;
     }
 
     private void preparePricing(ArrayList<PriceData> priceDataList) {
