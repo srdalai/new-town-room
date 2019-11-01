@@ -38,12 +38,12 @@ import static com.newtownroom.userapp.utils.AppConstants.FLOW_FROM_REGISTER;
 public class LoginFragment extends Fragment {
 
     private MaterialButton btnCreateAccount, btnForgot, btnLogin;
-    TextInputEditText editTextEmail, editTextPassword, editTextPhone;
-    ProgressDialog progressDialog;
-    GetDataService service;
+    private TextInputEditText editTextEmail, editTextPassword, editTextPhone;
+    private ProgressDialog progressDialog;
+    private GetDataService service;
 
-    PreferenceManager preferenceManager;
-    String flowFrom = "";
+    private PreferenceManager preferenceManager;
+    private String flowFrom = "";
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

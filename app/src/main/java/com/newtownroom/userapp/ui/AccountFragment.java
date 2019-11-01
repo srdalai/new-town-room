@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.navigation.Navigation;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.newtownroom.userapp.R;
 import com.newtownroom.userapp.rest.GetDataService;
@@ -40,8 +42,8 @@ public class AccountFragment extends Fragment {
     private LinearLayout linearLayout;
 
     private TextInputEditText editTextEmail, editTextMobile, editTextName;
-    String email = "android@android.com", name = "John Doe";
-    GetDataService service;
+    private String email = "", name = "", phone = "";
+    private GetDataService service;
 
     @Nullable
     @Override
@@ -70,20 +72,23 @@ public class AccountFragment extends Fragment {
         } else {
             loginButton.setVisibility(View.VISIBLE);
             linearLayout.setVisibility(View.GONE);
-
         }
 
         if (preferenceManager.getEmail() != null) {
-            editTextEmail.setText(preferenceManager.getEmail());
+            email = preferenceManager.getEmail();
         }
 
         if (preferenceManager.getPhoneNumber() != null) {
-            editTextMobile.setText(preferenceManager.getPhoneNumber());
+            phone = preferenceManager.getPhoneNumber();
         }
 
         if (preferenceManager.getName() != null) {
-            editTextName.setText(preferenceManager.getName());
+            name = preferenceManager.getName();
         }
+
+        editTextEmail.setText(email);
+        editTextMobile.setText(preferenceManager.getPhoneNumber());
+        editTextName.setText(preferenceManager.getName());
 
         setUpOnClickListeners();
     }
@@ -122,7 +127,9 @@ public class AccountFragment extends Fragment {
         });
 
         updateButton.setOnClickListener((view -> {
-            updateButton.setVisibility(View.GONE);
+            String newEmail = editTextEmail.getText().toString();
+            String newName = editTextName.getText().toString();
+            makeAPICall(newEmail, newName);
         }));
 
         editTextEmail.addTextChangedListener(new TextWatcher() {
@@ -163,19 +170,34 @@ public class AccountFragment extends Fragment {
         }
     }
 
-    private void makeAPICall() {
+    private void makeAPICall(String newEmail, String newName) {
+        progressDialog.setMessage("Processing Request...");
+        progressDialog.show();
         UpdateUserInput updateUserInput = new UpdateUserInput();
+        updateUserInput.setUniqid(String.valueOf(preferenceManager.getUserID()));
+        updateUserInput.setEmail(newEmail);
+        updateUserInput.setName(newName);
+        updateUserInput.setUniqid(preferenceManager.getUniqueID());
+
         Call<UpdateUserResponse> call = service.updateUser(updateUserInput);
         call.enqueue(new Callback<UpdateUserResponse>() {
             @Override
             public void onResponse(Call<UpdateUserResponse> call, Response<UpdateUserResponse> response) {
+                progressDialog.dismiss();
                 if (response.code() == 200) {
-
+                    if (response.body().getCode() == 200) {
+                        updateButton.setVisibility(View.GONE);
+                        preferenceManager.setEmail(newEmail);
+                        preferenceManager.setName(newName);
+                    }
+                    Snackbar.make(requireView(), response.body().getMsg(), Snackbar.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<UpdateUserResponse> call, Throwable t) {
+                progressDialog.dismiss();
+                Log.d("Error", t.toString());
 
             }
         });

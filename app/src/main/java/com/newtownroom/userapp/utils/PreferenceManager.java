@@ -10,6 +10,7 @@ public class PreferenceManager {
     private static final String IS_LOGGED_IN = "is_logged_in";
     private static final String PHONE_NUMBER = "phone_number";
     private static final String EMAIL = "email";
+    private static final String UNIQUE_ID = "uuid";
 
     private Context mContext;
     private SharedPreferences sharedPreferences;
@@ -27,7 +28,7 @@ public class PreferenceManager {
     }
 
     public int getUserID() {
-        return sharedPreferences.getInt(USER_ID, 19);
+        return sharedPreferences.getInt(USER_ID, 0);
     }
 
     public void setName(String name) {
@@ -43,7 +44,7 @@ public class PreferenceManager {
     }
 
     public boolean isLoggedIn() {
-        return sharedPreferences.getBoolean(IS_LOGGED_IN, true);
+        return sharedPreferences.getBoolean(IS_LOGGED_IN, false);
     }
 
     public void setPhoneNumber(String phoneNumber) {
@@ -60,6 +61,14 @@ public class PreferenceManager {
 
     public String getEmail() {
         return sharedPreferences.getString(EMAIL, null);
+    }
+
+    public void setUniqueID(String uniqueID) {
+        editor.putString(UNIQUE_ID, uniqueID).commit();
+    }
+
+    public String getUniqueID() {
+        return sharedPreferences.getString(UNIQUE_ID, "");
     }
 
     public void clearSharedPrefs() {

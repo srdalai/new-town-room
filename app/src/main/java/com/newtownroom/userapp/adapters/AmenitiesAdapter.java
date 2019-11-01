@@ -53,11 +53,12 @@ public class AmenitiesAdapter extends RecyclerView.Adapter<AmenitiesAdapter.Amen
 
     @Override
     public int getItemCount() {
-        if (dataList.size() <= 4 || showAll) {
+        return dataList.size();
+        /*if (dataList.size() <= 4 || showAll) {
             return dataList.size();
         } else {
             return 4;
-        }
+        }*/
     }
 
     public class AmenitiesViewHolder extends RecyclerView.ViewHolder {

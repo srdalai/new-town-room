@@ -22,9 +22,9 @@ import com.newtownroom.userapp.R;
  */
 public class ForgotPasswordFragment extends Fragment {
 
-    MaterialButton btnSubmit;
-    TextInputEditText editTextEmail;
-    String email;
+    private MaterialButton btnSubmit;
+    private TextInputEditText editTextEmail;
+    private String email;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

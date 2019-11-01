@@ -80,7 +80,7 @@ public class HotelDetailsNew extends AppCompatActivity {
     private static final int COUPON_ACTIVITY_REQUEST_CODE = 200;
     
     RecyclerView amenitiesRecycler, rulesListView;
-    MaterialButton btnProceed, amenitiesViewMore;
+    MaterialButton btnProceed, amenitiesViewMore, amenitiesViewLess;
     TextView textViewHotelDesc, textViewHotelName;
     TextView txtTotalPrice;
     View parentView;
@@ -121,6 +121,8 @@ public class HotelDetailsNew extends AppCompatActivity {
     //Variables
     int[] sampleImages = {R.drawable.hotel_1, R.drawable.hotel_2, R.drawable.hotel_3, R.drawable.hotel_4, R.drawable.hotel_5};
     ArrayList<AmenitiesData> amenitiesList = new ArrayList<>();
+    ArrayList<AmenitiesData> amenitiesListSmall = new ArrayList<>();
+    ArrayList<AmenitiesData> amenitiesListAll = new ArrayList<>();
     ArrayList<RulesData> rulesDataList = new ArrayList<>();
     int guestNum = 0, roomNum = 0;
     int maxAdult = 0, maxChild = 0;
@@ -194,6 +196,7 @@ public class HotelDetailsNew extends AppCompatActivity {
         btnProceed = findViewById(R.id.btnProceed);
         amenitiesFrame = findViewById(R.id.amenitiesFrame);
         amenitiesViewMore = findViewById(R.id.amenitiesViewMore);
+        amenitiesViewLess = findViewById(R.id.amenitiesViewLess);
 
 
         //Carousel View
@@ -289,12 +292,28 @@ public class HotelDetailsNew extends AppCompatActivity {
         //carouselView.setImageClickListener(position -> showImageSlider());
 
         amenitiesViewMore.setOnClickListener((view -> {
-            Intent intent = new Intent(HotelDetailsNew.this, AmenitiesListing.class);
+            /*Intent intent = new Intent(HotelDetailsNew.this, AmenitiesListing.class);
             Gson gson = new Gson();
             String amenities = gson.toJson(new AmenitiesListData(amenitiesList), AmenitiesListData.class);
             intent.putExtra("amenities", amenities);
-            startActivity(intent);
+            startActivity(intent);*/
+
+            amenitiesList.clear();
+            amenitiesList.addAll(amenitiesListAll);
+            amenitiesAdapter.notifyDataSetChanged();
+
+            amenitiesViewMore.setVisibility(View.GONE);
+            amenitiesViewLess.setVisibility(View.VISIBLE);
         }));
+
+        amenitiesViewLess.setOnClickListener((view) -> {
+            amenitiesList.clear();
+            amenitiesList.addAll(amenitiesListSmall);
+            amenitiesAdapter.notifyDataSetChanged();
+
+            amenitiesViewMore.setVisibility(View.VISIBLE);
+            amenitiesViewLess.setVisibility(View.GONE);
+        });
 
         couponCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -733,16 +752,32 @@ public class HotelDetailsNew extends AppCompatActivity {
     }
 
     private void prepareAmenities(ArrayList<AmenitiesData> amenitiesData) {
+
+        amenitiesListAll.clear();
+        amenitiesListSmall.clear();
+
+        amenitiesListAll.addAll(amenitiesData);
+
+        if (amenitiesData.size() <= 4) {
+            amenitiesListSmall.addAll(amenitiesData);
+
+        } else {
+            for (int i = 0; i < 4; i++) {
+                amenitiesListSmall.add(amenitiesData.get(i));
+            }
+        }
+
         amenitiesList.clear();
-        amenitiesList.addAll(amenitiesData);
+        amenitiesList.addAll(amenitiesListSmall);
         amenitiesAdapter.notifyDataSetChanged();
         if (amenitiesData.size() > 4) {
-            int minus = amenitiesData.size() - 4;
-            amenitiesViewMore.setText("+"+minus + " More");
+            /*int minus = amenitiesData.size() - 4;
+            amenitiesViewMore.setText("+"+minus + " More");*/
             amenitiesViewMore.setVisibility(View.VISIBLE);
         } else {
             amenitiesViewMore.setVisibility(View.GONE);
         }
+        amenitiesViewLess.setVisibility(View.GONE);
     }
 
     private void prepareServices(ArrayList<ServiceData> serviceData) {
