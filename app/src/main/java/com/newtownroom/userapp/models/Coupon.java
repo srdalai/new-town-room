@@ -20,6 +20,15 @@ public class Coupon {
     @Expose
     private String type;
 
+    public Coupon() {
+    }
+
+    public Coupon(String amount, String code, String type) {
+        this.amount = amount;
+        this.code = code;
+        this.type = type;
+    }
+
     public String getAmount() {
         return amount;
     }

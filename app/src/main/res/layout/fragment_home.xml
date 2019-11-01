@@ -37,6 +37,7 @@
             android:id="@+id/ourHotelsFrame"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/carouselFrame">
@@ -59,7 +60,7 @@
                 android:id="@+id/ourHotelRecycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/textViewOurHotel"/>
+                android:layout_below="@id/textViewOurHotel" />
 
         </RelativeLayout>
 
@@ -67,18 +68,19 @@
             android:id="@+id/bannerImageOne"
             android:layout_width="0dp"
             android:layout_height="100dp"
+            android:layout_marginTop="20dp"
             android:scaleType="centerCrop"
             android:src="@drawable/banner"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ourHotelsFrame"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"/>
+            app:layout_constraintTop_toBottomOf="@id/ourHotelsFrame" />
 
         <FrameLayout
             android:id="@+id/otherHotelsFrame"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/bannerImageOne">
@@ -93,12 +95,22 @@
             android:id="@+id/bannerImageTwo"
             android:layout_width="0dp"
             android:layout_height="100dp"
+            android:layout_marginTop="20dp"
             android:scaleType="centerCrop"
             android:src="@drawable/banner"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/otherHotelsFrame"
-            android:layout_marginTop="20dp"/>
+            app:layout_constraintTop_toBottomOf="@id/otherHotelsFrame" />
+
+        <LinearLayout
+            android:id="@+id/parentView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/carouselFrame" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

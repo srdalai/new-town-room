@@ -7,11 +7,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 import com.newtownroom.userapp.R;
+import com.payumoney.core.PayUmoneyConfig;
 import com.payumoney.core.PayUmoneySdkInitializer;
 import com.payumoney.core.entity.TransactionResponse;
 import com.payumoney.sdkui.ui.utils.PayUmoneyFlowManager;
@@ -145,6 +147,17 @@ public class BookingComplete extends AppCompatActivity {
     //PayU Methods
 
     private void processPayment() {
+
+        PayUmoneyConfig payUmoneyConfig = PayUmoneyConfig.getInstance();
+
+        //Use this to set your custom text on result screen button
+        //payUmoneyConfig.setDoneButtonText(((EditText) findViewById(R.id.status_page_et)).getText().toString());
+
+        //Use this to set your custom title for the activity
+        payUmoneyConfig.setPayUmoneyActivityTitle("Make Payment");
+
+        //payUmoneyConfig.disableExitConfirmation(isDisableExitConfirmation);
+
         PayUmoneySdkInitializer.PaymentParam.Builder builder = new PayUmoneySdkInitializer.PaymentParam.Builder();
         builder.setAmount(amount)                          // Payment amount
                 .setTxnId(txnid)                                             // Transaction ID
@@ -173,7 +186,7 @@ public class BookingComplete extends AppCompatActivity {
             paymentParam.setMerchantHash(serverCalculatedHash);
 
             // Invoke the following function to open the checkout page.
-            PayUmoneyFlowManager.startPayUMoneyFlow(paymentParam, this, R.style.PaymentTheme, true);
+            PayUmoneyFlowManager.startPayUMoneyFlow(paymentParam, this, R.style.AppTheme_Green, true);
         } catch (Exception e) {
             e.printStackTrace();
         }

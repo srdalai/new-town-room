@@ -44,7 +44,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:orientation="horizontal"
-                    android:visibility="visible">
+                    android:visibility="gone">
 
                     <ImageView
                         android:id="@+id/defCouponIcon"
@@ -82,8 +82,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:buttonTint="@color/colorPrimary"
-                        android:clickable="false"
-                        android:checked="true" />
+                        android:checked="true"
+                        android:clickable="false" />
 
 
                 </LinearLayout>
@@ -93,7 +93,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:orientation="horizontal"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <ImageView
                         android:id="@+id/couponIcon"

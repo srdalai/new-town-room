@@ -21,17 +21,10 @@
             android:orientation="vertical"
             android:paddingBottom="60dp">
 
-            <com.synnapps.carouselview.CarouselView
-                android:id="@+id/carouselView"
+            <include
+                layout="@layout/component_carousel_layout"
                 android:layout_width="match_parent"
-                android:layout_height="260dp"
-                app:fillColor="#FFFFFFFF"
-                app:indicatorVisibility="gone"
-                app:pageColor="#00000000"
-                app:radius="6dp"
-                app:slideInterval="3000"
-                app:strokeColor="#FF777777"
-                app:strokeWidth="1dp" />
+                android:layout_height="wrap_content"/>
 
             <include
                 layout="@layout/component_hotel_info"

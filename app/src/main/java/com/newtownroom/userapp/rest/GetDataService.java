@@ -9,6 +9,7 @@ import com.newtownroom.userapp.restmodels.CheckAvailInput;
 import com.newtownroom.userapp.restmodels.CheckAvailResponse;
 import com.newtownroom.userapp.restmodels.CouponsInput;
 import com.newtownroom.userapp.restmodels.CouponsResponse;
+import com.newtownroom.userapp.restmodels.HomeResponse;
 import com.newtownroom.userapp.restmodels.HotelDetailsInput;
 import com.newtownroom.userapp.restmodels.HotelDetailsResponse;
 import com.newtownroom.userapp.restmodels.LoginInput;
@@ -46,6 +47,9 @@ public interface GetDataService {
 
     @POST("updateUser")
     Call<UpdateUserResponse> updateUser(@Body UpdateUserInput updateUserInput);
+
+    @POST("home")
+    Call<HomeResponse> getHomeData();
 
     @POST("getHotelsList")
     Call<ArrayList<HotelData>> getHotelsList();

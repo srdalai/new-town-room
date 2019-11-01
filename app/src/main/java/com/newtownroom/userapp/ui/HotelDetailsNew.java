@@ -22,10 +22,12 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -76,14 +78,18 @@ public class HotelDetailsNew extends AppCompatActivity {
     private static final String TAG = HotelDetailsNew.class.getSimpleName();
     private static final int GUEST_ACTIVITY_REQUEST_CODE = 100;
     private static final int COUPON_ACTIVITY_REQUEST_CODE = 200;
-
-    CarouselView carouselView;
+    
     RecyclerView amenitiesRecycler, rulesListView;
     MaterialButton btnProceed, amenitiesViewMore;
     TextView textViewHotelDesc, textViewHotelName;
     TextView txtTotalPrice;
     View parentView;
     FrameLayout amenitiesFrame;
+
+    //Carousel View
+    CarouselView carouselView;
+    ImageButton imageButtonPrev, imageButtonNext;
+    
 
     //Desc Views
     TextView txtDescription;
@@ -110,7 +116,7 @@ public class HotelDetailsNew extends AppCompatActivity {
     SimpleDateFormat apiDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
     Calendar checkInCal, checkOutCal;
     PreferenceManager preferenceManager;
-    Coupon appliedCoupon, removedCoupon;
+    Coupon appliedCoupon, removedCoupon, defaultCoupon;
 
     //Variables
     int[] sampleImages = {R.drawable.hotel_1, R.drawable.hotel_2, R.drawable.hotel_3, R.drawable.hotel_4, R.drawable.hotel_5};
@@ -119,7 +125,7 @@ public class HotelDetailsNew extends AppCompatActivity {
     int guestNum = 0, roomNum = 0;
     int maxAdult = 0, maxChild = 0;
     int nights = 0;
-    float price = 0, sellingPrice = 0, totalAmount = 0, couponDiscount = 0, grandTotal = 0, defaultDiscount = 0;
+    float price = 0, sellingPrice = 0, totalAmount = 0, couponDiscount = 0, grandTotal = 0/*, defaultDiscount = 0*/;
     String checkInDate = "", checkOutDate = "", apiCheckInDate = "", apiCheckOutDate = "";
     String hotelId, rating;
     ArrayList<PriceData> priceList = new ArrayList<>();
@@ -159,12 +165,26 @@ public class HotelDetailsNew extends AppCompatActivity {
 
         service = RetrofitClientInstance.getRetrofitInstance().create(GetDataService.class);
 
+        setInitialData();
         updateUI();
         getHotelDetails();
     }
 
+    private void setInitialData() {
+        checkInCal = Calendar.getInstance();
+        checkInDate = dateFormat.format(checkInCal.getTime());
+        apiCheckInDate = apiDateFormat.format(checkInCal.getTime());
+
+        checkOutCal = Calendar.getInstance();
+        checkOutCal.add(Calendar.DATE, 1);
+        checkOutDate = dateFormat.format(checkOutCal.getTime());
+        apiCheckOutDate = apiDateFormat.format(checkOutCal.getTime());
+
+        roomDataArrayList = new ArrayList<>();
+        roomDataArrayList.add(new RoomData(1, 0));
+    }
+
     private void initView() {
-        carouselView = findViewById(R.id.carouselView);
         amenitiesRecycler = findViewById(R.id.amenitiesRecycler);
         rulesListView = findViewById(R.id.rulesListView);
         parentView = findViewById(R.id.parentView);
@@ -174,6 +194,13 @@ public class HotelDetailsNew extends AppCompatActivity {
         btnProceed = findViewById(R.id.btnProceed);
         amenitiesFrame = findViewById(R.id.amenitiesFrame);
         amenitiesViewMore = findViewById(R.id.amenitiesViewMore);
+
+
+        //Carousel View
+        carouselView = findViewById(R.id.carouselView);
+        imageButtonPrev = findViewById(R.id.imageButtonPrev);
+        imageButtonNext = findViewById(R.id.imageButtonNext);
+        
 
         //Desc Views
         txtDescription = findViewById(R.id.txtDescription);
@@ -250,7 +277,7 @@ public class HotelDetailsNew extends AppCompatActivity {
             startBookingFlow();
         }));
 
-        matBtnOffers.setOnClickListener((view) ->{
+        matBtnOffers.setOnClickListener((view) -> {
             if (nights == 0 || roomNum == 0 || guestNum == 0) {
                 Snackbar.make(parentView, "Please Select Dates & Guests First", Snackbar.LENGTH_SHORT).show();
             } else {
@@ -259,7 +286,7 @@ public class HotelDetailsNew extends AppCompatActivity {
             }
         });
 
-        carouselView.setImageClickListener(position -> showImageSlider());
+        //carouselView.setImageClickListener(position -> showImageSlider());
 
         amenitiesViewMore.setOnClickListener((view -> {
             Intent intent = new Intent(HotelDetailsNew.this, AmenitiesListing.class);
@@ -280,13 +307,27 @@ public class HotelDetailsNew extends AppCompatActivity {
                 updateUI();
             }
         });
+        
+        imageButtonPrev.setOnClickListener(view -> {
+            int curItem = carouselView.getCurrentItem();
+            if (curItem != 0) {
+                carouselView.setCurrentItem(curItem-1);
+            }
+        });
+
+        imageButtonNext.setOnClickListener(view -> {
+            int curItem = carouselView.getCurrentItem();
+            if (curItem != carouselView.getPageCount()-1) {
+                carouselView.setCurrentItem(curItem+1);
+            }
+        });
 
     }
 
     private void bookingCompleted() {
         Intent intent = new Intent(HotelDetailsNew.this, BookingComplete.class);
         intent.putExtra("price", price*nights);
-        intent.putExtra("discount", (defaultDiscount + couponDiscount));
+        intent.putExtra("discount", (/*defaultDiscount + */couponDiscount));
         intent.putExtra("sellingPrice", grandTotal);
         intent.putExtra("numOfGuests", guestNum);
         intent.putExtra("numOfRooms", roomNum);
@@ -340,9 +381,6 @@ public class HotelDetailsNew extends AppCompatActivity {
             default:
         }
         updateUI();
-
-
-
     }
 
     private void processRoomResult(Intent data) {
@@ -455,7 +493,36 @@ public class HotelDetailsNew extends AppCompatActivity {
 
     private void showPricingDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View itemView = LayoutInflater.from(this).inflate(R.layout.component_price_details_layout, null);
 
+        TextView textBasePrice = itemView.findViewById(R.id.textBasePrice);
+        TextView valueBasePrice = itemView.findViewById(R.id.valueBasePrice);
+
+        LinearLayout couponLinear = itemView.findViewById(R.id.couponLinear);
+        TextView textCoupon = itemView.findViewById(R.id.textCoupon);
+        TextView valueCoupon = itemView.findViewById(R.id.valueCoupon);
+
+        TextView textPriceDrop = itemView.findViewById(R.id.textPriceDrop);
+        TextView valuePriceDrop = itemView.findViewById(R.id.valuePriceDrop);
+        TextView textTotal = itemView.findViewById(R.id.textTotal);
+        TextView valueTotal = itemView.findViewById(R.id.valueTotal);
+
+        String basePriceText = "Room price for " + nights + "Night X " + guestNum + "Guest";
+        textBasePrice.setText(basePriceText);
+        valueBasePrice.setText("- \u20B9"+(price*nights));
+
+        if (appliedCoupon != null) {
+            couponLinear.setVisibility(View.VISIBLE);
+            String couponString = "Coupon applied " + appliedCoupon.getCode();
+            textCoupon.setText(couponString);
+            valueCoupon.setText("- \u20B9"+couponDiscount);
+        }
+
+        valuePriceDrop.setText("- \u20B9"+(price-sellingPrice));
+        valueTotal.setText("\u20B9"+grandTotal);
+
+        builder.setView(itemView);
+        builder.create().show();
     }
 
     private void updateUI() {
@@ -486,7 +553,7 @@ public class HotelDetailsNew extends AppCompatActivity {
             price = 0;
             sellingPrice = 0;
             couponDiscount = 0;
-            /**/defaultDiscount = 0;
+            //defaultDiscount = 0;
             for (int i = 0; i < roomDataArrayList.size(); i++) {
                 int numOfAdults = roomDataArrayList.get(i).getAdults();
 
@@ -507,12 +574,17 @@ public class HotelDetailsNew extends AppCompatActivity {
                     }
                 }
             }
-            /**/defaultDiscount = (price - sellingPrice)*nights;
+            //defaultDiscount = (price - sellingPrice)*nights;
         }
 
         if (appliedCoupon != null) {
-            float discountPercent = Float.parseFloat(appliedCoupon.getAmount());
-            couponDiscount = sellingPrice*(discountPercent/100);
+            if (appliedCoupon.getType().equals("flat")) {
+                couponDiscount = Float.parseFloat(appliedCoupon.getAmount());
+            } else {
+                float discountPercent = Float.parseFloat(appliedCoupon.getAmount());
+                couponDiscount = sellingPrice*(discountPercent/100);
+            }
+
             couponDesc.setText(appliedCoupon.getCode() + " applied");
             couponLinear.setVisibility(View.VISIBLE);
             couponCheckBox.setChecked(true);
@@ -532,8 +604,8 @@ public class HotelDetailsNew extends AppCompatActivity {
 
         textPrice.setText(getResources().getString(R.string.rupees_sign) + (price*nights));
         textSellingPrice.setText(getResources().getString(R.string.rupees_sign) + grandTotal);
-        txtViewSavings.setText(getResources().getString(R.string.rupees_sign) + (couponDiscount + defaultDiscount));
-        defCouponValue.setText("-"+getResources().getString(R.string.rupees_sign) + defaultDiscount);
+        txtViewSavings.setText(getResources().getString(R.string.rupees_sign) + (couponDiscount/* + defaultDiscount*/));
+        //defCouponValue.setText("-"+getResources().getString(R.string.rupees_sign) + defaultDiscount);
         couponValue.setText("-"+getResources().getString(R.string.rupees_sign) + couponDiscount);
         txtTotalPrice.setText(getResources().getString(R.string.rupees_sign) + grandTotal);
 
@@ -577,12 +649,13 @@ public class HotelDetailsNew extends AppCompatActivity {
                     if (response.body() != null) {
                         HotelDetailsResponse hotelDetailsModel = response.body();
                         prepareHotelData(hotelDetailsModel.getHotelDataList().get(0));
-                        //preparePreCoupon(hotelDetailsModel.getPre_coupon_code(), hotelDetailsModel.getPre_coupon_amount());
+                        preparePreCoupon(hotelDetailsModel.getPre_coupon_code(), hotelDetailsModel.getPre_coupon_amount());
                         preparePricing(hotelDetailsModel.getPriceDataList());
                         prepareImages(hotelDetailsModel.getImageList());
                         prepareAmenities(hotelDetailsModel.getAmenitiesList());
                         prepareServices(hotelDetailsModel.getExtraServicesList());
                         prepareRules(hotelDetailsModel.getRulesDataList());
+                        updateUI();
 
                     } else {
                         Snackbar.make(parentView, "Something went wrong...Please try later!", Snackbar.LENGTH_LONG).show();
@@ -626,7 +699,9 @@ public class HotelDetailsNew extends AppCompatActivity {
     }
 
     private void preparePreCoupon(String coupon, float couponValue) {
-        defaultDiscount = couponValue;
+        defaultCoupon = new Coupon(String.valueOf(couponValue), coupon, "flat");
+        appliedCoupon = defaultCoupon;
+        //defaultDiscount = couponValue;
     }
 
     private void preparePricing(ArrayList<PriceData> priceDataList) {
