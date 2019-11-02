@@ -1,19 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parentView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#E8E8E8"
+    android:fitsSystemWindows="true"
     tools:context=".ui.HotelDetailsNew"
     tools:showIn="@layout/activity_hotel_details_new">
+
+    <com.google.android.material.appbar.AppBarLayout
+        style="@style/MyActionBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            style="@style/MyActionBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/transparent"
+            app:layout_scrollFlags="scroll|enterAlways" />
+
+    </com.google.android.material.appbar.AppBarLayout>
 
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="60dp">
+        android:background="#E8E8E8"
+        android:paddingBottom="60dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -24,7 +41,7 @@
             <include
                 layout="@layout/component_carousel_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
             <include
                 layout="@layout/component_hotel_info"
@@ -35,7 +52,7 @@
                 layout="@layout/component_amenities"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"/>
+                android:layout_marginTop="4dp" />
 
             <include
                 layout="@layout/component_description"
@@ -149,5 +166,5 @@
 
     </androidx.cardview.widget.CardView>
 
-</FrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
 

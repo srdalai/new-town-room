@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
@@ -13,6 +13,7 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+
     <style name="PaymentTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
@@ -25,6 +26,12 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="MyActionBar" parent="Widget.AppCompat.ActionBar.Solid">
+        <item name="android:background">@color/transparent</item>
+        <!--For compatibility-->
+        <item name="background">@color/transparent</item>
+    </style>
 
     <style name="AppTheme.Green" parent="PayumoneyAppTheme">
         <item name="colorPrimary">@color/persian_green_primary</item>

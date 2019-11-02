@@ -3,21 +3,28 @@ package com.newtownroom.userapp.ui;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
@@ -85,7 +92,7 @@ public class HotelDetailsNew extends AppCompatActivity {
     TextView txtTotalPrice;
     View parentView;
     FrameLayout amenitiesFrame;
-
+    Toolbar toolbar;
     //Carousel View
     CarouselView carouselView;
     ImageButton imageButtonPrev, imageButtonNext;
@@ -142,6 +149,11 @@ public class HotelDetailsNew extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hotel_details_new);
 
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Hotel Details");
+
         preferenceManager = new PreferenceManager(this);
         initView();
         initClickListeners();
@@ -170,6 +182,17 @@ public class HotelDetailsNew extends AppCompatActivity {
         setInitialData();
         updateUI();
         getHotelDetails();
+    }
+
+    public static void setWindowFlag(Activity activity, final int bits, boolean on) {
+        Window win = activity.getWindow();
+        WindowManager.LayoutParams winParams = win.getAttributes();
+        if (on) {
+            winParams.flags |= bits;
+        } else {
+            winParams.flags &= ~bits;
+        }
+        win.setAttributes(winParams);
     }
 
     private void setInitialData() {
@@ -289,7 +312,7 @@ public class HotelDetailsNew extends AppCompatActivity {
             }
         });
 
-        //carouselView.setImageClickListener(position -> showImageSlider());
+        carouselView.setImageClickListener(position -> showImageSlider());
 
         amenitiesViewMore.setOnClickListener((view -> {
             /*Intent intent = new Intent(HotelDetailsNew.this, AmenitiesListing.class);
@@ -877,5 +900,16 @@ public class HotelDetailsNew extends AppCompatActivity {
             }
         });
         builder.create().show();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
