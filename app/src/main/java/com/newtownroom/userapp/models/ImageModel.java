@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class ImageModel {
 
-    @SerializedName("name")
+    @SerializedName("image")
     private String imageUrl;
 
     public ImageModel() {
