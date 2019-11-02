@@ -7,6 +7,9 @@ public class ServiceData {
     @SerializedName("id")
     private String id;
 
+    @SerializedName("hotel_id")
+    private String hotel_id;
+
     @SerializedName("name")
     private String name;
 
@@ -28,22 +31,20 @@ public class ServiceData {
     public ServiceData() {
     }
 
-    public ServiceData(String id, String name, String description, String image, String price, String periodicity, String charge) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.image = image;
-        this.price = price;
-        this.periodicity = periodicity;
-        this.charge = charge;
-    }
-
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getHotel_id() {
+        return hotel_id;
+    }
+
+    public void setHotel_id(String hotel_id) {
+        this.hotel_id = hotel_id;
     }
 
     public String getName() {

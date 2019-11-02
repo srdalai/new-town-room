@@ -3,7 +3,7 @@ package com.newtownroom.userapp.restmodels;
 import com.google.gson.annotations.SerializedName;
 import com.newtownroom.userapp.models.BookingData;
 import com.newtownroom.userapp.models.HotelData;
-import com.newtownroom.userapp.models.Interest;
+import com.newtownroom.userapp.models.LocalInterest;
 import com.newtownroom.userapp.models.RulesData;
 import com.newtownroom.userapp.models.UserData;
 
@@ -39,7 +39,7 @@ public class BookingDetailsResponses {
     private String interests_label;
 
     @SerializedName("interests")
-    private ArrayList<Interest> interests;
+    private ArrayList<LocalInterest> interests;
 
     public int getCode() {
         return code;
@@ -113,11 +113,11 @@ public class BookingDetailsResponses {
         this.interests_label = interests_label;
     }
 
-    public ArrayList<Interest> getInterests() {
+    public ArrayList<LocalInterest> getInterests() {
         return interests;
     }
 
-    public void setInterests(ArrayList<Interest> interests) {
+    public void setInterests(ArrayList<LocalInterest> interests) {
         this.interests = interests;
     }
 }

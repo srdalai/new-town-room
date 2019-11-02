@@ -9,6 +9,10 @@
     tools:context=".ui.HotelDetailsNew"
     tools:showIn="@layout/activity_hotel_details_new">
 
+    <include android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        layout="@layout/hotel_details_nested_layout"/>
+
     <com.google.android.material.appbar.AppBarLayout
         style="@style/MyActionBar"
         android:layout_width="match_parent"
@@ -19,68 +23,10 @@
             style="@style/MyActionBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/transparent"
+            android:background="#00000000"
             app:layout_scrollFlags="scroll|enterAlways" />
 
     </com.google.android.material.appbar.AppBarLayout>
-
-
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#E8E8E8"
-        android:paddingBottom="60dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="60dp">
-
-            <include
-                layout="@layout/component_carousel_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <include
-                layout="@layout/component_hotel_info"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <include
-                layout="@layout/component_amenities"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp" />
-
-            <include
-                layout="@layout/component_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp" />
-
-            <include
-                layout="@layout/component_travel_dates"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp" />
-
-            <include
-                layout="@layout/component_pricing_details_new"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp" />
-
-            <include
-                layout="@layout/component_policies_rules"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp" />
-
-        </LinearLayout>
-
-    </androidx.core.widget.NestedScrollView>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"

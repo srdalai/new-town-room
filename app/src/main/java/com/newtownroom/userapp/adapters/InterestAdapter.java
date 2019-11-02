@@ -13,16 +13,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.newtownroom.userapp.R;
-import com.newtownroom.userapp.models.Interest;
+import com.newtownroom.userapp.models.LocalInterest;
 
 import java.util.ArrayList;
 
 public class InterestAdapter extends RecyclerView.Adapter<InterestAdapter.InterestViewHolder> {
 
     private Context mContext;
-    private ArrayList<Interest> interests;
+    private ArrayList<LocalInterest> interests;
 
-    public InterestAdapter(Context mContext, ArrayList<Interest> interests) {
+    public InterestAdapter(Context mContext, ArrayList<LocalInterest> interests) {
         this.mContext = mContext;
         this.interests = interests;
     }
@@ -36,7 +36,7 @@ public class InterestAdapter extends RecyclerView.Adapter<InterestAdapter.Intere
 
     @Override
     public void onBindViewHolder(@NonNull InterestViewHolder holder, int position) {
-        Interest interest = interests.get(holder.getAdapterPosition());
+        LocalInterest interest = interests.get(holder.getAdapterPosition());
 
         holder.textView.setText(interest.getName());
         Glide.with(mContext)

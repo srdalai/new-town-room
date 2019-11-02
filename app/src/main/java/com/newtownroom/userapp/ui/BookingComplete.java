@@ -24,7 +24,7 @@ import com.newtownroom.userapp.R;
 import com.newtownroom.userapp.adapters.InterestAdapter;
 import com.newtownroom.userapp.models.BookingData;
 import com.newtownroom.userapp.models.HotelData;
-import com.newtownroom.userapp.models.Interest;
+import com.newtownroom.userapp.models.LocalInterest;
 import com.newtownroom.userapp.models.RulesData;
 import com.newtownroom.userapp.models.UserData;
 import com.newtownroom.userapp.rest.GetDataService;
@@ -226,7 +226,7 @@ public class BookingComplete extends AppCompatActivity {
     private void processHotelRules(ArrayList<RulesData> hotel_rules) {
     }
 
-    private void processInterestsData(ArrayList<Interest> interests) {
+    private void processInterestsData(ArrayList<LocalInterest> interests) {
         InterestAdapter interestAdapter = new InterestAdapter(this, interests);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
         interestRecycler.setLayoutManager(layoutManager);

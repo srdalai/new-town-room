@@ -152,7 +152,8 @@ public class HotelDetailsNew extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Hotel Details");
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.img_back_arrow);
 
         preferenceManager = new PreferenceManager(this);
         initView();
@@ -299,8 +300,8 @@ public class HotelDetailsNew extends AppCompatActivity {
         }));
 
         btnProceed.setOnClickListener((view -> {
-            bookingCompleted();
-            //startBookingFlow();
+            //bookingCompleted();
+            startBookingFlow();
         }));
 
         matBtnOffers.setOnClickListener((view) -> {
@@ -341,12 +342,12 @@ public class HotelDetailsNew extends AppCompatActivity {
         couponCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                if (checked) {
+                /*if (checked) {
                     appliedCoupon = removedCoupon;
                 } else {
                     appliedCoupon = null;
                 }
-                updateUI();
+                updateUI();*/
             }
         });
         
@@ -560,7 +561,8 @@ public class HotelDetailsNew extends AppCompatActivity {
             valueCoupon.setText("- \u20B9"+couponDiscount);
         }
 
-        valuePriceDrop.setText("- \u20B9"+(price-sellingPrice));
+        float priceDrop = (price-sellingPrice)*nights;
+        valuePriceDrop.setText("- \u20B9"+priceDrop);
         valueTotal.setText("\u20B9"+grandTotal);
 
         builder.setView(itemView);
@@ -624,7 +626,8 @@ public class HotelDetailsNew extends AppCompatActivity {
                 couponDiscount = Float.parseFloat(appliedCoupon.getAmount());
             } else {
                 float discountPercent = Float.parseFloat(appliedCoupon.getAmount());
-                couponDiscount = sellingPrice*(discountPercent/100);
+                float totalSellingPrice = sellingPrice * nights;
+                couponDiscount = totalSellingPrice*(discountPercent/100);
             }
 
             couponDesc.setText(appliedCoupon.getCode() + " applied");

@@ -131,6 +131,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:buttonTint="@color/colorPrimary"
+                        android:clickable="false"
                         android:checked="true" />
 
 

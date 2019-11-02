@@ -31,6 +31,7 @@
         <item name="android:background">@color/transparent</item>
         <!--For compatibility-->
         <item name="background">@color/transparent</item>
+        <item name="android:textColorPrimary">@color/white</item>
     </style>
 
     <style name="AppTheme.Green" parent="PayumoneyAppTheme">
