@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.newtownroom.userapp.R;
 import com.newtownroom.userapp.models.BookingData;
+import com.newtownroom.userapp.utils.Utilities;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,10 +25,10 @@ import java.util.Objects;
 
 public class MyBookingsAdapter extends RecyclerView.Adapter<MyBookingsAdapter.MyBookingsViewHolder> {
 
-    private SimpleDateFormat ipDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-    private SimpleDateFormat ipDateFormatFull = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-    private SimpleDateFormat opDateFormat = new SimpleDateFormat("EEE, d MMM", Locale.getDefault());
-    private SimpleDateFormat opDateFormatFull = new SimpleDateFormat("MMM dd", Locale.getDefault());
+    private String ipDateFormat = "yyyy-MM-dd";
+    private String ipDateFormatFull = "yyyy-MM-dd HH:mm:ss";
+    private String opDateFormat = "EEE, d MMM";
+    private String opDateFormatFull = "MMM dd";
 
     private Context mContext;
     private ArrayList<BookingData> dataList;
@@ -51,11 +52,11 @@ public class MyBookingsAdapter extends RecyclerView.Adapter<MyBookingsAdapter.My
         Glide.with(mContext).load(R.drawable.room_one).circleCrop().into(holder.imageViewRoom);
 
         holder.txtBookingCity.setText(booking.getLocation());
-        holder.txtBookingDate.setText("Booked on "+parseFullDate(booking.getCreatedDate()));
+        holder.txtBookingDate.setText("Booked on "+Utilities.parseDate(booking.getCreatedDate(), ipDateFormatFull, opDateFormatFull));
         holder.txtHotelName.setText(booking.getTitle());
-        holder.bookedFrom.setText(parseDate(booking.getUserCheckin()));
+        holder.bookedFrom.setText(Utilities.parseDate(booking.getUserCheckin(), ipDateFormat, opDateFormat));
         holder.txtBadge.setText(booking.getNights() + "N");
-        holder.bookedTill.setText(parseDate(booking.getUserCheckout()));
+        holder.bookedTill.setText(Utilities.parseDate(booking.getUserCheckout(), ipDateFormat, opDateFormat));
         holder.txtGuests.setText(booking.getTotalGuest() + " Guest");
         holder.txtRooms.setText(booking.getTotalRoom() + " Room");
 
@@ -89,27 +90,5 @@ public class MyBookingsAdapter extends RecyclerView.Adapter<MyBookingsAdapter.My
             txtCompleted = itemView.findViewById(R.id.txtCompleted);
             txtCancelled = itemView.findViewById(R.id.txtCancelled);
         }
-    }
-
-    private String parseDate(String inputDate) {
-        String returnDate = "";
-        try {
-            Date date = ipDateFormat.parse(inputDate);
-            returnDate = opDateFormat.format(Objects.requireNonNull(date));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return returnDate;
-    }
-
-    private String parseFullDate(String inputDate) {
-        String returnDate = "";
-        try {
-            Date date = ipDateFormatFull.parse(inputDate);
-            returnDate = opDateFormatFull.format(Objects.requireNonNull(date));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return returnDate;
     }
 }

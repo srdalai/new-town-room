@@ -22,8 +22,8 @@ import java.util.ArrayList;
 
 public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder> {
 
-    Context mContext;
-    ArrayList<RoomData> roomList;
+    private Context mContext;
+    private ArrayList<RoomData> roomList;
 
     public RoomAdapter(Context mContext, ArrayList<RoomData> roomList) {
         this.mContext = mContext;

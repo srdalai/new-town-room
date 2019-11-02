@@ -2,6 +2,7 @@ package com.newtownroom.userapp.rest;
 
 import com.newtownroom.userapp.restmodels.AllBookingsInput;
 import com.newtownroom.userapp.restmodels.AllBookingsResponse;
+import com.newtownroom.userapp.restmodels.BookingDetailsResponses;
 import com.newtownroom.userapp.restmodels.BookingInput;
 import com.newtownroom.userapp.restmodels.BookingResponse;
 import com.newtownroom.userapp.models.HotelData;
@@ -18,6 +19,7 @@ import com.newtownroom.userapp.restmodels.OtpInput;
 import com.newtownroom.userapp.restmodels.OtpResponse;
 import com.newtownroom.userapp.restmodels.SignUpInput;
 import com.newtownroom.userapp.restmodels.SignUpResponse;
+import com.newtownroom.userapp.restmodels.SingleBookingID;
 import com.newtownroom.userapp.restmodels.TxnStatusResponse;
 import com.newtownroom.userapp.restmodels.UpdateUserInput;
 import com.newtownroom.userapp.restmodels.UpdateUserResponse;
@@ -65,6 +67,9 @@ public interface GetDataService {
 
     @POST("getCoupons")
     Call<CouponsResponse> getAllCoupons(@Body CouponsInput couponsInput);
+
+    @POST("getBookingDetails")
+    Call<BookingDetailsResponses> getBookingDetails(@Body SingleBookingID singleBookingID);
 
     @POST("getBookingList")
     Call<AllBookingsResponse> getBookingList(@Body AllBookingsInput allBookingsInput);

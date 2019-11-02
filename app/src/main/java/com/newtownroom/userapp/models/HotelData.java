@@ -10,6 +10,9 @@ public class HotelData {
     @SerializedName("title")
     private String title;
 
+    @SerializedName("address")
+    private String address;
+
     @SerializedName("slug")
     private String slug;
 
@@ -81,6 +84,14 @@ public class HotelData {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getSlug() {

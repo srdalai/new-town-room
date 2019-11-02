@@ -86,17 +86,22 @@ public class GuestDetails extends AppCompatActivity {
     }
 
     public void addRoom() {
-        progressDialog.show();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                roomDataArrayList.add(new RoomData(1, 0));
-                roomAdapter.notifyItemInserted(roomDataArrayList.size() - 1);
-                roomAdapter.notifyDataSetChanged();
-                roomRecycler.scrollToPosition(roomDataArrayList.size() - 1);
-                progressDialog.dismiss();
-            }
-        }, 1000);
+        if (roomDataArrayList.size() < 5) {
+            progressDialog.show();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    roomDataArrayList.add(new RoomData(1, 0));
+                    roomAdapter.notifyItemInserted(roomDataArrayList.size() - 1);
+                    roomAdapter.notifyDataSetChanged();
+                    roomRecycler.scrollToPosition(roomDataArrayList.size() - 1);
+                    progressDialog.dismiss();
+                }
+            }, 1000);
+        } else {
+            Toast.makeText(this, "Maximum 5 rooms can be added in one booking", Toast.LENGTH_SHORT).show();
+        }
+        
     }
 
     public void deleteRoom(int position) {

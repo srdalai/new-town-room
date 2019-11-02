@@ -9,6 +9,10 @@ public class SingleBookingID {
     @SerializedName("booking_id")
     private int bookingId;
 
+    public SingleBookingID(int bookingId) {
+        this.bookingId = bookingId;
+    }
+
     public int getBookingId() {
         return bookingId;
     }

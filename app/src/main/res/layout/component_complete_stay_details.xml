@@ -143,7 +143,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/textView14"
+                        android:id="@+id/textHotelName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
@@ -152,7 +152,7 @@
                         android:text="M. S. Residency" />
 
                     <TextView
-                        android:id="@+id/textView15"
+                        android:id="@+id/textHotelCode"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
@@ -271,7 +271,7 @@
                     android:layout_margin="4dp"/>
 
                 <TextView
-                    android:id="@+id/textView18"
+                    android:id="@+id/textHotelAddress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
@@ -292,6 +292,7 @@
                 android:paddingBottom="@dimen/dimen_12dp">
 
                 <TextView
+                    android:id="@+id/textDirections"
                     android:layout_width="wrap_content"
                     android:layout_height="32dp"
                     android:layout_marginEnd="@dimen/dimen_8dp"
@@ -308,6 +309,7 @@
                     android:textColor="@color/black" />
 
                 <TextView
+                    android:id="@+id/textCallNow"
                     android:layout_width="wrap_content"
                     android:layout_height="32dp"
                     android:layout_marginStart="@dimen/dimen_8dp"
@@ -325,7 +327,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/textView19"
+                android:id="@+id/textViewMessage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Your booking details are sent as SMS to 8847824505 an in email to tapankumarnandy2@gmail.com" />

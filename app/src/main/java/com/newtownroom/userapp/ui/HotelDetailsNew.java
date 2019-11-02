@@ -276,8 +276,8 @@ public class HotelDetailsNew extends AppCompatActivity {
         }));
 
         btnProceed.setOnClickListener((view -> {
-            //bookingCompleted();
-            startBookingFlow();
+            bookingCompleted();
+            //startBookingFlow();
         }));
 
         matBtnOffers.setOnClickListener((view) -> {
@@ -528,7 +528,7 @@ public class HotelDetailsNew extends AppCompatActivity {
 
         String basePriceText = "Room price for " + nights + "Night X " + guestNum + "Guest";
         textBasePrice.setText(basePriceText);
-        valueBasePrice.setText("- \u20B9"+(price*nights));
+        valueBasePrice.setText("\u20B9"+(price*nights));
 
         if (appliedCoupon != null) {
             couponLinear.setVisibility(View.VISIBLE);
