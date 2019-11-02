@@ -42,14 +42,14 @@ public class RulesAdapter extends RecyclerView.Adapter<RulesAdapter.RulesViewHol
 
         holder.rulesTextView.setText(data.getTitle());
 
-        if (data.getDescription() != null) {
+        if (data.getDescription() != null && data.getDescription().trim().length() != 0) {
             holder.infoImageView.setVisibility(View.VISIBLE);
         } else {
             holder.infoImageView.setVisibility(View.GONE);
         }
 
         holder.itemView.setOnClickListener((view -> {
-            if (data.getDescription() != null) {
+            if (data.getDescription() != null && data.getDescription().trim().length() != 0) {
                 showDetailsDialog(mContext, "", data.getDescription());
             }
         }));

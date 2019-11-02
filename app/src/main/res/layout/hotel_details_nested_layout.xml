@@ -23,12 +23,14 @@
             android:layout_height="wrap_content" />
 
         <include
+            android:id="@+id/amenities_layout"
             layout="@layout/component_amenities"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp" />
 
         <include
+            android:id="@+id/description_layout"
             layout="@layout/component_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -47,6 +49,7 @@
             android:layout_marginTop="4dp" />
 
         <include
+            android:id="@+id/policies_layout"
             layout="@layout/component_policies_rules"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

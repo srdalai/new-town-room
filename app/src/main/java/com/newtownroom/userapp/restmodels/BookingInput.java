@@ -29,7 +29,7 @@ public class BookingInput {
     private ArrayList<RoomData> rooms;
 
     @SerializedName("booked_price")
-    private double bookedPrice;
+    private float bookedPrice;
 
     @SerializedName("coupon")
     private String coupon;
@@ -96,11 +96,11 @@ public class BookingInput {
         this.rooms = rooms;
     }
 
-    public double getBookedPrice() {
+    public float getBookedPrice() {
         return bookedPrice;
     }
 
-    public void setBookedPrice(double bookedPrice) {
+    public void setBookedPrice(float bookedPrice) {
         this.bookedPrice = bookedPrice;
     }
 

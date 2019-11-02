@@ -66,7 +66,7 @@ public class BookingComplete extends AppCompatActivity {
 
     float price = 0, discount = 0, sellingPrice = 0;
     int numOfGuests = 0, numOfRooms = 0, nights = 0;
-    int booking_id = 4;
+    String booking_id;
     float lat, lang;
     //PayU variables
     String key = "0lMDzMDB", salt = "48VSE2mGKk", txnid = "ORDER-OD-201900001", amount = "999", productinfo = "Hotel", firstname = "John", email = "user@email.com", udf1 = "", udf2 = "", udf3 = "", udf4 = "", udf5 = "";
@@ -90,6 +90,7 @@ public class BookingComplete extends AppCompatActivity {
     }
 
     private void setInitialData() {
+        booking_id = getIntent().getStringExtra("booking_id");
         price = getIntent().getFloatExtra("price", 0);
         discount = getIntent().getFloatExtra("discount", 0);
         sellingPrice = getIntent().getFloatExtra("sellingPrice", 0);
@@ -165,20 +166,26 @@ public class BookingComplete extends AppCompatActivity {
             }
         }));
 
-        textCallNow.setOnClickListener((view -> callIntent()));
-
-        matBtnPayNow.setOnClickListener((view -> {
-            processPayment();
+        textCallNow.setOnClickListener((view -> {
+            //callIntent();
         }));
 
-        btnGetAssistance.setOnClickListener((view -> emailIntent()));
+        matBtnPayNow.setOnClickListener((view -> {
+            //processPayment();
+        }));
 
-        btnShare.setOnClickListener((view -> shareIntent()));
+        btnGetAssistance.setOnClickListener((view -> {
+            //emailIntent();
+        }));
+
+        btnShare.setOnClickListener((view -> {
+            //shareIntent();
+        }));
     }
 
     private void makeAPICall() {
 
-        Call<BookingDetailsResponses> call = service.getBookingDetails(new SingleBookingID(4));
+        Call<BookingDetailsResponses> call = service.getBookingDetails(new SingleBookingID(Integer.parseInt(booking_id)));
         call.enqueue(new Callback<BookingDetailsResponses>() {
             @Override
             public void onResponse(Call<BookingDetailsResponses> call, Response<BookingDetailsResponses> response) {

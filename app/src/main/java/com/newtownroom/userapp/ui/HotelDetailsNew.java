@@ -90,8 +90,7 @@ public class HotelDetailsNew extends AppCompatActivity {
     MaterialButton btnProceed, amenitiesViewMore, amenitiesViewLess;
     TextView textViewHotelDesc, textViewHotelName;
     TextView txtTotalPrice;
-    View parentView;
-    FrameLayout amenitiesFrame;
+    View parentView, amenities_layout, policies_layout;
     Toolbar toolbar;
     //Carousel View
     CarouselView carouselView;
@@ -99,6 +98,7 @@ public class HotelDetailsNew extends AppCompatActivity {
     
 
     //Desc Views
+    View description_layout;
     TextView txtDescription;
     MaterialButton btnDescMore, btnDescLess;
 
@@ -143,6 +143,7 @@ public class HotelDetailsNew extends AppCompatActivity {
     int lineCount = 4;
     String fullText = "", truncatedText = "";
     boolean bookingAvailable = false;
+    private String booking_id = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -218,9 +219,10 @@ public class HotelDetailsNew extends AppCompatActivity {
         textViewHotelName = findViewById(R.id.textViewHotelName);
         txtTotalPrice = findViewById(R.id.txtTotalPrice);
         btnProceed = findViewById(R.id.btnProceed);
-        amenitiesFrame = findViewById(R.id.amenitiesFrame);
+        amenities_layout = findViewById(R.id.amenities_layout);
         amenitiesViewMore = findViewById(R.id.amenitiesViewMore);
         amenitiesViewLess = findViewById(R.id.amenitiesViewLess);
+        policies_layout = findViewById(R.id.policies_layout);
 
 
         //Carousel View
@@ -230,6 +232,7 @@ public class HotelDetailsNew extends AppCompatActivity {
         
 
         //Desc Views
+        description_layout = findViewById(R.id.description_layout);
         txtDescription = findViewById(R.id.txtDescription);
         btnDescMore = findViewById(R.id.btnDescMore);
         btnDescLess = findViewById(R.id.btnDescLess);
@@ -271,7 +274,7 @@ public class HotelDetailsNew extends AppCompatActivity {
             txtDescription.setMaxLines(4);
             btnDescMore.setVisibility(View.VISIBLE);
             btnDescLess.setVisibility(View.GONE);
-            amenitiesFrame.requestFocus();
+            amenities_layout.requestFocus();
 
         });
 
@@ -309,6 +312,7 @@ public class HotelDetailsNew extends AppCompatActivity {
                 Snackbar.make(parentView, "Please Select Dates & Guests First", Snackbar.LENGTH_SHORT).show();
             } else {
                 Intent intent = new Intent(HotelDetailsNew.this, CouponsActivity.class);
+                intent.putExtra("hotelId", hotelId);
                 startActivityForResult(intent, COUPON_ACTIVITY_REQUEST_CODE);
             }
         });
@@ -369,6 +373,7 @@ public class HotelDetailsNew extends AppCompatActivity {
 
     private void bookingCompleted() {
         Intent intent = new Intent(HotelDetailsNew.this, BookingComplete.class);
+        intent.putExtra("booking_id", booking_id);
         intent.putExtra("price", price*nights);
         intent.putExtra("discount", (/*defaultDiscount + */couponDiscount));
         intent.putExtra("sellingPrice", grandTotal);
@@ -725,20 +730,31 @@ public class HotelDetailsNew extends AppCompatActivity {
         textViewHotelName.setText(hotelData.getTitle());
 
         String data = Html.fromHtml(hotelData.getDescription()).toString();
-        textViewHotelDesc.setText(data);
+        textViewHotelDesc.setText(hotelData.getAddress());
         txtDescription.setText(data);
-        fullText = getResources().getString(R.string.large_text).trim();
+        //fullText = getResources().getString(R.string.large_text).trim();
         //txtDescription.setText(R.string.large_text);
         maxAdult = hotelData.getMaxAdult();
         maxChild = hotelData.getMaxGuest() - hotelData.getMaxAdult();
+
+        if (data.trim().length() > 0) {
+            description_layout.setVisibility(View.VISIBLE);
+        } else {
+            description_layout.setVisibility(View.GONE);
+        }
 
         txtDescription.post(new Runnable() {
             @Override
             public void run() {
                 lineCount = txtDescription.getLineCount();
-                txtDescription.setMaxLines(4);
-                txtDescription.setEllipsize(TextUtils.TruncateAt.END);
-                truncatedText = txtDescription.getText().toString();
+                if (lineCount > 4) {
+                    txtDescription.setMaxLines(4);
+                    txtDescription.setEllipsize(TextUtils.TruncateAt.END);
+                    truncatedText = txtDescription.getText().toString();
+                } else {
+                    btnDescMore.setVisibility(View.GONE);
+                }
+
             }
         });
     }
@@ -779,6 +795,11 @@ public class HotelDetailsNew extends AppCompatActivity {
 
     private void prepareAmenities(ArrayList<AmenitiesData> amenitiesData) {
 
+        if (amenitiesData.size() == 0) {
+            amenities_layout.setVisibility(View.GONE);
+            return;
+        }
+
         amenitiesListAll.clear();
         amenitiesListSmall.clear();
 
@@ -811,34 +832,43 @@ public class HotelDetailsNew extends AppCompatActivity {
     }
 
     private void prepareRules(ArrayList<RulesData> rulesList) {
+        if (rulesList.size() == 0) {
+            policies_layout.setVisibility(View.GONE);
+            return;
+        }
         rulesDataList.clear();
         rulesDataList.addAll(rulesList);
         rulesAdapter.notifyDataSetChanged();
     }
 
     private void startBookingFlow() {
+        progressDialog.show();
         BookingInput bookingInput = new BookingInput();
 
         bookingInput.setUserID(preferenceManager.getUserID());
-        bookingInput.setUniqueID("cc62d0c419b0399cf2aae7745a88ad64");
-        bookingInput.setHotelID("5");
-        bookingInput.setCoupon("ZOYO50");
-        bookingInput.setTotalGuest(2);
-        bookingInput.setCheckInDate("2019-11-08");
-        bookingInput.setCheckOutDate("2019-11-10");
+        bookingInput.setUniqueID(preferenceManager.getUniqueID());
+        bookingInput.setHotelID(hotelId);
+        if (appliedCoupon != null) {
+            bookingInput.setCoupon(appliedCoupon.getCode());
+        }
+        bookingInput.setTotalGuest(guestNum);
+        bookingInput.setCheckInDate(apiCheckInDate);
+        bookingInput.setCheckOutDate(apiCheckOutDate);
         bookingInput.setRooms(roomDataArrayList);
-        bookingInput.setBookedPrice(1200);
+        bookingInput.setBookedPrice(grandTotal);
         bookingInput.setExtraServices(new ArrayList<>());
 
         Call<BookingResponse> call = service.booking(bookingInput);
         call.enqueue(new Callback<BookingResponse>() {
             @Override
             public void onResponse(Call<BookingResponse> call, Response<BookingResponse> response) {
+                progressDialog.dismiss();
                 if (response.isSuccessful() && response.code() == 200) {
                     Log.d("Success", response.toString());
                     BookingResponse bookingResponse = response.body();
                     if (bookingResponse != null) {
                         if (bookingResponse.getCode() == 200) {
+                            booking_id = bookingResponse.getBookingId();
                             showSuccessDialog(bookingResponse.getMsg(), false);
                         } else {
                             showErrorDialog(bookingResponse.getMsg(), true);
@@ -849,6 +879,7 @@ public class HotelDetailsNew extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<BookingResponse> call, Throwable t) {
+                progressDialog.dismiss();
                 t.printStackTrace();
             }
         });
@@ -856,9 +887,9 @@ public class HotelDetailsNew extends AppCompatActivity {
 
     private void checkAvailability() {
         CheckAvailInput checkAvailInput = new CheckAvailInput();
-        checkAvailInput.setUserId(2);
-        checkAvailInput.setUniqid("396a6a775553353534363037");
-        checkAvailInput.setHotelId("5");
+        checkAvailInput.setUserId(preferenceManager.getUserID());
+        checkAvailInput.setUniqid(preferenceManager.getUniqueID());
+        checkAvailInput.setHotelId(hotelId);
         checkAvailInput.setCheckin(apiCheckInDate);
         checkAvailInput.setCheckout(apiCheckOutDate);
         checkAvailInput.setRooms(roomDataArrayList);
@@ -871,6 +902,7 @@ public class HotelDetailsNew extends AppCompatActivity {
                     CheckAvailResponse checkAvailResponse = response.body();
                     if (checkAvailResponse != null) {
                         bookingAvailable = checkAvailResponse.getAvailableStatus() == 1;
+                        Log.d("Availability", checkAvailResponse.getMsg());
                         Snackbar.make(parentView, checkAvailResponse.getMsg(), Snackbar.LENGTH_SHORT).show();
                         updateUI();
                     }
@@ -879,7 +911,7 @@ public class HotelDetailsNew extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<CheckAvailResponse> call, Throwable t) {
-
+                Log.d("Error", t.toString());
             }
         });
     }

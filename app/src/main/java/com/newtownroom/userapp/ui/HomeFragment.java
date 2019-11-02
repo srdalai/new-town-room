@@ -180,6 +180,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void prepareFeaturedHotels(ArrayList<FeaturedHotel> featuredHotels) {
+        parentView.removeAllViews();
         for (int i = 0; i < featuredHotels.size(); i++) {
             FeaturedHotel featuredHotel = featuredHotels.get(i);
 

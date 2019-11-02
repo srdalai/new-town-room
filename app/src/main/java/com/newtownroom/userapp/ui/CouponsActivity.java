@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.newtownroom.userapp.R;
@@ -18,6 +20,7 @@ import com.newtownroom.userapp.rest.GetDataService;
 import com.newtownroom.userapp.rest.RetrofitClientInstance;
 import com.newtownroom.userapp.restmodels.CouponsInput;
 import com.newtownroom.userapp.restmodels.CouponsResponse;
+import com.newtownroom.userapp.utils.PreferenceManager;
 
 import java.util.ArrayList;
 
@@ -33,6 +36,9 @@ public class CouponsActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     ArrayList<Coupon> coupons = new ArrayList<>();
     CouponsAdapter couponsAdapter;
+    PreferenceManager preferenceManager;
+    String hotelId;
+    TextView noDataTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +48,12 @@ public class CouponsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Coupons Available");
 
+        preferenceManager = new PreferenceManager(this);
+
+        hotelId = getIntent().getStringExtra("hotelId");
+
         couponsRecycler = findViewById(R.id.couponsRecycler);
+        noDataTextView = findViewById(R.id.noDataTextView);
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading....");
@@ -60,9 +71,9 @@ public class CouponsActivity extends AppCompatActivity {
     public void makeAPICall() {
         progressDialog.show();
         CouponsInput couponsInput = new CouponsInput();
-        couponsInput.setHotelId("5");
-        couponsInput.setUserId("2");
-        couponsInput.setUniqid("396a6a775553353534363037");
+        couponsInput.setHotelId(hotelId);
+        couponsInput.setUserId(String.valueOf(preferenceManager.getUserID()));
+        couponsInput.setUniqid(preferenceManager.getUniqueID());
 
         Call<CouponsResponse> call = service.getAllCoupons(couponsInput);
 
@@ -70,16 +81,19 @@ public class CouponsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<CouponsResponse> call, Response<CouponsResponse> response) {
                 progressDialog.dismiss();
-                if (response.code() == 200 && response.body().getCode() == 200) {
+                if (response.code() == 200 && response.body().getCode() == 200 && response.body().getCoupons().size() > 0) {
                     coupons.clear();
                     coupons.addAll(response.body().getCoupons());
                     couponsAdapter.notifyDataSetChanged();
+                } else {
+                    noDataTextView.setVisibility(View.VISIBLE);
                 }
             }
 
             @Override
             public void onFailure(Call<CouponsResponse> call, Throwable t) {
                 progressDialog.dismiss();
+                noDataTextView.setVisibility(View.VISIBLE);
                 Log.d("Error", t.toString());
 
             }

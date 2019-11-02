@@ -28,7 +28,7 @@ public class PreferenceManager {
     }
 
     public int getUserID() {
-        return sharedPreferences.getInt(USER_ID, 19);
+        return sharedPreferences.getInt(USER_ID, 0);
     }
 
     public void setName(String name) {
@@ -44,7 +44,7 @@ public class PreferenceManager {
     }
 
     public boolean isLoggedIn() {
-        return sharedPreferences.getBoolean(IS_LOGGED_IN, true);
+        return sharedPreferences.getBoolean(IS_LOGGED_IN, false);
     }
 
     public void setPhoneNumber(String phoneNumber) {
