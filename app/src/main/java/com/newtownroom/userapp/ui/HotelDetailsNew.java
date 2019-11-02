@@ -134,7 +134,7 @@ public class HotelDetailsNew extends AppCompatActivity {
     int guestNum = 0, roomNum = 0;
     int maxAdult = 0, maxChild = 0;
     int nights = 0;
-    float price = 0, sellingPrice = 0, totalAmount = 0, couponDiscount = 0, grandTotal = 0/*, defaultDiscount = 0*/;
+    float price = 0, sellingPrice = 0, totalAmount = 0, couponDiscount = 0, grandTotal = 0, priceDrop = 0;
     String checkInDate = "", checkOutDate = "", apiCheckInDate = "", apiCheckOutDate = "";
     String hotelId, rating;
     ArrayList<PriceData> priceList = new ArrayList<>();
@@ -376,6 +376,7 @@ public class HotelDetailsNew extends AppCompatActivity {
         intent.putExtra("booking_id", booking_id);
         intent.putExtra("price", price*nights);
         intent.putExtra("discount", (/*defaultDiscount + */couponDiscount));
+        intent.putExtra("priceDrop", priceDrop);
         intent.putExtra("sellingPrice", grandTotal);
         intent.putExtra("numOfGuests", guestNum);
         intent.putExtra("numOfRooms", roomNum);
@@ -566,7 +567,6 @@ public class HotelDetailsNew extends AppCompatActivity {
             valueCoupon.setText("- \u20B9"+couponDiscount);
         }
 
-        float priceDrop = (price-sellingPrice)*nights;
         valuePriceDrop.setText("- \u20B9"+priceDrop);
         valueTotal.setText("\u20B9"+grandTotal);
 
@@ -645,6 +645,7 @@ public class HotelDetailsNew extends AppCompatActivity {
 
         //Updating Price Details
         grandTotal = (sellingPrice * nights) - couponDiscount;
+        priceDrop = (price-sellingPrice)*nights;
 
         if (sellingPrice == price) {
             textPrice.setVisibility(View.GONE);

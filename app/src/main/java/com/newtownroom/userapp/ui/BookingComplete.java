@@ -105,7 +105,7 @@ public class BookingComplete extends AppCompatActivity {
 
     private void updateUI() {
         textPrice.setText("\u20B9 " + price);
-        textDiscount.setText("-\u20B9 " + discount);
+        textDiscount.setText("-\u20B9 " + (price - sellingPrice));
         textSellingPrice.setText("\u20B9 " + sellingPrice);
         txtPrice.setText("\u20B9 " + sellingPrice);
 

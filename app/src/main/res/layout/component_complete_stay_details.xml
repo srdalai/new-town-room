@@ -330,7 +330,8 @@
                 android:id="@+id/textViewMessage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Your booking details are sent as SMS to 8847824505 an in email to tapankumarnandy2@gmail.com" />
+                android:text="Your booking details are sent as SMS to 8847824505 an in email to tapankumarnandy2@gmail.com"
+                android:visibility="gone"/>
 
 
         </LinearLayout>
