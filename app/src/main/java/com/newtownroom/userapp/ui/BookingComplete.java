@@ -1,13 +1,17 @@
 package com.newtownroom.userapp.ui;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -46,8 +50,9 @@ import retrofit2.Response;
 public class BookingComplete extends AppCompatActivity {
 
     private static final String TAG = BookingComplete.class.getSimpleName();
+    private static final int REQUEST_PERMISSION_KEY = 899;
 
-    MaterialButton matBtnPayNow;
+    MaterialButton matBtnPayNow, btnCancel, btnShare, btnGetAssistance;
     TextView textPrice, textDiscount, textSellingPrice, txtPrice, txtNumGuests, txtNumOfNights, txtRomDetails, txtStartDate, txtEndDate;
     TextView txtUserName, textSuccessMsg, textHotelName, textHotelAddress, textViewMessage, textLocalInterest;
     TextView textDirections, textCallNow;
@@ -106,11 +111,11 @@ public class BookingComplete extends AppCompatActivity {
         txtNumGuests.setText(String.valueOf(numOfGuests));
 
         if (nights == 1) {
-            txtNumOfNights.setText(nights+" Night");
+            txtNumOfNights.setText(nights + " Night");
         } else {
-            txtNumOfNights.setText(nights+" Nights");
+            txtNumOfNights.setText(nights + " Nights");
         }
-        txtRomDetails.setText("1 Classic ("+ numOfRooms +"X)");
+        txtRomDetails.setText("1 Classic (" + numOfRooms + "X)");
 
         txtStartDate.setText(checkInDate);
         txtEndDate.setText(checkOutDate);
@@ -143,12 +148,15 @@ public class BookingComplete extends AppCompatActivity {
         textViewMessage = findViewById(R.id.textViewMessage);
         textLocalInterest = findViewById(R.id.textLocalInterest);
         interestRecycler = findViewById(R.id.interestRecycler);
+        btnCancel = findViewById(R.id.btnCancel);
+        btnShare = findViewById(R.id.btnShare);
+        btnGetAssistance = findViewById(R.id.btnGetAssistance);
     }
 
     private void setClickListeners() {
         textDirections.setOnClickListener((view -> {
             //String mapUri = "geo:37.7749,-122.4194";
-            String mapUri = "geo:"+ lat+","+lang;
+            String mapUri = "geo:" + lat + "," + lang;
             Uri gmmIntentUri = Uri.parse(mapUri);
             Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
             mapIntent.setPackage("com.google.android.apps.maps");
@@ -157,9 +165,15 @@ public class BookingComplete extends AppCompatActivity {
             }
         }));
 
+        textCallNow.setOnClickListener((view -> callIntent()));
+
         matBtnPayNow.setOnClickListener((view -> {
             processPayment();
         }));
+
+        btnGetAssistance.setOnClickListener((view -> emailIntent()));
+
+        btnShare.setOnClickListener((view -> shareIntent()));
     }
 
     private void makeAPICall() {
@@ -227,17 +241,17 @@ public class BookingComplete extends AppCompatActivity {
         // Result Code is -1 send from Payumoney activity
         Log.d(TAG, "request code " + requestCode + " resultcode " + resultCode);
         if (requestCode == PayUmoneyFlowManager.REQUEST_CODE_PAYMENT && resultCode == RESULT_OK && data != null) {
-            TransactionResponse transactionResponse = data.getParcelableExtra( PayUmoneyFlowManager.INTENT_EXTRA_TRANSACTION_RESPONSE );
+            TransactionResponse transactionResponse = data.getParcelableExtra(PayUmoneyFlowManager.INTENT_EXTRA_TRANSACTION_RESPONSE);
 
             if (transactionResponse != null && transactionResponse.getPayuResponse() != null) {
 
-                if(transactionResponse.getTransactionStatus().equals( TransactionResponse.TransactionStatus.SUCCESSFUL )){
+                if (transactionResponse.getTransactionStatus().equals(TransactionResponse.TransactionStatus.SUCCESSFUL)) {
                     //Success Transaction
                     Log.d(TAG, transactionResponse.getMessage());
                     Log.d(TAG, transactionResponse.getPayuResponse());
                     Log.d(TAG, transactionResponse.getTransactionDetails());
                     showTxnSuccessDialog(transactionResponse.getMessage());
-                } else{
+                } else {
                     //Failure Transaction
                     showTxnFailedDialog(transactionResponse.getMessage());
                 }
@@ -282,6 +296,49 @@ public class BookingComplete extends AppCompatActivity {
         builder.create().show();
     }
 
+    private void shareIntent() {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
+        sendIntent.putExtra(Intent.EXTRA_TITLE, "This is my title.");
+        sendIntent.setType("text/plain");
+
+        Intent shareIntent = Intent.createChooser(sendIntent, null);
+        startActivity(shareIntent);
+    }
+
+    private void emailIntent() {
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                "mailto", "abc@gmail.com", null));
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject");
+        emailIntent.putExtra(Intent.EXTRA_TEXT, "Body");
+        startActivity(Intent.createChooser(emailIntent, "Send email..."));
+    }
+
+    private void callIntent() {
+        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + "198"));
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            String[] PERMISSIONS = {Manifest.permission.CALL_PHONE};
+            ActivityCompat.requestPermissions(this, PERMISSIONS, REQUEST_PERMISSION_KEY);
+            return;
+        }
+        startActivity(intent);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_PERMISSION_KEY: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    callIntent();
+                } else {
+                    Toast.makeText(this, "You must accept permissions.", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+
+    }
 
     //PayU Methods
 

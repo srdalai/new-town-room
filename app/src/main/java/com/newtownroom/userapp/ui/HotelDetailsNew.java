@@ -700,9 +700,9 @@ public class HotelDetailsNew extends AppCompatActivity {
 
         String data = Html.fromHtml(hotelData.getDescription()).toString();
         textViewHotelDesc.setText(data);
-        //txtDescription.setText(data);
+        txtDescription.setText(data);
         fullText = getResources().getString(R.string.large_text).trim();
-        txtDescription.setText(R.string.large_text);
+        //txtDescription.setText(R.string.large_text);
         maxAdult = hotelData.getMaxAdult();
         maxChild = hotelData.getMaxGuest() - hotelData.getMaxAdult();
 

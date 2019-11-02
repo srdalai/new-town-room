@@ -2,6 +2,8 @@ package com.newtownroom.userapp.utils;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.util.Log;
 
@@ -15,7 +17,7 @@ import java.util.Objects;
 
 public class Utilities {
 
-    public static  boolean hasPermissions(Context context, String... permissions) {
+    public static boolean hasPermissions(Context context, String... permissions) {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
             for (String permission : permissions) {
                 if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
@@ -24,6 +26,16 @@ public class Utilities {
             }
         }
         return true;
+    }
+
+    public static boolean hasInternet(Context context) {
+        ConnectivityManager cm =
+                (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+        return isConnected;
     }
 
     public static String parseDate(String inputDate, String ipFormat, String opFormat) {

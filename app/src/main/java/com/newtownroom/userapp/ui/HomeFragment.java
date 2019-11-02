@@ -28,6 +28,7 @@ import com.newtownroom.userapp.models.HotelData;
 import com.newtownroom.userapp.rest.GetDataService;
 import com.newtownroom.userapp.rest.RetrofitClientInstance;
 import com.newtownroom.userapp.restmodels.HomeResponse;
+import com.newtownroom.userapp.utils.Utilities;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ImageListener;
 
@@ -84,10 +85,17 @@ public class HomeFragment extends Fragment {
         RecyclerView.LayoutManager gridLayoutManager = new GridLayoutManager(requireContext(), 2, GridLayoutManager.HORIZONTAL, false);
         otherHotelsRecycler.setLayoutManager(gridLayoutManager);
         otherHotelsRecycler.setAdapter(hotelsListAdapter);
+    }
 
-        //getHotelsList();
-        getHomeData();
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (Utilities.hasInternet(requireContext())) {
+            getHomeData();
+        } else {
+            Snackbar.make(parentView, "No internet connection available", Snackbar.LENGTH_INDEFINITE)
+                    .setAction("Retry", view -> onResume()).show();
+        }
     }
 
     ImageListener imageListener = new ImageListener() {
