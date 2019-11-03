@@ -6,6 +6,7 @@ import com.newtownroom.userapp.restmodels.BookingDetailsResponses;
 import com.newtownroom.userapp.restmodels.BookingInput;
 import com.newtownroom.userapp.restmodels.BookingResponse;
 import com.newtownroom.userapp.models.HotelData;
+import com.newtownroom.userapp.restmodels.CancelBookingResponse;
 import com.newtownroom.userapp.restmodels.CheckAvailInput;
 import com.newtownroom.userapp.restmodels.CheckAvailResponse;
 import com.newtownroom.userapp.restmodels.CouponsInput;
@@ -73,6 +74,9 @@ public interface GetDataService {
 
     @POST("getBookingList")
     Call<AllBookingsResponse> getBookingList(@Body AllBookingsInput allBookingsInput);
+
+    @POST("deleteBooking")
+    Call<CancelBookingResponse> deleteBooking(@Body SingleBookingID singleBookingID);
 
     /*
     *   PayMoney API requests

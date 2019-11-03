@@ -1,6 +1,8 @@
 package com.newtownroom.userapp.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +14,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.snackbar.Snackbar;
 import com.newtownroom.userapp.R;
 import com.newtownroom.userapp.models.BookingData;
+import com.newtownroom.userapp.restmodels.CancelBookingResponse;
+import com.newtownroom.userapp.restmodels.SingleBookingID;
+import com.newtownroom.userapp.ui.BookingComplete;
+import com.newtownroom.userapp.ui.BookingsFragment;
+import com.newtownroom.userapp.ui.MainActivity;
 import com.newtownroom.userapp.utils.Utilities;
 
 import java.text.ParseException;
@@ -22,6 +30,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MyBookingsAdapter extends RecyclerView.Adapter<MyBookingsAdapter.MyBookingsViewHolder> {
 
@@ -32,10 +44,12 @@ public class MyBookingsAdapter extends RecyclerView.Adapter<MyBookingsAdapter.My
 
     private Context mContext;
     private ArrayList<BookingData> dataList;
+    BookingsFragment bookingsFragment;
 
-    public MyBookingsAdapter(Context mContext, ArrayList<BookingData> dataList) {
-        this.mContext = mContext;
+    public MyBookingsAdapter(BookingsFragment bookingsFragment, ArrayList<BookingData> dataList) {
+        this.bookingsFragment = bookingsFragment;
         this.dataList = dataList;
+        mContext = bookingsFragment.requireContext();
     }
 
     @NonNull
@@ -59,6 +73,14 @@ public class MyBookingsAdapter extends RecyclerView.Adapter<MyBookingsAdapter.My
         holder.bookedTill.setText(Utilities.parseDate(booking.getUserCheckout(), ipDateFormat, opDateFormat));
         holder.txtGuests.setText(booking.getTotalGuest() + " Guest");
         holder.txtRooms.setText(booking.getTotalRoom() + " Room");
+
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                bookingsFragment.cancelBooking(booking.getId());
+                return false;
+            }
+        });
 
     }
 

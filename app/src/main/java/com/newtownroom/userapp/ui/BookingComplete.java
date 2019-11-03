@@ -32,6 +32,7 @@ import com.newtownroom.userapp.models.UserData;
 import com.newtownroom.userapp.rest.GetDataService;
 import com.newtownroom.userapp.rest.RetrofitClientInstance;
 import com.newtownroom.userapp.restmodels.BookingDetailsResponses;
+import com.newtownroom.userapp.restmodels.CancelBookingResponse;
 import com.newtownroom.userapp.restmodels.SingleBookingID;
 import com.newtownroom.userapp.utils.Utilities;
 import com.payumoney.core.PayUmoneyConfig;
@@ -186,6 +187,9 @@ public class BookingComplete extends AppCompatActivity {
             //emailIntent();
         }));
 
+        btnCancel.setOnClickListener((view -> {
+            cancelBooking();
+        }));
         btnShare.setOnClickListener((view -> {
             //shareIntent();
         }));
@@ -251,6 +255,42 @@ public class BookingComplete extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
         interestRecycler.setLayoutManager(layoutManager);
         interestRecycler.setAdapter(interestAdapter);
+    }
+
+    private void cancelBooking() {
+        progressDialog.show();
+        Call<CancelBookingResponse> call = service.deleteBooking(new SingleBookingID(Integer.parseInt(booking_id)));
+        call.enqueue(new Callback<CancelBookingResponse>() {
+            @Override
+            public void onResponse(Call<CancelBookingResponse> call, Response<CancelBookingResponse> response) {
+                progressDialog.dismiss();
+                if (response.code() == 200) {
+                    CancelBookingResponse responseModel = response.body();
+                    if (responseModel != null && responseModel.getCode() == 200) {
+                        Snackbar.make(parentView, "Booking Cancelled Successfully", Snackbar.LENGTH_INDEFINITE)
+                                .setAction("Continue", (view -> {
+                                    startActivity(new Intent(BookingComplete.this, MainActivity.class));
+                                    finish();
+                                }))
+                                .show();
+
+                    } else {
+                        Snackbar.make(parentView, "Something went wrong...Please try later!", Snackbar.LENGTH_LONG).show();
+                    }
+                } else {
+                    Snackbar.make(parentView, "Something went wrong...Please try later!", Snackbar.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CancelBookingResponse> call, Throwable t) {
+                progressDialog.dismiss();
+                Snackbar.make(parentView, "Something went wrong...Please try later!", Snackbar.LENGTH_LONG).show();
+                Log.d("Retro Error", t.toString());
+
+            }
+        });
+
     }
 
 

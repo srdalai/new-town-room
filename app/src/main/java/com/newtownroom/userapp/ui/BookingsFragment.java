@@ -1,11 +1,13 @@
 package com.newtownroom.userapp.ui;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
@@ -13,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.newtownroom.userapp.R;
 import com.newtownroom.userapp.adapters.MyBookingsAdapter;
 import com.newtownroom.userapp.models.BookingData;
@@ -20,6 +23,8 @@ import com.newtownroom.userapp.rest.GetDataService;
 import com.newtownroom.userapp.rest.RetrofitClientInstance;
 import com.newtownroom.userapp.restmodels.AllBookingsInput;
 import com.newtownroom.userapp.restmodels.AllBookingsResponse;
+import com.newtownroom.userapp.restmodels.CancelBookingResponse;
+import com.newtownroom.userapp.restmodels.SingleBookingID;
 import com.newtownroom.userapp.utils.PreferenceManager;
 
 import java.util.ArrayList;
@@ -36,6 +41,7 @@ public class BookingsFragment extends Fragment {
     private GetDataService service;
     private ProgressDialog progressDialog;
     private PreferenceManager preferenceManager;
+    TextView noDataTextView;
 
     @Nullable
     @Override
@@ -52,13 +58,14 @@ public class BookingsFragment extends Fragment {
         preferenceManager = new PreferenceManager(requireContext());
 
         bookingsRecycler = view.findViewById(R.id.bookingsRecycler);
+        noDataTextView = view.findViewById(R.id.noDataTextView);
 
         progressDialog = new ProgressDialog(requireContext());
         progressDialog.setMessage("Loading....");
 
         service = RetrofitClientInstance.getRetrofitInstance().create(GetDataService.class);
 
-        myBookingsAdapter = new MyBookingsAdapter(requireContext(), bookingDataList);
+        myBookingsAdapter = new MyBookingsAdapter(this, bookingDataList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireContext());
         bookingsRecycler.setLayoutManager(layoutManager);
         bookingsRecycler.setAdapter(myBookingsAdapter);
@@ -79,8 +86,14 @@ public class BookingsFragment extends Fragment {
             public void onResponse(Call<AllBookingsResponse> call, Response<AllBookingsResponse> response) {
                 progressDialog.dismiss();
                 if (response.code() == 200) {
+                    AllBookingsResponse allBookingsResponse = response.body();
                     bookingDataList.clear();
-                    bookingDataList.addAll(response.body().getUpcomingBookings());
+                    if (allBookingsResponse != null && (allBookingsResponse.getUpcomingBookings().size() > 0 || allBookingsResponse.getCompletedBookings().size() > 0 || allBookingsResponse.getCanceledBookings().size() > 0)) {
+                        bookingDataList.addAll(response.body().getUpcomingBookings());
+                    } else {
+                        noDataTextView.setText("No Booking Available");
+                        noDataTextView.setVisibility(View.VISIBLE);
+                    }
                     myBookingsAdapter.notifyDataSetChanged();
                 }
             }
@@ -91,5 +104,36 @@ public class BookingsFragment extends Fragment {
                 Log.d("TAG", t.toString());
             }
         });
+    }
+
+    public void cancelBooking(String booking_id) {
+        progressDialog.show();
+        Call<CancelBookingResponse> call = service.deleteBooking(new SingleBookingID(Integer.parseInt(booking_id)));
+        call.enqueue(new Callback<CancelBookingResponse>() {
+            @Override
+            public void onResponse(Call<CancelBookingResponse> call, Response<CancelBookingResponse> response) {
+                progressDialog.dismiss();
+                if (response.code() == 200) {
+                    CancelBookingResponse responseModel = response.body();
+                    if (responseModel != null && responseModel.getCode() == 200) {
+                        Snackbar.make(requireView(), "Booking Cancelled Successfully", Snackbar.LENGTH_LONG).show();
+                        getAllBookings();
+                    } else {
+                        Snackbar.make(requireView(), "Something went wrong...Please try later!", Snackbar.LENGTH_LONG).show();
+                    }
+                } else {
+                    Snackbar.make(requireView(), "Something went wrong...Please try later!", Snackbar.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CancelBookingResponse> call, Throwable t) {
+                progressDialog.dismiss();
+                Snackbar.make(requireView(), "Something went wrong...Please try later!", Snackbar.LENGTH_LONG).show();
+                Log.d("Retro Error", t.toString());
+
+            }
+        });
+
     }
 }

@@ -43,10 +43,14 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.newtownroom.userapp.R;
 import com.newtownroom.userapp.adapters.AmenitiesAdapter;
+import com.newtownroom.userapp.adapters.InterestAdapter;
+import com.newtownroom.userapp.adapters.NearByAdapter;
 import com.newtownroom.userapp.adapters.RulesAdapter;
 import com.newtownroom.userapp.models.AmenitiesData;
 import com.newtownroom.userapp.models.AmenitiesListData;
 import com.newtownroom.userapp.models.Coupon;
+import com.newtownroom.userapp.models.LocalInterest;
+import com.newtownroom.userapp.models.NearBy;
 import com.newtownroom.userapp.restmodels.BookingInput;
 import com.newtownroom.userapp.restmodels.BookingResponse;
 import com.newtownroom.userapp.models.GuestData;
@@ -113,6 +117,11 @@ public class HotelDetailsNew extends AppCompatActivity {
     TextView defCouponDesc, couponDesc, defCouponValue, couponValue, txtViewSavings, textPrice, textSellingPrice;
     CheckBox defCouponCheckBox, couponCheckBox;
     MaterialButton matBtnOffers;
+
+    //Other Listings
+    TextView textViewService, textViewInterest, textViewNearBy;
+    RecyclerView serviceRecycler, interestRecycler, nearByRecycler;
+    FrameLayout serviceFrame, interestFrame, nearByFrame;
 
     //Custom Data
     AmenitiesAdapter amenitiesAdapter;
@@ -259,6 +268,17 @@ public class HotelDetailsNew extends AppCompatActivity {
         txtViewSavings = findViewById(R.id.txtViewSavings);
         textPrice = findViewById(R.id.textPrice);
         textSellingPrice = findViewById(R.id.textSellingPrice);
+
+        //Other Listings
+        textViewService = findViewById(R.id.textViewService);
+        textViewInterest = findViewById(R.id.textViewInterest);
+        textViewNearBy = findViewById(R.id.textViewNearBy);
+        serviceRecycler = findViewById(R.id.serviceRecycler);
+        interestRecycler = findViewById(R.id.interestRecycler);
+        nearByRecycler = findViewById(R.id.nearByRecycler);
+        serviceFrame = findViewById(R.id.serviceFrame);
+        interestFrame = findViewById(R.id.interestFrame);
+        nearByFrame = findViewById(R.id.nearByFrame);
 
 
     }
@@ -706,6 +726,8 @@ public class HotelDetailsNew extends AppCompatActivity {
                         prepareAmenities(hotelDetailsModel.getAmenitiesList());
                         prepareServices(hotelDetailsModel.getExtraServicesList());
                         prepareRules(hotelDetailsModel.getRulesDataList());
+                        prepareLocalInterest(hotelDetailsModel.getLocalInterests());
+                        prepareNearBy(hotelDetailsModel.getNearByList());
                         updateUI();
 
                     } else {
@@ -829,7 +851,7 @@ public class HotelDetailsNew extends AppCompatActivity {
     }
 
     private void prepareServices(ArrayList<ServiceData> serviceData) {
-
+        serviceFrame.setVisibility(View.GONE);
     }
 
     private void prepareRules(ArrayList<RulesData> rulesList) {
@@ -840,6 +862,28 @@ public class HotelDetailsNew extends AppCompatActivity {
         rulesDataList.clear();
         rulesDataList.addAll(rulesList);
         rulesAdapter.notifyDataSetChanged();
+    }
+
+    private void prepareLocalInterest(ArrayList<LocalInterest> localInterests) {
+        if (localInterests.size() > 0) {
+            InterestAdapter interestAdapter = new InterestAdapter(this, localInterests);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL,false);
+            interestRecycler.setLayoutManager(layoutManager);
+            interestRecycler.setAdapter(interestAdapter);
+        } else {
+            interestFrame.setVisibility(View.GONE);
+        }
+    }
+
+    private void prepareNearBy(ArrayList<NearBy> nearByList) {
+        if (nearByList.size() > 0) {
+            NearByAdapter nearByAdapter = new NearByAdapter(this, nearByList);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL,false);
+            nearByRecycler.setLayoutManager(layoutManager);
+            nearByRecycler.setAdapter(nearByAdapter);
+        } else {
+            nearByFrame.setVisibility(View.GONE);
+        }
     }
 
     private void startBookingFlow() {
