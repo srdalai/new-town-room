@@ -41,6 +41,7 @@ public class InterestAdapter extends RecyclerView.Adapter<InterestAdapter.Intere
         holder.textView.setText(interest.getName());
         Glide.with(mContext)
                 .load(interest.getImage())
+                .error(R.drawable.background_drawable)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.imageView);
 

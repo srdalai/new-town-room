@@ -15,11 +15,13 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.newtownroom.userapp.R;
 import com.newtownroom.userapp.adapters.InterestAdapter;
 import com.newtownroom.userapp.models.BookingData;
@@ -58,6 +60,7 @@ public class BookingComplete extends AppCompatActivity {
     TextView textDirections, textCallNow;
     RecyclerView interestRecycler;
     String checkInDate, checkOutDate, name, hotel_name, hotel_address;
+    View interest_layout, parentView;
 
     GetDataService service;
     ProgressDialog progressDialog;
@@ -152,17 +155,22 @@ public class BookingComplete extends AppCompatActivity {
         btnCancel = findViewById(R.id.btnCancel);
         btnShare = findViewById(R.id.btnShare);
         btnGetAssistance = findViewById(R.id.btnGetAssistance);
+        interest_layout = findViewById(R.id.interest_layout);
+        parentView = findViewById(R.id.parentView);
     }
 
     private void setClickListeners() {
         textDirections.setOnClickListener((view -> {
             //String mapUri = "geo:37.7749,-122.4194";
+            Toast.makeText(this, "Lat: "+lat+", Long: "+lang, Toast.LENGTH_SHORT).show();
             String mapUri = "geo:" + lat + "," + lang;
             Uri gmmIntentUri = Uri.parse(mapUri);
             Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
             mapIntent.setPackage("com.google.android.apps.maps");
             if (mapIntent.resolveActivity(getPackageManager()) != null) {
                 startActivity(mapIntent);
+            } else {
+                Snackbar.make(parentView, "Google Maps not available!", Snackbar.LENGTH_LONG).show();
             }
         }));
 
@@ -234,6 +242,11 @@ public class BookingComplete extends AppCompatActivity {
     }
 
     private void processInterestsData(ArrayList<LocalInterest> interests) {
+        Log.d("Total", interests.size()+"");
+        if (interests.size() == 0) {
+            interest_layout.setVisibility(View.GONE);
+            return;
+        }
         InterestAdapter interestAdapter = new InterestAdapter(this, interests);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
         interestRecycler.setLayoutManager(layoutManager);

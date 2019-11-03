@@ -43,6 +43,13 @@ public class HotelsListAdapter extends RecyclerView.Adapter<HotelsListAdapter.Ho
         HotelData hotelData = hotelDataList.get(holder.getAdapterPosition());
 
         holder.txtHotelName.setText(hotelData.getTitle());
+        if (hotelData.getAddress() != null && hotelData.getAddress().trim().length() != 0) {
+            holder.txtAddress.setText(hotelData.getAddress());
+            holder.txtAddress.setVisibility(View.VISIBLE);
+        } else {
+            holder.txtAddress.setVisibility(View.GONE);
+        }
+
 
         String originalPrice = mContext.getResources().getString(R.string.rupees_sign) + hotelData.getRetailPrice();
         String discountedPrice = mContext.getResources().getString(R.string.rupees_sign) + hotelData.getSellingPrice();
