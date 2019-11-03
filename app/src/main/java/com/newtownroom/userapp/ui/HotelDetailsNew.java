@@ -46,6 +46,7 @@ import com.newtownroom.userapp.adapters.AmenitiesAdapter;
 import com.newtownroom.userapp.adapters.InterestAdapter;
 import com.newtownroom.userapp.adapters.NearByAdapter;
 import com.newtownroom.userapp.adapters.RulesAdapter;
+import com.newtownroom.userapp.adapters.ServiceAdapter;
 import com.newtownroom.userapp.models.AmenitiesData;
 import com.newtownroom.userapp.models.AmenitiesListData;
 import com.newtownroom.userapp.models.Coupon;
@@ -68,14 +69,18 @@ import com.newtownroom.userapp.rest.GetDataService;
 import com.newtownroom.userapp.rest.RetrofitClientInstance;
 import com.newtownroom.userapp.utils.PreferenceManager;
 import com.stfalcon.imageviewer.StfalconImageViewer;
+import com.stfalcon.imageviewer.listeners.OnImageChangeListener;
 import com.stfalcon.imageviewer.loader.ImageLoader;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ImageListener;
+import com.synnapps.carouselview.ViewListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -93,9 +98,10 @@ public class HotelDetailsNew extends AppCompatActivity {
     RecyclerView amenitiesRecycler, rulesListView;
     MaterialButton btnProceed, amenitiesViewMore, amenitiesViewLess;
     TextView textViewHotelDesc, textViewHotelName;
-    TextView txtTotalPrice;
+    TextView txtTotalPrice, textViewAmenities, textViewPolicy;
     View parentView, amenities_layout, policies_layout;
     Toolbar toolbar;
+
     //Carousel View
     CarouselView carouselView;
     ImageButton imageButtonPrev, imageButtonNext;
@@ -143,12 +149,14 @@ public class HotelDetailsNew extends AppCompatActivity {
     int guestNum = 0, roomNum = 0;
     int maxAdult = 0, maxChild = 0;
     int nights = 0;
-    float price = 0, sellingPrice = 0, totalAmount = 0, couponDiscount = 0, grandTotal = 0, priceDrop = 0;
+    float price = 0, sellingPrice = 0, totalAmount = 0, couponDiscount = 0, grandTotal = 0, priceDrop = 0, servicePrice = 0;
     String checkInDate = "", checkOutDate = "", apiCheckInDate = "", apiCheckOutDate = "";
     String hotelId, rating;
     ArrayList<PriceData> priceList = new ArrayList<>();
     ArrayList<RoomData> roomDataArrayList = null;
     ArrayList<String> imageUrls = new ArrayList<>();
+    ArrayList<ServiceData> serviceDataList = new ArrayList<>();
+    ArrayList<Integer> selectedServices = new ArrayList<>();
     int lineCount = 4;
     String fullText = "", truncatedText = "";
     boolean bookingAvailable = false;
@@ -232,6 +240,8 @@ public class HotelDetailsNew extends AppCompatActivity {
         amenitiesViewMore = findViewById(R.id.amenitiesViewMore);
         amenitiesViewLess = findViewById(R.id.amenitiesViewLess);
         policies_layout = findViewById(R.id.policies_layout);
+        textViewAmenities = findViewById(R.id.textViewAmenities);
+        textViewPolicy = findViewById(R.id.textViewPolicy);
 
 
         //Carousel View
@@ -417,7 +427,13 @@ public class HotelDetailsNew extends AppCompatActivity {
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(imageView);
             }
-        }).show();
+        }).withStartPosition(carouselView.getCurrentItem())
+                .withImageChangeListener(new OnImageChangeListener() {
+                    @Override
+                    public void onImageChange(int position) {
+                        carouselView.setCurrentItem(position);
+                    }
+                }).show();
     }
 
     private void setImages() {
@@ -476,6 +492,29 @@ public class HotelDetailsNew extends AppCompatActivity {
             removedCoupon = gson.fromJson(couponData, Coupon.class);
             Snackbar.make(parentView, appliedCoupon.getCode() + " Applied", Snackbar.LENGTH_SHORT).show();
         }
+    }
+
+    private void processServiceData() {
+        servicePrice = 0;
+        for (int i = 0; i < selectedServices.size(); i++) {
+            int selected = selectedServices.get(i) - 1;
+            float price = Float.parseFloat(serviceDataList.get(selected).getPrice());
+            servicePrice = servicePrice + price;
+        }
+        updateUI();
+        Toast.makeText(this, ""+servicePrice, Toast.LENGTH_SHORT).show();
+    }
+
+    public void addService(int pos) {
+        selectedServices.add(pos+1);
+        Collections.sort(selectedServices);
+        processServiceData();
+    }
+
+    public void removeService(int pos) {
+        selectedServices.remove(selectedServices.indexOf(pos+1));
+        Collections.sort(selectedServices);
+        processServiceData();
     }
 
     private void showDatePicker(String type /*"checkin"/"checkout"*/) {
@@ -728,6 +767,11 @@ public class HotelDetailsNew extends AppCompatActivity {
                         prepareRules(hotelDetailsModel.getRulesDataList());
                         prepareLocalInterest(hotelDetailsModel.getLocalInterests());
                         prepareNearBy(hotelDetailsModel.getNearByList());
+                        textViewAmenities.setText(hotelDetailsModel.getAmenitiesLabel());
+                        textViewPolicy.setText(hotelDetailsModel.getHotelRulesLabel());
+                        textViewService.setText(hotelDetailsModel.getExtraServicesLabel());
+                        textViewInterest.setText(hotelDetailsModel.getLocalInterestLabel());
+                        textViewNearBy.setText(hotelDetailsModel.getNearbyLabel());
                         updateUI();
 
                     } else {
@@ -852,6 +896,16 @@ public class HotelDetailsNew extends AppCompatActivity {
 
     private void prepareServices(ArrayList<ServiceData> serviceData) {
         serviceFrame.setVisibility(View.GONE);
+        /*if (serviceData.size() > 0) {
+            ServiceAdapter serviceAdapter = new ServiceAdapter(this, serviceData);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL,false);
+            serviceRecycler.setLayoutManager(layoutManager);
+            serviceRecycler.setAdapter(serviceAdapter);
+            serviceDataList.clear();
+            serviceDataList.addAll(serviceData);
+        } else {
+            serviceFrame.setVisibility(View.GONE);
+        }*/
     }
 
     private void prepareRules(ArrayList<RulesData> rulesList) {

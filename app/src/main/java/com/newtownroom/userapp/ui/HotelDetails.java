@@ -53,6 +53,11 @@ import retrofit2.Response;
 
 public class HotelDetails extends AppCompatActivity {
 
+    /**
+     * @deprecated
+     * @see HotelDetailsNew
+     */
+
 
     //component_stay_details
     TextInputLayout checkInInput, checkOutInput, guestInput, roomInput;

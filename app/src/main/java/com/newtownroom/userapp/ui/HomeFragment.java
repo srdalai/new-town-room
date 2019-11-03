@@ -85,17 +85,8 @@ public class HomeFragment extends Fragment {
         RecyclerView.LayoutManager gridLayoutManager = new GridLayoutManager(requireContext(), 2, GridLayoutManager.HORIZONTAL, false);
         otherHotelsRecycler.setLayoutManager(gridLayoutManager);
         otherHotelsRecycler.setAdapter(hotelsListAdapter);
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (Utilities.hasInternet(requireContext())) {
-            getHomeData();
-        } else {
-            Snackbar.make(parentView, "No internet connection available", Snackbar.LENGTH_INDEFINITE)
-                    .setAction("Retry", view -> onResume()).show();
-        }
+        getHomeData();
     }
 
     ImageListener imageListener = new ImageListener() {
@@ -149,6 +140,11 @@ public class HomeFragment extends Fragment {
     }
 
     private void getHomeData() {
+        if (!Utilities.hasInternet(requireContext())) {
+            Snackbar.make(parentView, "No internet connection available", Snackbar.LENGTH_INDEFINITE)
+                    .setAction("Retry", _view -> getHomeData()).show();
+            return;
+        }
         progressDialog.show();
         Call<HomeResponse> call = service.getHomeData();
         call.enqueue(new Callback<HomeResponse>() {

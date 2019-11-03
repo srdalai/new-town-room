@@ -74,6 +74,26 @@ public class MyBookingsAdapter extends RecyclerView.Adapter<MyBookingsAdapter.My
         holder.txtGuests.setText(booking.getTotalGuest() + " Guest");
         holder.txtRooms.setText(booking.getTotalRoom() + " Room");
 
+        if (booking.getBookingStatus().equals("1")) {
+            holder.txtActive.setVisibility(View.VISIBLE);
+            holder.txtCompleted.setVisibility(View.GONE);
+            holder.txtCancelled.setVisibility(View.GONE);
+            holder.bookAgain.setVisibility(View.GONE);
+
+        } else if (booking.getBookingStatus().equals("2")) {
+            holder.txtActive.setVisibility(View.GONE);
+            holder.txtCompleted.setVisibility(View.VISIBLE);
+            holder.txtCancelled.setVisibility(View.GONE);
+            holder.bookAgain.setVisibility(View.VISIBLE);
+
+        } else {
+            holder.txtActive.setVisibility(View.GONE);
+            holder.txtCompleted.setVisibility(View.GONE);
+            holder.txtCancelled.setVisibility(View.VISIBLE);
+            holder.bookAgain.setVisibility(View.VISIBLE);
+
+        }
+
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {

@@ -8,14 +8,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabItem;
+import com.google.android.material.tabs.TabLayout;
 import com.newtownroom.userapp.R;
 import com.newtownroom.userapp.adapters.MyBookingsAdapter;
 import com.newtownroom.userapp.models.BookingData;
@@ -37,6 +41,9 @@ public class BookingsFragment extends Fragment {
 
     private RecyclerView bookingsRecycler;
     private ArrayList<BookingData> bookingDataList = new ArrayList<>();
+    private ArrayList<BookingData> upcomingList = new ArrayList<>();
+    private ArrayList<BookingData> completedList = new ArrayList<>();
+    private ArrayList<BookingData> cancelledList = new ArrayList<>();
     private MyBookingsAdapter myBookingsAdapter;
     private GetDataService service;
     private ProgressDialog progressDialog;
@@ -60,6 +67,12 @@ public class BookingsFragment extends Fragment {
         bookingsRecycler = view.findViewById(R.id.bookingsRecycler);
         noDataTextView = view.findViewById(R.id.noDataTextView);
 
+        TabLayout tabLayout = view.findViewById(R.id.tablayout);
+        /*TabItem tabUpcoming = view.findViewById(R.id.tabUpcoming);
+        TabItem tabCompleted = view.findViewById(R.id.tabCompleted);
+        TabItem tabCancelled = view.findViewById(R.id.tabCancelled);
+        ViewPager viewPager = view.findViewById(R.id.viewPager);*/
+
         progressDialog = new ProgressDialog(requireContext());
         progressDialog.setMessage("Loading....");
 
@@ -69,6 +82,32 @@ public class BookingsFragment extends Fragment {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireContext());
         bookingsRecycler.setLayoutManager(layoutManager);
         bookingsRecycler.setAdapter(myBookingsAdapter);
+
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (tab.getPosition() == 0) {
+                    //Toast.makeText(requireContext(), "Upcoming", Toast.LENGTH_SHORT).show();
+                    changeDataSet(upcomingList);
+                } else if (tab.getPosition() == 1) {
+                    //Toast.makeText(requireContext(), "Completed", Toast.LENGTH_SHORT).show();
+                    changeDataSet(completedList);
+                } else {
+                    //Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_SHORT).show();
+                    changeDataSet(cancelledList);
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
 
         getAllBookings();
 
@@ -89,9 +128,11 @@ public class BookingsFragment extends Fragment {
                     AllBookingsResponse allBookingsResponse = response.body();
                     bookingDataList.clear();
                     if (allBookingsResponse != null && (allBookingsResponse.getUpcomingBookings().size() > 0 || allBookingsResponse.getCompletedBookings().size() > 0 || allBookingsResponse.getCanceledBookings().size() > 0)) {
+                        upcomingList.addAll(allBookingsResponse.getUpcomingBookings());
+                        completedList.addAll(allBookingsResponse.getCompletedBookings());
+                        cancelledList.addAll(allBookingsResponse.getCanceledBookings());
                         bookingDataList.addAll(response.body().getUpcomingBookings());
                     } else {
-                        noDataTextView.setText("No Booking Available");
                         noDataTextView.setVisibility(View.VISIBLE);
                     }
                     myBookingsAdapter.notifyDataSetChanged();
@@ -104,6 +145,19 @@ public class BookingsFragment extends Fragment {
                 Log.d("TAG", t.toString());
             }
         });
+    }
+
+    private void changeDataSet(ArrayList<BookingData> bookingList) {
+        bookingDataList.clear();
+        bookingDataList.addAll(bookingList);
+        myBookingsAdapter.notifyDataSetChanged();
+        if (bookingList.size() > 0) {
+            noDataTextView.setVisibility(View.GONE);
+            bookingsRecycler.setVisibility(View.VISIBLE);
+        } else {
+            noDataTextView.setVisibility(View.VISIBLE);
+            bookingsRecycler.setVisibility(View.GONE);
+        }
     }
 
     public void cancelBooking(String booking_id) {
