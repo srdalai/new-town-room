@@ -41,6 +41,8 @@ import com.newtownroom.userapp.rest.RetrofitClientInstance;
 import com.newtownroom.userapp.utils.PreferenceManager;
 import com.newtownroom.userapp.utils.Utilities;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
@@ -342,7 +344,7 @@ public class RegisterFragment extends Fragment implements LocationListener {
         Call<SignUpResponse> call = service.postSignUpRequest(model);
         call.enqueue(new Callback<SignUpResponse>() {
             @Override
-            public void onResponse(Call<SignUpResponse> call, Response<SignUpResponse> response) {
+            public void onResponse(@NotNull Call<SignUpResponse> call, @NotNull Response<SignUpResponse> response) {
                 if (!isAdded()) return;
                 progressDialog.dismiss();
                 if (response.isSuccessful() && response.code() == 200) {
@@ -367,7 +369,7 @@ public class RegisterFragment extends Fragment implements LocationListener {
             }
 
             @Override
-            public void onFailure(Call<SignUpResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<SignUpResponse> call, @NotNull Throwable t) {
                 if (!isAdded()) return;
                 progressDialog.dismiss();
                 Log.d("Error", t.toString());

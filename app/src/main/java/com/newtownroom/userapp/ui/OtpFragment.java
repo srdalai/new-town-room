@@ -28,6 +28,8 @@ import com.newtownroom.userapp.rest.RetrofitClientInstance;
 import com.newtownroom.userapp.utils.AppConstants;
 import com.newtownroom.userapp.utils.PreferenceManager;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -115,7 +117,7 @@ public class OtpFragment extends Fragment {
 
         call.enqueue(new Callback<OtpResponse>() {
             @Override
-            public void onResponse(Call<OtpResponse> call, Response<OtpResponse> response) {
+            public void onResponse(@NotNull Call<OtpResponse> call, @NotNull Response<OtpResponse> response) {
                 if (!isAdded()) return;
                 progressDialog.dismiss();
                 if (response.isSuccessful() && response.code() == 200) {
@@ -144,7 +146,7 @@ public class OtpFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<OtpResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<OtpResponse> call, @NotNull Throwable t) {
                 if (!isAdded()) return;
                 progressDialog.dismiss();
                 Log.d("Error", t.toString());

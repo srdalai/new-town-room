@@ -24,6 +24,8 @@ import com.newtownroom.userapp.rest.GetDataService;
 import com.newtownroom.userapp.rest.RetrofitClientInstance;
 import com.newtownroom.userapp.utils.PreferenceManager;
 
+import org.jetbrains.annotations.NotNull;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -112,14 +114,14 @@ public class LoginFragment extends Fragment {
         Call<LoginResponse> call = service.postLoginRequest(new LoginInput(phoneNumber));
         call.enqueue(new Callback<LoginResponse>() {
             @Override
-            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+            public void onResponse(@NotNull Call<LoginResponse> call, @NotNull Response<LoginResponse> response) {
                 if (!isAdded()) return;
                 progressDialog.dismiss();
                 if (response.isSuccessful() && response.code() == 200) {
                     LoginResponse logInModel = response.body();
                     if(logInModel != null) {
                         Log.d("Response = > ", response.raw().toString());
-                        int code = response.body().getResponseCode();
+                        int code = logInModel.getResponseCode();
                         if (code == 200) {
                             Bundle bundle = new Bundle();
                             bundle.putString(FLOW_FROM, FLOW_FROM_LOGIN);
@@ -138,7 +140,7 @@ public class LoginFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<LoginResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<LoginResponse> call, @NotNull Throwable t) {
                 if (!isAdded()) return;
                 Log.d("Error", t.toString());
                 Snackbar.make(requireView(), "Something went wrong...Please try later!", Snackbar.LENGTH_LONG).show();

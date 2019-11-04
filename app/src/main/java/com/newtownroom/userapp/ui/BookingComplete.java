@@ -47,6 +47,8 @@ import com.payumoney.core.PayUmoneySdkInitializer;
 import com.payumoney.core.entity.TransactionResponse;
 import com.payumoney.sdkui.ui.utils.PayUmoneyFlowManager;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
@@ -83,7 +85,7 @@ public class BookingComplete extends AppCompatActivity {
     private String ipDateFormat = "yyyy-MM-dd";
     private String opDateFormat = "EEE, d MMM";
 
-    float price = 0, priceDrop = 0, couponDiscount = 0, sellingPrice = 0;
+    float price = 0, priceDrop = 0, couponDiscount = 0, sellingPrice = 0, payable_amount = 0;
     int numOfGuests = 0, numOfRooms = 0, nights = 0;
     String booking_id;
     String applied_coupon = "", activity_title = "";
@@ -238,8 +240,9 @@ public class BookingComplete extends AppCompatActivity {
                 default:
                     paymentPercent = 100;
             }
-            float payable_amount = sellingPrice*paymentPercent/100;
+            payable_amount = sellingPrice*paymentPercent/100;
             Toast.makeText(this, "You will pay "+payable_amount, Toast.LENGTH_SHORT).show();
+            amount = String.valueOf(payable_amount);
             //processPayment();
         }));
 
@@ -261,7 +264,7 @@ public class BookingComplete extends AppCompatActivity {
         Call<BookingDetailsResponses> call = service.getBookingDetails(new SingleBookingID(Integer.parseInt(booking_id)));
         call.enqueue(new Callback<BookingDetailsResponses>() {
             @Override
-            public void onResponse(Call<BookingDetailsResponses> call, Response<BookingDetailsResponses> response) {
+            public void onResponse(@NotNull Call<BookingDetailsResponses> call, @NotNull Response<BookingDetailsResponses> response) {
                 progressDialog.dismiss();
                 if (response.code() == 200) {
                     BookingDetailsResponses bookingDetails = response.body();
@@ -278,7 +281,7 @@ public class BookingComplete extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<BookingDetailsResponses> call, Throwable t) {
+            public void onFailure(@NotNull Call<BookingDetailsResponses> call, @NotNull Throwable t) {
                 progressDialog.dismiss();
                 Log.d("Error", t.toString());
             }
@@ -341,7 +344,7 @@ public class BookingComplete extends AppCompatActivity {
         Call<CancelBookingResponse> call = service.deleteBooking(new SingleBookingID(Integer.parseInt(booking_id)));
         call.enqueue(new Callback<CancelBookingResponse>() {
             @Override
-            public void onResponse(Call<CancelBookingResponse> call, Response<CancelBookingResponse> response) {
+            public void onResponse(@NotNull Call<CancelBookingResponse> call, @NotNull Response<CancelBookingResponse> response) {
                 progressDialog.dismiss();
                 if (response.code() == 200) {
                     CancelBookingResponse responseModel = response.body();
@@ -362,10 +365,10 @@ public class BookingComplete extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<CancelBookingResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<CancelBookingResponse> call, @NotNull Throwable t) {
                 progressDialog.dismiss();
                 Snackbar.make(parentView, "Something went wrong...Please try later!", Snackbar.LENGTH_LONG).show();
-                Log.d("Retro Error", t.toString());
+                Log.d(TAG, t.toString());
 
             }
         });

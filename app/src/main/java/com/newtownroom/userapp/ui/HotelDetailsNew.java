@@ -75,6 +75,8 @@ import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ImageListener;
 import com.synnapps.carouselview.ViewListener;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -754,7 +756,7 @@ public class HotelDetailsNew extends AppCompatActivity {
 
         call.enqueue(new Callback<HotelDetailsResponse>() {
             @Override
-            public void onResponse(Call<HotelDetailsResponse> call, Response<HotelDetailsResponse> response) {
+            public void onResponse(@NotNull Call<HotelDetailsResponse> call, @NotNull Response<HotelDetailsResponse> response) {
                 progressDialog.dismiss();
                 if (HotelDetailsNew.this.isFinishing()) return;
                 if (response.isSuccessful() && response.code() == 200) {
@@ -786,7 +788,7 @@ public class HotelDetailsNew extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<HotelDetailsResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<HotelDetailsResponse> call, @NotNull Throwable t) {
                 if (HotelDetailsNew.this.isFinishing()) return;
                 progressDialog.dismiss();
                 Log.d("Error", t.toString());
@@ -964,7 +966,7 @@ public class HotelDetailsNew extends AppCompatActivity {
         Call<BookingResponse> call = service.booking(bookingInput);
         call.enqueue(new Callback<BookingResponse>() {
             @Override
-            public void onResponse(Call<BookingResponse> call, Response<BookingResponse> response) {
+            public void onResponse(@NotNull Call<BookingResponse> call, @NotNull Response<BookingResponse> response) {
                 progressDialog.dismiss();
                 if (response.isSuccessful() && response.code() == 200) {
                     Log.d("Success", response.toString());
@@ -981,7 +983,7 @@ public class HotelDetailsNew extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<BookingResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<BookingResponse> call, @NotNull Throwable t) {
                 progressDialog.dismiss();
                 t.printStackTrace();
             }
@@ -1000,7 +1002,7 @@ public class HotelDetailsNew extends AppCompatActivity {
         Call<CheckAvailResponse> call = service.checkAvailability(checkAvailInput);
         call.enqueue(new Callback<CheckAvailResponse>() {
             @Override
-            public void onResponse(Call<CheckAvailResponse> call, Response<CheckAvailResponse> response) {
+            public void onResponse(@NotNull Call<CheckAvailResponse> call, @NotNull Response<CheckAvailResponse> response) {
                 if (response.code() == 200) {
                     CheckAvailResponse checkAvailResponse = response.body();
                     if (checkAvailResponse != null) {
@@ -1013,7 +1015,7 @@ public class HotelDetailsNew extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<CheckAvailResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<CheckAvailResponse> call, @NotNull Throwable t) {
                 Log.d("Error", t.toString());
             }
         });

@@ -21,8 +21,8 @@ import java.util.ArrayList;
 
 public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceViewHolder> {
 
-    Context mContext;
-    ArrayList<ServiceData> serviceList;
+    private Context mContext;
+    private ArrayList<ServiceData> serviceList;
 
     public ServiceAdapter(Context mContext, ArrayList<ServiceData> serviceList) {
         this.mContext = mContext;

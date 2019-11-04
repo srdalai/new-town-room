@@ -14,6 +14,8 @@ import com.newtownroom.userapp.rest.GetDataService;
 import com.newtownroom.userapp.rest.RetrofitClientInstance;
 import com.newtownroom.userapp.utils.PreferenceManager;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,13 +60,13 @@ public class SplashActivity extends AppCompatActivity {
         Call<TxnStatusResponse> call = service.checkTxnStatus(map, "0lMDzMDB", "ORDER-OD-201900001");
         call.enqueue(new Callback<TxnStatusResponse>() {
             @Override
-            public void onResponse(Call<TxnStatusResponse> call, Response<TxnStatusResponse> response) {
+            public void onResponse(@NotNull Call<TxnStatusResponse> call, @NotNull Response<TxnStatusResponse> response) {
                 Toast.makeText(SplashActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                 Log.d("TAG", response.toString());
             }
 
             @Override
-            public void onFailure(Call<TxnStatusResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<TxnStatusResponse> call, @NotNull Throwable t) {
 
             }
         });

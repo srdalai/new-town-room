@@ -25,6 +25,8 @@ import static com.newtownroom.userapp.utils.AppConstants.FLOW_FROM_LOGIN;
  */
 public class AuthFragment extends Fragment {
 
+    private static final String TAG = AuthFragment.class.getSimpleName();
+
     private MaterialButton btnLogin, btnSignup;
     private PreferenceManager preferenceManager;
 

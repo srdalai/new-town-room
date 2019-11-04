@@ -5,8 +5,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClientInstance {
 
-    public static final String BASE_URL = "https://app.newtownroom.com/rest/";
-    public static final String PAY_U_BASE_URL = "https://www.payumoney.com/sandbox/payment/payment/";
+    private static final String BASE_URL = "https://app.newtownroom.com/rest/";
+    private static final String PAY_U_BASE_URL = "https://www.payumoney.com/sandbox/payment/payment/";
     private static Retrofit retrofit = null;
     private static Retrofit payURetrofit = null;
 

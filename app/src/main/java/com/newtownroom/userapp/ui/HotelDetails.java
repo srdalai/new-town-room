@@ -37,6 +37,8 @@ import com.newtownroom.userapp.rest.RetrofitClientInstance;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ImageListener;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
@@ -396,7 +398,7 @@ public class HotelDetails extends AppCompatActivity {
 
         call.enqueue(new Callback<HotelDetailsResponse>() {
             @Override
-            public void onResponse(Call<HotelDetailsResponse> call, Response<HotelDetailsResponse> response) {
+            public void onResponse(@NotNull Call<HotelDetailsResponse> call, @NotNull Response<HotelDetailsResponse> response) {
                 progressDialog.dismiss();
                 if (HotelDetails.this.isFinishing()) return;
                 if (response.isSuccessful() && response.code() == 200) {
@@ -418,7 +420,7 @@ public class HotelDetails extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<HotelDetailsResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<HotelDetailsResponse> call, @NotNull Throwable t) {
                 if (HotelDetails.this.isFinishing()) return;
                 progressDialog.dismiss();
                 Log.d("Error", t.toString());

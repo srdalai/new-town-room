@@ -31,6 +31,8 @@ import com.newtownroom.userapp.restmodels.CancelBookingResponse;
 import com.newtownroom.userapp.restmodels.SingleBookingID;
 import com.newtownroom.userapp.utils.PreferenceManager;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -48,7 +50,7 @@ public class BookingsFragment extends Fragment {
     private GetDataService service;
     private ProgressDialog progressDialog;
     private PreferenceManager preferenceManager;
-    TextView noDataTextView;
+    private TextView noDataTextView;
 
     @Nullable
     @Override
@@ -122,7 +124,7 @@ public class BookingsFragment extends Fragment {
         Call<AllBookingsResponse> call = service.getBookingList(allBookingsInput);
         call.enqueue(new Callback<AllBookingsResponse>() {
             @Override
-            public void onResponse(Call<AllBookingsResponse> call, Response<AllBookingsResponse> response) {
+            public void onResponse(@NotNull Call<AllBookingsResponse> call, @NotNull Response<AllBookingsResponse> response) {
                 progressDialog.dismiss();
                 if (response.code() == 200) {
                     AllBookingsResponse allBookingsResponse = response.body();
@@ -131,7 +133,10 @@ public class BookingsFragment extends Fragment {
                         upcomingList.addAll(allBookingsResponse.getUpcomingBookings());
                         completedList.addAll(allBookingsResponse.getCompletedBookings());
                         cancelledList.addAll(allBookingsResponse.getCanceledBookings());
-                        bookingDataList.addAll(response.body().getUpcomingBookings());
+
+                        bookingDataList.addAll(allBookingsResponse.getUpcomingBookings());
+                        bookingDataList.addAll(allBookingsResponse.getCompletedBookings());
+                        bookingDataList.addAll(allBookingsResponse.getCanceledBookings());
                     } else {
                         noDataTextView.setVisibility(View.VISIBLE);
                     }
@@ -140,7 +145,7 @@ public class BookingsFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<AllBookingsResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<AllBookingsResponse> call, @NotNull Throwable t) {
                 progressDialog.dismiss();
                 Log.d("TAG", t.toString());
             }
@@ -165,7 +170,7 @@ public class BookingsFragment extends Fragment {
         Call<CancelBookingResponse> call = service.deleteBooking(new SingleBookingID(Integer.parseInt(booking_id)));
         call.enqueue(new Callback<CancelBookingResponse>() {
             @Override
-            public void onResponse(Call<CancelBookingResponse> call, Response<CancelBookingResponse> response) {
+            public void onResponse(@NotNull Call<CancelBookingResponse> call, @NotNull Response<CancelBookingResponse> response) {
                 progressDialog.dismiss();
                 if (response.code() == 200) {
                     CancelBookingResponse responseModel = response.body();
@@ -181,7 +186,7 @@ public class BookingsFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<CancelBookingResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<CancelBookingResponse> call, @NotNull Throwable t) {
                 progressDialog.dismiss();
                 Snackbar.make(requireView(), "Something went wrong...Please try later!", Snackbar.LENGTH_LONG).show();
                 Log.d("Retro Error", t.toString());

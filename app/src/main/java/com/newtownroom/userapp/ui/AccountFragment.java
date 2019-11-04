@@ -30,11 +30,15 @@ import com.newtownroom.userapp.restmodels.UpdateUserInput;
 import com.newtownroom.userapp.restmodels.UpdateUserResponse;
 import com.newtownroom.userapp.utils.PreferenceManager;
 
+import org.jetbrains.annotations.NotNull;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AccountFragment extends Fragment {
+
+    private static final String TAG = AccountFragment.class.getSimpleName();
 
     private MaterialButton loginButton, logoutButton, updateButton;
     private PreferenceManager preferenceManager;
@@ -182,7 +186,7 @@ public class AccountFragment extends Fragment {
         Call<UpdateUserResponse> call = service.updateUser(updateUserInput);
         call.enqueue(new Callback<UpdateUserResponse>() {
             @Override
-            public void onResponse(Call<UpdateUserResponse> call, Response<UpdateUserResponse> response) {
+            public void onResponse(@NotNull Call<UpdateUserResponse> call, @NotNull Response<UpdateUserResponse> response) {
                 progressDialog.dismiss();
                 if (response.code() == 200) {
                     if (response.body().getCode() == 200) {
@@ -195,9 +199,9 @@ public class AccountFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<UpdateUserResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<UpdateUserResponse> call, @NotNull Throwable t) {
                 progressDialog.dismiss();
-                Log.d("Error", t.toString());
+                Log.d(TAG, t.toString());
 
             }
         });

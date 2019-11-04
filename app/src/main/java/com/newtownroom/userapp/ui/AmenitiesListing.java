@@ -18,6 +18,8 @@ import java.util.ArrayList;
 
 public class AmenitiesListing extends AppCompatActivity {
 
+    private static final String TAG = AmenitiesListing.class.getSimpleName();
+
     RecyclerView amenitiesRecycler;
     AmenitiesAdapter amenitiesAdapter;
     ArrayList<AmenitiesData> amenitiesList = new ArrayList<>();
@@ -31,7 +33,7 @@ public class AmenitiesListing extends AppCompatActivity {
         getSupportActionBar().setTitle("Amenities Available");
 
         String amenities = getIntent().getStringExtra("amenities");
-        Log.d("TAG", amenities);
+        Log.d(TAG, amenities);
         Gson gson = new Gson();
         AmenitiesListData data = gson.fromJson(amenities, AmenitiesListData.class);
 

@@ -22,6 +22,8 @@ import com.newtownroom.userapp.restmodels.CouponsInput;
 import com.newtownroom.userapp.restmodels.CouponsResponse;
 import com.newtownroom.userapp.utils.PreferenceManager;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -79,9 +81,9 @@ public class CouponsActivity extends AppCompatActivity {
 
         call.enqueue(new Callback<CouponsResponse>() {
             @Override
-            public void onResponse(Call<CouponsResponse> call, Response<CouponsResponse> response) {
+            public void onResponse(@NotNull Call<CouponsResponse> call, @NotNull Response<CouponsResponse> response) {
                 progressDialog.dismiss();
-                if (response.code() == 200 && response.body().getCode() == 200 && response.body().getCoupons().size() > 0) {
+                if (response.code() == 200 && response.body() != null && response.body().getCode() == 200 && response.body().getCoupons().size() > 0) {
                     coupons.clear();
                     coupons.addAll(response.body().getCoupons());
                     couponsAdapter.notifyDataSetChanged();
@@ -91,7 +93,7 @@ public class CouponsActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<CouponsResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<CouponsResponse> call, @NotNull Throwable t) {
                 progressDialog.dismiss();
                 noDataTextView.setVisibility(View.VISIBLE);
                 Log.d("Error", t.toString());
