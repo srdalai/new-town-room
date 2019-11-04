@@ -4,6 +4,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -68,6 +70,7 @@ import com.newtownroom.userapp.models.ServiceData;
 import com.newtownroom.userapp.rest.GetDataService;
 import com.newtownroom.userapp.rest.RetrofitClientInstance;
 import com.newtownroom.userapp.utils.PreferenceManager;
+import com.newtownroom.userapp.utils.Utilities;
 import com.stfalcon.imageviewer.StfalconImageViewer;
 import com.stfalcon.imageviewer.listeners.OnImageChangeListener;
 import com.stfalcon.imageviewer.loader.ImageLoader;
@@ -130,6 +133,7 @@ public class HotelDetailsNew extends AppCompatActivity {
     TextView textViewService, textViewInterest, textViewNearBy;
     RecyclerView serviceRecycler, interestRecycler, nearByRecycler;
     FrameLayout serviceFrame, interestFrame, nearByFrame;
+    CardView bottomCard;
 
     //Custom Data
     AmenitiesAdapter amenitiesAdapter;
@@ -291,6 +295,7 @@ public class HotelDetailsNew extends AppCompatActivity {
         serviceFrame = findViewById(R.id.serviceFrame);
         interestFrame = findViewById(R.id.interestFrame);
         nearByFrame = findViewById(R.id.nearByFrame);
+        bottomCard = findViewById(R.id.bottomCard);
 
 
     }
@@ -341,7 +346,7 @@ public class HotelDetailsNew extends AppCompatActivity {
 
         matBtnOffers.setOnClickListener((view) -> {
             if (nights == 0 || roomNum == 0 || guestNum == 0) {
-                Snackbar.make(parentView, "Please Select Dates & Guests First", Snackbar.LENGTH_SHORT).show();
+                showSnackBar("Please Select Dates & Guests First", Snackbar.LENGTH_SHORT);
             } else {
                 Intent intent = new Intent(HotelDetailsNew.this, CouponsActivity.class);
                 intent.putExtra("hotelId", hotelId);
@@ -494,7 +499,7 @@ public class HotelDetailsNew extends AppCompatActivity {
             Gson gson = new Gson();
             appliedCoupon = gson.fromJson(couponData, Coupon.class);
             removedCoupon = gson.fromJson(couponData, Coupon.class);
-            Snackbar.make(parentView, appliedCoupon.getCode() + " Applied", Snackbar.LENGTH_SHORT).show();
+            showSnackBar(appliedCoupon.getCode() + " Applied", Snackbar.LENGTH_SHORT);
         }
     }
 
@@ -727,7 +732,8 @@ public class HotelDetailsNew extends AppCompatActivity {
             checkAvailability();
         }
 
-        btnProceed.setVisibility(bookingAvailable ? View.VISIBLE : View.GONE);
+        //btnProceed.setVisibility(bookingAvailable ? View.VISIBLE : View.GONE);
+        btnProceed.setClickable(bookingAvailable);
 
         //Setting strikethrough Text
         textPrice.setPaintFlags(textPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
@@ -779,10 +785,10 @@ public class HotelDetailsNew extends AppCompatActivity {
                         updateUI();
 
                     } else {
-                        Snackbar.make(parentView, "Something went wrong...Please try later!", Snackbar.LENGTH_LONG).show();
+                        showSnackBar("Something went wrong...Please try later!", Snackbar.LENGTH_LONG);
                     }
                 } else {
-                    Snackbar.make(parentView, "Something went wrong...Please try later!", Snackbar.LENGTH_LONG).show();
+                    showSnackBar("Something went wrong...Please try later!", Snackbar.LENGTH_LONG);
                 }
 
             }
@@ -792,7 +798,7 @@ public class HotelDetailsNew extends AppCompatActivity {
                 if (HotelDetailsNew.this.isFinishing()) return;
                 progressDialog.dismiss();
                 Log.d("Error", t.toString());
-                Snackbar.make(parentView, "Something went wrong...Please try later!", Snackbar.LENGTH_LONG).show();
+                showSnackBar("Something went wrong...Please try later!", Snackbar.LENGTH_LONG);
             }
         });
     }
@@ -1008,7 +1014,7 @@ public class HotelDetailsNew extends AppCompatActivity {
                     if (checkAvailResponse != null) {
                         bookingAvailable = checkAvailResponse.getAvailableStatus() == 1;
                         Log.d("Availability", checkAvailResponse.getMsg());
-                        Snackbar.make(parentView, checkAvailResponse.getMsg(), Snackbar.LENGTH_SHORT).show();
+                        showSnackBar(checkAvailResponse.getMsg(), Snackbar.LENGTH_SHORT);
                         updateUI();
                     }
                 }
@@ -1040,6 +1046,28 @@ public class HotelDetailsNew extends AppCompatActivity {
             }
         });
         builder.create().show();
+    }
+
+    private void showSnackBar(String message, int length) {
+        Snackbar snack = Snackbar.make(parentView, message, length);
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) snack.getView().getLayoutParams();
+
+        params.setMargins(getSnackBarMargin()[0], getSnackBarMargin()[1], getSnackBarMargin()[2], getSnackBarMargin()[3]);
+        snack.getView().setLayoutParams(params);
+        snack.show();
+    }
+
+    public int[] getSnackBarMargin() {
+        int marginLeft = Utilities.convertDpToPixel(this, 4);
+        int marginRight = Utilities.convertDpToPixel(this, 4);
+        int marginTop = Utilities.convertDpToPixel(this, 4);
+        int marginBottom = bottomCard.getHeight() + Utilities.convertDpToPixel(this, 4);
+        int[] marginArray = new int[4];
+        marginArray[0] = marginLeft;
+        marginArray[1] = marginTop;
+        marginArray[2] = marginRight;
+        marginArray[3] = marginBottom;
+        return marginArray;
     }
 
     @Override

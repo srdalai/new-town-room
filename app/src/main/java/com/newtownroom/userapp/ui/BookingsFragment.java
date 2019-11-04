@@ -175,20 +175,21 @@ public class BookingsFragment extends Fragment {
                 if (response.code() == 200) {
                     CancelBookingResponse responseModel = response.body();
                     if (responseModel != null && responseModel.getCode() == 200) {
-                        Snackbar.make(requireView(), "Booking Cancelled Successfully", Snackbar.LENGTH_SHORT).show();
+                        ((MainActivity) requireContext()).showSnack("Booking Cancelled Successfully", Snackbar.LENGTH_LONG);
+
                         getAllBookings();
                     } else {
-                        Snackbar.make(requireView(), "Something went wrong...Please try later!", Snackbar.LENGTH_LONG).show();
+                        ((MainActivity) requireContext()).showSnack("Something went wrong...Please try later!", Snackbar.LENGTH_LONG);
                     }
                 } else {
-                    Snackbar.make(requireView(), "Something went wrong...Please try later!", Snackbar.LENGTH_LONG).show();
+                    ((MainActivity) requireContext()).showSnack("Something went wrong...Please try later!", Snackbar.LENGTH_LONG);
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call<CancelBookingResponse> call, @NotNull Throwable t) {
                 progressDialog.dismiss();
-                Snackbar.make(requireView(), "Something went wrong...Please try later!", Snackbar.LENGTH_LONG).show();
+                ((MainActivity) requireContext()).showSnack("Something went wrong...Please try later!", Snackbar.LENGTH_LONG);
                 Log.d("Retro Error", t.toString());
 
             }

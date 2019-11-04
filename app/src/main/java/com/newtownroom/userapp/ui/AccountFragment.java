@@ -194,7 +194,7 @@ public class AccountFragment extends Fragment {
                         preferenceManager.setEmail(newEmail);
                         preferenceManager.setName(newName);
                     }
-                    Snackbar.make(requireView(), response.body().getMsg(), Snackbar.LENGTH_LONG).show();
+                    ((MainActivity) requireContext()).showSnack(response.body().getMsg(), Snackbar.LENGTH_LONG);
                 }
             }
 

@@ -2,12 +2,18 @@ package com.newtownroom.userapp.ui;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.widget.FrameLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.newtownroom.userapp.R;
+import com.newtownroom.userapp.utils.Utilities;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -15,11 +21,15 @@ import androidx.navigation.ui.NavigationUI;
 
 public class MainActivity extends AppCompatActivity {
 
+    ConstraintLayout parentFrame;
+    BottomNavigationView navView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        BottomNavigationView navView = findViewById(R.id.nav_view);
+        parentFrame = findViewById(R.id.container);
+        navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
@@ -42,6 +52,28 @@ public class MainActivity extends AppCompatActivity {
 
         builder.setNegativeButton("No", null);
         builder.create().show();
+    }
+
+    public void showSnack(String message, int length) {
+        Snackbar snack = Snackbar.make(parentFrame, message, length);
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) snack.getView().getLayoutParams();
+
+        params.setMargins(getSnackBarMargin()[0], getSnackBarMargin()[1], getSnackBarMargin()[2], getSnackBarMargin()[3]);
+        snack.getView().setLayoutParams(params);
+        snack.show();
+    }
+
+    public int[] getSnackBarMargin() {
+        int marginLeft = Utilities.convertDpToPixel(this, 4);
+        int marginRight = Utilities.convertDpToPixel(this, 4);
+        int marginTop = Utilities.convertDpToPixel(this, 4);
+        int marginBottom = navView.getHeight() + Utilities.convertDpToPixel(this, 4);
+        int[] marginArray = new int[4];
+        marginArray[0] = marginLeft;
+        marginArray[1] = marginTop;
+        marginArray[2] = marginRight;
+        marginArray[3] = marginBottom;
+        return marginArray;
     }
 
     @Override

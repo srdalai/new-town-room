@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -31,6 +32,8 @@ import com.newtownroom.userapp.restmodels.HomeResponse;
 import com.newtownroom.userapp.utils.Utilities;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ImageListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -85,15 +88,21 @@ public class HomeFragment extends Fragment {
 
     private void getHomeData() {
         if (!Utilities.hasInternet(requireContext())) {
-            Snackbar.make(parentView, "No internet connection available", Snackbar.LENGTH_INDEFINITE)
-                    .setAction("Retry", _view -> getHomeData()).show();
+            Snackbar snack = Snackbar.make(parentView, "No internet connection available", Snackbar.LENGTH_INDEFINITE);
+            snack.setAction("Retry", _view -> getHomeData());
+
+            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) snack.getView().getLayoutParams();
+            int[] snackBarMargin = ((MainActivity) requireContext()).getSnackBarMargin();
+            params.setMargins(snackBarMargin[0], snackBarMargin[1], snackBarMargin[2], snackBarMargin[3]);
+            snack.getView().setLayoutParams(params);
+            snack.show();
             return;
         }
         progressDialog.show();
         Call<HomeResponse> call = service.getHomeData();
         call.enqueue(new Callback<HomeResponse>() {
             @Override
-            public void onResponse(Call<HomeResponse> call, Response<HomeResponse> response) {
+            public void onResponse(@NotNull Call<HomeResponse> call, @NotNull Response<HomeResponse> response) {
                 if (!isAdded()) return;
                 progressDialog.dismiss();
                 if (response.code() == 200) {
@@ -102,10 +111,10 @@ public class HomeFragment extends Fragment {
                         prepareBannerData(homeResponse.getBanners());
                         prepareFeaturedHotels(homeResponse.getFeaturedHotels());
                     } else {
-                        Snackbar.make(requireView(), "Something went wrong...Please try later!", Snackbar.LENGTH_LONG).show();
+                        ((MainActivity) requireContext()).showSnack("Something went wrong...Please try later!", Snackbar.LENGTH_LONG);
                     }
                 } else {
-                    Snackbar.make(requireView(), "Something went wrong...Please try later!", Snackbar.LENGTH_LONG).show();
+                    ((MainActivity) requireContext()).showSnack("Something went wrong...Please try later!", Snackbar.LENGTH_LONG);
                 }
             }
 
@@ -114,7 +123,7 @@ public class HomeFragment extends Fragment {
                 if (!isAdded()) return;
                 progressDialog.dismiss();
                 Log.d("Error", t.toString());
-                Snackbar.make(requireView(), "Something went wrong...Please try later!", Snackbar.LENGTH_LONG).show();
+                ((MainActivity) requireContext()).showSnack("Something went wrong...Please try later!", Snackbar.LENGTH_LONG);
             }
         });
     }

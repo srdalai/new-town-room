@@ -51,4 +51,9 @@ public class Utilities {
         }
         return returnDate;
     }
+
+    public static int convertDpToPixel(Context ctx, int dp) {
+        float density = ctx.getResources().getDisplayMetrics().density;
+        return Math.round((float) dp * density);
+    }
 }
