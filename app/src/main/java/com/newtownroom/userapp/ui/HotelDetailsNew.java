@@ -695,13 +695,15 @@ public class HotelDetailsNew extends AppCompatActivity {
         }
 
         if (appliedCoupon != null) {
-            if (appliedCoupon.getType().equals("flat")) {
+            /*if (appliedCoupon.getType().equals("flat")) {
                 couponDiscount = Float.parseFloat(appliedCoupon.getAmount());
             } else {
                 float discountPercent = Float.parseFloat(appliedCoupon.getAmount());
                 float totalSellingPrice = sellingPrice * nights;
                 couponDiscount = totalSellingPrice*(discountPercent/100);
-            }
+            }*/
+
+            couponDiscount = Float.parseFloat(appliedCoupon.getAmount());
 
             couponDesc.setText(appliedCoupon.getCode() + " applied");
             couponLinear.setVisibility(View.VISIBLE);

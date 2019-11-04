@@ -50,17 +50,19 @@
                     android:id="@+id/txtHotelName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:maxLines="2"
+                    android:minLines="2"
                     android:text="Hotel Name"
                     android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:maxLines="2"
-                    android:minLines="2"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/txtAddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/txtHotelName"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:text="Address One, Address" />
 
                 <TextView
