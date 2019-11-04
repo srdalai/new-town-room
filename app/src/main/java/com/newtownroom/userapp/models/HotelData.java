@@ -62,7 +62,7 @@ public class HotelData {
     private float longitude;
 
     @SerializedName("lat")
-    private float latitude;
+    private double latitude;
 
     @SerializedName("meta_title")
     private String metaTitle;
@@ -222,11 +222,11 @@ public class HotelData {
         this.longitude = longitude;
     }
 
-    public float getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(float latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 

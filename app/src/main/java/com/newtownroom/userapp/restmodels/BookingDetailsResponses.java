@@ -2,6 +2,7 @@ package com.newtownroom.userapp.restmodels;
 
 import com.google.gson.annotations.SerializedName;
 import com.newtownroom.userapp.models.BookingData;
+import com.newtownroom.userapp.models.BookingPrice;
 import com.newtownroom.userapp.models.HotelData;
 import com.newtownroom.userapp.models.LocalInterest;
 import com.newtownroom.userapp.models.RulesData;
@@ -27,7 +28,10 @@ public class BookingDetailsResponses {
     private ArrayList<UserData> user;
 
     @SerializedName("hotel")
-    private ArrayList<HotelData> hotel;
+    private HotelData hotel;
+
+    @SerializedName("price")
+    private BookingPrice bookingPrice;
 
     @SerializedName("hotel_rule_label")
     private String hotel_rule_label;
@@ -81,12 +85,20 @@ public class BookingDetailsResponses {
         this.user = user;
     }
 
-    public ArrayList<HotelData> getHotel() {
+    public HotelData getHotel() {
         return hotel;
     }
 
-    public void setHotel(ArrayList<HotelData> hotel) {
+    public void setHotel(HotelData hotel) {
         this.hotel = hotel;
+    }
+
+    public BookingPrice getBookingPrice() {
+        return bookingPrice;
+    }
+
+    public void setBookingPrice(BookingPrice bookingPrice) {
+        this.bookingPrice = bookingPrice;
     }
 
     public String getHotel_rule_label() {

@@ -170,7 +170,7 @@ public class BookingsFragment extends Fragment {
                 if (response.code() == 200) {
                     CancelBookingResponse responseModel = response.body();
                     if (responseModel != null && responseModel.getCode() == 200) {
-                        Snackbar.make(requireView(), "Booking Cancelled Successfully", Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(requireView(), "Booking Cancelled Successfully", Snackbar.LENGTH_SHORT).show();
                         getAllBookings();
                     } else {
                         Snackbar.make(requireView(), "Something went wrong...Please try later!", Snackbar.LENGTH_LONG).show();

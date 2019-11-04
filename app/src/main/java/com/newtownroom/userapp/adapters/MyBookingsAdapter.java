@@ -94,13 +94,18 @@ public class MyBookingsAdapter extends RecyclerView.Adapter<MyBookingsAdapter.My
 
         }
 
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                bookingsFragment.cancelBooking(booking.getId());
-                return false;
-            }
+        holder.itemView.setOnLongClickListener(view -> {
+            bookingsFragment.cancelBooking(booking.getId());
+            return false;
         });
+
+        holder.itemView.setOnClickListener((view -> {
+            Intent intent = new Intent(mContext, BookingComplete.class);
+            intent.putExtra("booking_id", booking.getId());
+            intent.putExtra("can_go_back", true);
+            intent.putExtra("activity_title", "Booking Details");
+            mContext.startActivity(intent);
+        }));
 
     }
 

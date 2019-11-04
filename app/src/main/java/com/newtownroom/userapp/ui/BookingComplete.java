@@ -15,16 +15,23 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
 import com.newtownroom.userapp.R;
 import com.newtownroom.userapp.adapters.InterestAdapter;
 import com.newtownroom.userapp.models.BookingData;
+import com.newtownroom.userapp.models.BookingPrice;
 import com.newtownroom.userapp.models.HotelData;
 import com.newtownroom.userapp.models.LocalInterest;
 import com.newtownroom.userapp.models.RulesData;
@@ -42,6 +49,7 @@ import com.payumoney.sdkui.ui.utils.PayUmoneyFlowManager;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -55,23 +63,34 @@ public class BookingComplete extends AppCompatActivity {
     private static final String TAG = BookingComplete.class.getSimpleName();
     private static final int REQUEST_PERMISSION_KEY = 899;
 
-    MaterialButton matBtnPayNow, btnCancel, btnShare, btnGetAssistance;
-    TextView textPrice, textDiscount, textSellingPrice, txtPrice, txtNumGuests, txtNumOfNights, txtRomDetails, txtStartDate, txtEndDate;
+    MaterialButton btnCancel, btnShare, btnGetAssistance;
+    TextView txtPrice, txtNumGuests, txtNumOfNights, txtRomDetails, txtStartDate, txtEndDate;
     TextView txtUserName, textSuccessMsg, textHotelName, textHotelAddress, textViewMessage, textLocalInterest;
     TextView textDirections, textCallNow;
     RecyclerView interestRecycler;
     String checkInDate, checkOutDate, name, hotel_name, hotel_address;
     View interest_layout, parentView;
+    ImageView imageViewHotel;
+
+    //Payment View
+    TextView textPrice, textPriceDrop, textCouponDiscount, couponText, textSellingPrice;
+    RadioGroup paymentRadioGroup;
+    MaterialButton matBtnPayNow;
+    RadioButton radioFull, radio75, radioHalf, radio25;
 
     GetDataService service;
     ProgressDialog progressDialog;
     private String ipDateFormat = "yyyy-MM-dd";
     private String opDateFormat = "EEE, d MMM";
 
-    float price = 0, discount = 0, sellingPrice = 0;
+    float price = 0, priceDrop = 0, couponDiscount = 0, sellingPrice = 0;
     int numOfGuests = 0, numOfRooms = 0, nights = 0;
     String booking_id;
-    float lat, lang;
+    String applied_coupon = "", activity_title = "";
+    double lat, lang;
+    boolean can_go_back = false;
+    int paymentPercent = 100;
+
     //PayU variables
     String key = "0lMDzMDB", salt = "48VSE2mGKk", txnid = "ORDER-OD-201900001", amount = "999", productinfo = "Hotel", firstname = "John", email = "user@email.com", udf1 = "", udf2 = "", udf3 = "", udf4 = "", udf5 = "";
 
@@ -80,23 +99,27 @@ public class BookingComplete extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking_complete);
 
-        getSupportActionBar().setTitle("Booking Complete");
-
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading....");
         service = RetrofitClientInstance.getRetrofitInstance().create(GetDataService.class);
 
+        setInitialData();
+
+        getSupportActionBar().setTitle(activity_title);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(can_go_back);
+
         initView();
         setClickListeners();
-        setInitialData();
         updateUI();
         makeAPICall();
     }
 
     private void setInitialData() {
         booking_id = getIntent().getStringExtra("booking_id");
-        price = getIntent().getFloatExtra("price", 0);
-        discount = getIntent().getFloatExtra("discount", 0);
+        can_go_back = getIntent().getBooleanExtra("can_go_back", false);
+        activity_title = getIntent().getStringExtra("activity_title");
+        /*price = getIntent().getFloatExtra("price", 0);
+        couponDiscount = getIntent().getFloatExtra("discount", 0);
         sellingPrice = getIntent().getFloatExtra("sellingPrice", 0);
         numOfGuests = getIntent().getIntExtra("numOfGuests", 0);
         numOfRooms = getIntent().getIntExtra("numOfRooms", 0);
@@ -104,14 +127,17 @@ public class BookingComplete extends AppCompatActivity {
         checkInDate = getIntent().getStringExtra("checkInDate");
         checkOutDate = getIntent().getStringExtra("checkOutDate");
 
-        amount = String.valueOf(sellingPrice);
+        amount = String.valueOf(sellingPrice);*/
     }
 
     private void updateUI() {
-        textPrice.setText("\u20B9 " + price);
-        textDiscount.setText("-\u20B9 " + (price - sellingPrice));
-        textSellingPrice.setText("\u20B9 " + sellingPrice);
-        txtPrice.setText("\u20B9 " + sellingPrice);
+        textPrice.setText("\u20B9 " + formattedString(price));
+        textPriceDrop.setText("-\u20B9 " + formattedString(priceDrop));
+        textCouponDiscount.setText("-\u20B9 " + formattedString(couponDiscount));
+        textSellingPrice.setText("\u20B9 " + formattedString(sellingPrice));
+        txtPrice.setText("\u20B9 " + formattedString(sellingPrice));
+
+        couponText.setText(applied_coupon);
 
         txtNumGuests.setText(String.valueOf(numOfGuests));
 
@@ -134,10 +160,8 @@ public class BookingComplete extends AppCompatActivity {
     }
 
     private void initView() {
-        matBtnPayNow = findViewById(R.id.matBtnPayNow);
-        textPrice = findViewById(R.id.textPrice);
-        textDiscount = findViewById(R.id.textDiscount);
-        textSellingPrice = findViewById(R.id.textSellingPrice);
+
+
         txtPrice = findViewById(R.id.txtPrice);
         txtNumGuests = findViewById(R.id.txtNumGuests);
         txtNumOfNights = findViewById(R.id.txtNumOfNights);
@@ -158,13 +182,33 @@ public class BookingComplete extends AppCompatActivity {
         btnGetAssistance = findViewById(R.id.btnGetAssistance);
         interest_layout = findViewById(R.id.interest_layout);
         parentView = findViewById(R.id.parentView);
+        imageViewHotel = findViewById(R.id.imageViewHotel);
+
+        //Payment View
+        textPrice = findViewById(R.id.textPrice);
+        textPriceDrop = findViewById(R.id.textPriceDrop);
+        textCouponDiscount = findViewById(R.id.textCouponDiscount);
+        textSellingPrice = findViewById(R.id.textSellingPrice);
+        couponText = findViewById(R.id.couponText);
+        matBtnPayNow = findViewById(R.id.matBtnPayNow);
+        paymentRadioGroup = findViewById(R.id.paymentRadioGroup);
+        radioFull = findViewById(R.id.radioFull);
+        radio75 = findViewById(R.id.radio75);
+        radioHalf = findViewById(R.id.radioHalf);
+        radio25 = findViewById(R.id.radio25);
+
+        radioFull.setChecked(true);
     }
 
     private void setClickListeners() {
         textDirections.setOnClickListener((view -> {
-            //String mapUri = "geo:37.7749,-122.4194";
+            //String mapUri = "geo:20.2952829,85.8566532";
+            //lat = 20.2952829;
+            //lang = 85.8566532;
             Toast.makeText(this, "Lat: "+lat+", Long: "+lang, Toast.LENGTH_SHORT).show();
-            String mapUri = "geo:" + lat + "," + lang;
+            //String mapUri = "geo:" + lat + "," + lang;
+            //String mapUri = "google.navigation:q=" + lat + "," + lang;
+            String mapUri = "http://maps.google.com/maps?daddr="+lat+"," + lang;
             Uri gmmIntentUri = Uri.parse(mapUri);
             Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
             mapIntent.setPackage("com.google.android.apps.maps");
@@ -180,6 +224,22 @@ public class BookingComplete extends AppCompatActivity {
         }));
 
         matBtnPayNow.setOnClickListener((view -> {
+            int selectedID = paymentRadioGroup.getCheckedRadioButtonId();
+            switch (selectedID) {
+                case R.id.radio75:
+                    paymentPercent = 75;
+                    break;
+                case R.id.radioHalf:
+                    paymentPercent = 50;
+                    break;
+                case R.id.radio25:
+                    paymentPercent = 25;
+                    break;
+                default:
+                    paymentPercent = 100;
+            }
+            float payable_amount = sellingPrice*paymentPercent/100;
+            Toast.makeText(this, "You will pay "+payable_amount, Toast.LENGTH_SHORT).show();
             //processPayment();
         }));
 
@@ -190,13 +250,14 @@ public class BookingComplete extends AppCompatActivity {
         btnCancel.setOnClickListener((view -> {
             cancelBooking();
         }));
+
         btnShare.setOnClickListener((view -> {
             //shareIntent();
         }));
     }
 
     private void makeAPICall() {
-
+        progressDialog.show();
         Call<BookingDetailsResponses> call = service.getBookingDetails(new SingleBookingID(Integer.parseInt(booking_id)));
         call.enqueue(new Callback<BookingDetailsResponses>() {
             @Override
@@ -207,7 +268,8 @@ public class BookingComplete extends AppCompatActivity {
                     if (bookingDetails != null && bookingDetails.getCode() == 200) {
                         processBookingData(bookingDetails.getBooking().get(0));
                         processUserData(bookingDetails.getUser().get(0));
-                        processHotelData(bookingDetails.getHotel().get(0));
+                        processHotelData(bookingDetails.getHotel());
+                        processPricing(bookingDetails.getBookingPrice());
                         processHotelRules(bookingDetails.getHotel_rules());
                         processInterestsData(bookingDetails.getInterests());
                         updateUI();
@@ -218,6 +280,7 @@ public class BookingComplete extends AppCompatActivity {
             @Override
             public void onFailure(Call<BookingDetailsResponses> call, Throwable t) {
                 progressDialog.dismiss();
+                Log.d("Error", t.toString());
             }
         });
 
@@ -236,10 +299,26 @@ public class BookingComplete extends AppCompatActivity {
     }
 
     private void processHotelData(HotelData hotelData) {
+        Log.d("Hotel", new Gson().toJson(hotelData));
         hotel_name = hotelData.getTitle();
         hotel_address = hotelData.getAddress();
         lat = hotelData.getLatitude();
         lang = hotelData.getLongitude();
+        Glide.with(this)
+                .load(hotelData.getImage())
+                .placeholder(R.drawable.hotel_1)
+                .error(R.drawable.hotel_1)
+                .into(imageViewHotel);
+    }
+
+    private void processPricing(BookingPrice bookingPrice) {
+        Log.d("Price", new Gson().toJson(bookingPrice));
+        price = bookingPrice.getBookingPrice();
+        priceDrop = bookingPrice.getDroppedPrice();
+        couponDiscount = bookingPrice.getCouponPrice();
+        sellingPrice = bookingPrice.getPayablePrice();
+        applied_coupon = bookingPrice.getCouponLabel();
+        amount = String.valueOf(sellingPrice);
     }
 
     private void processHotelRules(ArrayList<RulesData> hotel_rules) {
@@ -468,7 +547,35 @@ public class BookingComplete extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(this, MainActivity.class));
-        finish();
+        if (can_go_back) {
+            super.onBackPressed();
+        } else {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+        }
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private String formattedString(Object ipString) {
+        DecimalFormat df = new DecimalFormat("####0.00");
+        String value = df.format(ipString);
+        String[] split_value = value.split("\\.");
+        if (split_value[1].equals("00")) {
+            return split_value[0];
+        } else {
+            return value;
+        }
+        /*return String.format(Locale.getDefault(), "%.2f", String.valueOf(ipString));*/
     }
 }
