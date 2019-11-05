@@ -1030,7 +1030,7 @@ public class HotelDetailsNew extends AppCompatActivity {
     }
 
     private void showErrorDialog(String message, boolean shouldCancel) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogGreen);
         builder.setMessage(message);
         builder.setCancelable(shouldCancel);
         builder.setPositiveButton("Ok", null);
@@ -1038,14 +1038,12 @@ public class HotelDetailsNew extends AppCompatActivity {
     }
 
     private void showSuccessDialog(String message, boolean shouldCancel) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogGreen);
         builder.setMessage(message);
         builder.setCancelable(shouldCancel);
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                bookingCompleted();
-            }
+        builder.setPositiveButton("Ok", (dialogInterface, i) -> {
+            bookingCompleted();
+            dialogInterface.dismiss();
         });
         builder.create().show();
     }

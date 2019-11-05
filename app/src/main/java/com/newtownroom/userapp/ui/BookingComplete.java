@@ -41,6 +41,7 @@ import com.newtownroom.userapp.rest.RetrofitClientInstance;
 import com.newtownroom.userapp.restmodels.BookingDetailsResponses;
 import com.newtownroom.userapp.restmodels.CancelBookingResponse;
 import com.newtownroom.userapp.restmodels.SingleBookingID;
+import com.newtownroom.userapp.utils.PreferenceManager;
 import com.newtownroom.userapp.utils.Utilities;
 import com.payumoney.core.PayUmoneyConfig;
 import com.payumoney.core.PayUmoneySdkInitializer;
@@ -84,6 +85,7 @@ public class BookingComplete extends AppCompatActivity {
     ProgressDialog progressDialog;
     private String ipDateFormat = "yyyy-MM-dd";
     private String opDateFormat = "EEE, d MMM";
+    PreferenceManager preferenceManager;
 
     float price = 0, priceDrop = 0, couponDiscount = 0, sellingPrice = 0, payable_amount = 0;
     int numOfGuests = 0, numOfRooms = 0, nights = 0;
@@ -94,13 +96,14 @@ public class BookingComplete extends AppCompatActivity {
     int paymentPercent = 100;
 
     //PayU variables
-    String key = "0lMDzMDB", salt = "48VSE2mGKk", txnid = "ORDER-OD-201900001", amount = "999", productinfo = "Hotel", firstname = "John", email = "user@email.com", udf1 = "", udf2 = "", udf3 = "", udf4 = "", udf5 = "";
+    String merchant_id = "6836640", key = "0lMDzMDB", salt = "48VSE2mGKk", txnid = "ORDER-OD-201900001", amount = "999", productinfo = "Hotel", phone = "9556798434", firstname = "John", email = "user@email.com", udf1 = "", udf2 = "", udf3 = "", udf4 = "", udf5 = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking_complete);
 
+        preferenceManager = new PreferenceManager(this);
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading....");
         service = RetrofitClientInstance.getRetrofitInstance().create(GetDataService.class);
@@ -243,7 +246,8 @@ public class BookingComplete extends AppCompatActivity {
             payable_amount = sellingPrice*paymentPercent/100;
             Toast.makeText(this, "You will pay "+payable_amount, Toast.LENGTH_SHORT).show();
             amount = String.valueOf(payable_amount);
-            //processPayment();
+            initPaymentData();
+            processPayment();
         }));
 
         btnGetAssistance.setOnClickListener((view -> {
@@ -349,12 +353,13 @@ public class BookingComplete extends AppCompatActivity {
                 if (response.code() == 200) {
                     CancelBookingResponse responseModel = response.body();
                     if (responseModel != null && responseModel.getCode() == 200) {
-                        Snackbar.make(parentView, "Booking Cancelled Successfully", Snackbar.LENGTH_INDEFINITE)
+                        /*Snackbar.make(parentView, "Booking Cancelled Successfully", Snackbar.LENGTH_INDEFINITE)
                                 .setAction("Continue", (view -> {
                                     startActivity(new Intent(BookingComplete.this, MainActivity.class));
                                     finish();
                                 }))
-                                .show();
+                                .show();*/
+                        showSuccessDialog("Booking Cancelled Successfully", false);
 
                     } else {
                         Snackbar.make(parentView, "Something went wrong...Please try later!", Snackbar.LENGTH_LONG).show();
@@ -482,6 +487,18 @@ public class BookingComplete extends AppCompatActivity {
 
     }
 
+    private void initPaymentData() {
+        /*merchant_id = "6836640";
+        key = "L7C9MBeV";
+        salt = "aj9Eu3B0kU";*/
+        txnid = booking_id;
+        amount = String.valueOf(payable_amount);
+        productinfo = "Hotel Booking";
+        /*phone = preferenceManager.getPhoneNumber();
+        firstname = preferenceManager.getName();
+        email = preferenceManager.getEmail();*/
+    }
+
     //PayU Methods
 
     private void processPayment() {
@@ -499,7 +516,7 @@ public class BookingComplete extends AppCompatActivity {
         PayUmoneySdkInitializer.PaymentParam.Builder builder = new PayUmoneySdkInitializer.PaymentParam.Builder();
         builder.setAmount(amount)                          // Payment amount
                 .setTxnId(txnid)                                             // Transaction ID
-                .setPhone("9556798434")                                           // User Phone number
+                .setPhone(phone)                                           // User Phone number
                 .setProductName(productinfo)                   // Product Name or description
                 .setFirstName(firstname)                              // User First name
                 .setEmail(email)                                            // User Email ID
@@ -510,9 +527,9 @@ public class BookingComplete extends AppCompatActivity {
                 .setUdf3(udf3)
                 .setUdf4(udf4)
                 .setUdf5(udf5)
-                .setIsDebug(true)                              // Integration environment - true (Debug)/ false(Production)
+                .setIsDebug(false)                              // Integration environment - true (Debug)/ false(Production)
                 .setKey(key)                        // Merchant key
-                .setMerchantId("6836640");             // Merchant ID
+                .setMerchantId(merchant_id);             // Merchant ID
 
         String hashSequence = key+"|"+txnid+"|"+amount+"|"+productinfo+"|"+firstname+"|"+email+"|"+udf1+"|"+udf2+"|"+udf3+"|"+udf4+"|"+udf5+"||||||"+salt;
         String serverCalculatedHash= hashCal("SHA-512", hashSequence);
@@ -580,5 +597,21 @@ public class BookingComplete extends AppCompatActivity {
             return value;
         }
         /*return String.format(Locale.getDefault(), "%.2f", String.valueOf(ipString));*/
+    }
+
+    private void showSuccessDialog(String message, boolean shouldCancel) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogGreen);
+        builder.setMessage(message);
+        builder.setCancelable(shouldCancel);
+        builder.setPositiveButton("Ok", (dialogInterface, i) -> {
+            if (can_go_back) {
+                finish();
+            } else {
+                startActivity(new Intent(this, MainActivity.class));
+            }
+            finish();
+            dialogInterface.dismiss();
+        });
+        builder.create().show();
     }
 }

@@ -111,8 +111,14 @@ public class BookingsFragment extends Fragment {
             }
         });
 
-        getAllBookings();
+        /*getAllBookings();*/
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getAllBookings();
     }
 
     private void getAllBookings() {

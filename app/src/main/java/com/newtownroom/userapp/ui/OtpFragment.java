@@ -15,12 +15,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.newtownroom.userapp.R;
+import com.newtownroom.userapp.restmodels.LoginInput;
+import com.newtownroom.userapp.restmodels.LoginResponse;
 import com.newtownroom.userapp.restmodels.OtpInput;
 import com.newtownroom.userapp.restmodels.OtpResponse;
 import com.newtownroom.userapp.rest.GetDataService;
@@ -49,6 +52,7 @@ public class OtpFragment extends Fragment {
     private TextInputEditText editTextOTP;
     private MaterialButton btnSubmit, btnResend;
     private TextView textViewResendTime;
+    private LinearLayout resendLinear;
 
     private String flowFrom = "", phoneNumber;
 
@@ -59,7 +63,7 @@ public class OtpFragment extends Fragment {
     private Timer mTimer;
     private Handler mTimerHandler = new Handler();
 
-    private int waitTime = 120;  //Wait time in seconds
+    private int waitTime = 12;  //Wait time in seconds
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -81,6 +85,7 @@ public class OtpFragment extends Fragment {
         btnSubmit = view.findViewById(R.id.btnSubmit);
         btnResend = view.findViewById(R.id.btnResend);
         textViewResendTime = view.findViewById(R.id.textViewResendTime);
+        resendLinear = view.findViewById(R.id.resendLinear);
 
         preferenceManager = new PreferenceManager(requireContext());
 
@@ -106,6 +111,18 @@ public class OtpFragment extends Fragment {
                 progressDialog.show();
                 processOTP(phoneNumber, otp);
             }
+        });
+
+        btnResend.setOnClickListener((_view) -> {
+            btnSubmit.setEnabled(false);
+
+            btnSubmit.setEnabled(true);
+            btnResend.setEnabled(false);
+            waitTime = 12;
+            startTimer();
+
+            /*phoneNumber = bundle.getString("phoneNumber");
+            resendOTP(phoneNumber);*/
         });
 
         startTimer();
@@ -149,6 +166,43 @@ public class OtpFragment extends Fragment {
             public void onFailure(@NotNull Call<OtpResponse> call, @NotNull Throwable t) {
                 if (!isAdded()) return;
                 progressDialog.dismiss();
+                Log.d("Error", t.toString());
+                Snackbar.make(requireView(), "Something went wrong...Please try later!", Snackbar.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void resendOTP(String phone) {
+        progressDialog.show();
+        Call<LoginResponse> call = service.postLoginRequest(new LoginInput(phone));
+        call.enqueue(new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                if (!isAdded()) return;
+                progressDialog.dismiss();
+                if (response.isSuccessful() && response.code() == 200) {
+                    LoginResponse logInModel = response.body();
+                    if(logInModel != null) {
+                        int code = logInModel.getResponseCode();
+                        if (code == 200) {
+                            btnSubmit.setEnabled(true);
+                            btnResend.setEnabled(false);
+                            waitTime = 120;
+                            startTimer();
+                        } else {
+                            Snackbar.make(requireView(), logInModel.getMessage(), Snackbar.LENGTH_LONG).show();
+                        }
+                    } else {
+                        Snackbar.make(requireView(), "Something went wrong...Please try later!", Snackbar.LENGTH_LONG).show();
+                    }
+                } else {
+                    Snackbar.make(requireView(), "Something went wrong...Please try later!", Snackbar.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
+                if (!isAdded()) return;
                 Log.d("Error", t.toString());
                 Snackbar.make(requireView(), "Something went wrong...Please try later!", Snackbar.LENGTH_LONG).show();
             }
@@ -202,9 +256,11 @@ public class OtpFragment extends Fragment {
     private void updateUI() {
         if (waitTime == 0) {
             btnResend.setEnabled(true);
+            btnResend.setText("Resend OTP");
             stopTimer();
         } else {
             textViewResendTime.setText(formatTime(String.valueOf(waitTime)));
+            btnResend.setText("Resend in " + formatTime(String.valueOf(waitTime)));
         }
     }
 
