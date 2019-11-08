@@ -2,6 +2,7 @@ package com.newtownroom.userapp.ui;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -17,11 +18,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.auth.api.phone.SmsRetriever;
+import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.newtownroom.userapp.R;
+import com.newtownroom.userapp.interfaces.OtpReceivedInterface;
+import com.newtownroom.userapp.receiver.SmsBroadcastReceiver;
 import com.newtownroom.userapp.restmodels.LoginInput;
 import com.newtownroom.userapp.restmodels.LoginResponse;
 import com.newtownroom.userapp.restmodels.OtpInput;
@@ -47,7 +56,7 @@ import static com.newtownroom.userapp.utils.AppConstants.FLOW_FROM_LOGIN;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class OtpFragment extends Fragment {
+public class OtpFragment extends Fragment implements OtpReceivedInterface {
 
     private TextInputEditText editTextOTP;
     private MaterialButton btnSubmit, btnResend;
@@ -62,6 +71,8 @@ public class OtpFragment extends Fragment {
 
     private Timer mTimer;
     private Handler mTimerHandler = new Handler();
+
+    SmsBroadcastReceiver mSmsBroadcastReceiver;
 
     private int waitTime = 12;  //Wait time in seconds
 
@@ -127,6 +138,14 @@ public class OtpFragment extends Fragment {
 
         startTimer();
         registerBackPressedCallbacks();
+
+        // init broadcast receiver
+        mSmsBroadcastReceiver = new SmsBroadcastReceiver();
+        mSmsBroadcastReceiver.setOnOtpListeners(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(SmsRetriever.SMS_RETRIEVED_ACTION);
+        requireContext().registerReceiver(mSmsBroadcastReceiver, intentFilter);
+        startSMSListener();
     }
 
     private void processOTP(String phoneNumber, String otp) {
@@ -282,5 +301,33 @@ public class OtpFragment extends Fragment {
         }
 
         return formattedTime;
+    }
+
+    public void startSMSListener() {
+        SmsRetrieverClient mClient = SmsRetriever.getClient(requireContext());
+        Task<Void> mTask = mClient.startSmsRetriever();
+        mTask.addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override public void onSuccess(Void aVoid) {
+                /*layoutInput.setVisibility(View.GONE);
+                layoutVerify.setVisibility(View.VISIBLE);*/
+                Toast.makeText(requireContext(), "SMS Retriever starts", Toast.LENGTH_LONG).show();
+            }
+        });
+        mTask.addOnFailureListener(new OnFailureListener() {
+            @Override public void onFailure(@NonNull Exception e) {
+                Toast.makeText(requireContext(), "Error", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    @Override
+    public void onOtpReceived(String otp) {
+        //Toast.makeText(requireContext(), "Your OTP is => " + otp, Toast.LENGTH_SHORT).show();
+        editTextOTP.setText(otp);
+    }
+
+    @Override
+    public void onOtpTimeout() {
+
     }
 }

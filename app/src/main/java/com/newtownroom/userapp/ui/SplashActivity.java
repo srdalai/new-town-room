@@ -12,6 +12,7 @@ import com.newtownroom.userapp.R;
 import com.newtownroom.userapp.restmodels.TxnStatusResponse;
 import com.newtownroom.userapp.rest.GetDataService;
 import com.newtownroom.userapp.rest.RetrofitClientInstance;
+import com.newtownroom.userapp.utils.AppSignatureHelper;
 import com.newtownroom.userapp.utils.PreferenceManager;
 
 import org.jetbrains.annotations.NotNull;
@@ -38,6 +39,9 @@ public class SplashActivity extends AppCompatActivity {
 
         service = RetrofitClientInstance.getPayURetrofitInstance().create(GetDataService.class);
         //checkLastTxn();
+
+        AppSignatureHelper appSignatureHelper = new AppSignatureHelper(this);
+        appSignatureHelper.getAppSignatures();
 
         new Handler().postDelayed(new Runnable() {
             @Override
