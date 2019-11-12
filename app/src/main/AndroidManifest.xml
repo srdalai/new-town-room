@@ -19,7 +19,8 @@
         tools:replace="android:usesCleartextTraffic,android:allowBackup">
         <activity android:name=".ui.AmenitiesListing" />
         <activity android:name=".ui.CouponsActivity" />
-        <activity android:name=".ui.BookingComplete" />
+        <activity android:name=".ui.BookingComplete"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".ui.GuestDetails"
             android:theme="@style/AppTheme.NoActionBar" />
