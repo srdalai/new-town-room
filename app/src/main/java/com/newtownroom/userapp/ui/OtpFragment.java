@@ -74,7 +74,7 @@ public class OtpFragment extends Fragment implements OtpReceivedInterface {
 
     SmsBroadcastReceiver mSmsBroadcastReceiver;
 
-    private int waitTime = 12;  //Wait time in seconds
+    private int waitTime = 120;  //Wait time in seconds
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -127,13 +127,13 @@ public class OtpFragment extends Fragment implements OtpReceivedInterface {
         btnResend.setOnClickListener((_view) -> {
             btnSubmit.setEnabled(false);
 
-            btnSubmit.setEnabled(true);
+            /*btnSubmit.setEnabled(true);
             btnResend.setEnabled(false);
             waitTime = 12;
-            startTimer();
+            startTimer();*/
 
-            /*phoneNumber = bundle.getString("phoneNumber");
-            resendOTP(phoneNumber);*/
+            phoneNumber = bundle.getString("phoneNumber");
+            resendOTP(phoneNumber);
         });
 
         startTimer();
@@ -144,8 +144,8 @@ public class OtpFragment extends Fragment implements OtpReceivedInterface {
         mSmsBroadcastReceiver.setOnOtpListeners(this);
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(SmsRetriever.SMS_RETRIEVED_ACTION);
-        requireContext().registerReceiver(mSmsBroadcastReceiver, intentFilter);
-        startSMSListener();
+        requireContext().registerReceiver(mSmsBroadcastReceiver, intentFilter); //TODO unregister reciever
+        //startSMSListener();
     }
 
     private void processOTP(String phoneNumber, String otp) {
@@ -329,5 +329,14 @@ public class OtpFragment extends Fragment implements OtpReceivedInterface {
     @Override
     public void onOtpTimeout() {
 
+    }
+
+    @Override
+    public void onPause() {
+        stopTimer();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(SmsRetriever.SMS_RETRIEVED_ACTION);
+        requireContext().registerReceiver(mSmsBroadcastReceiver, intentFilter);
+        super.onPause();
     }
 }

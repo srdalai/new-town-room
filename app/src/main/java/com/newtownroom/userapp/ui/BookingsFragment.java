@@ -89,13 +89,10 @@ public class BookingsFragment extends Fragment {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 if (tab.getPosition() == 0) {
-                    //Toast.makeText(requireContext(), "Upcoming", Toast.LENGTH_SHORT).show();
                     changeDataSet(upcomingList);
                 } else if (tab.getPosition() == 1) {
-                    //Toast.makeText(requireContext(), "Completed", Toast.LENGTH_SHORT).show();
                     changeDataSet(completedList);
                 } else {
-                    //Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_SHORT).show();
                     changeDataSet(cancelledList);
                 }
             }
@@ -134,15 +131,13 @@ public class BookingsFragment extends Fragment {
                 progressDialog.dismiss();
                 if (response.code() == 200) {
                     AllBookingsResponse allBookingsResponse = response.body();
-                    bookingDataList.clear();
+                    clearAllLists();
                     if (allBookingsResponse != null && (allBookingsResponse.getUpcomingBookings().size() > 0 || allBookingsResponse.getCompletedBookings().size() > 0 || allBookingsResponse.getCanceledBookings().size() > 0)) {
                         upcomingList.addAll(allBookingsResponse.getUpcomingBookings());
                         completedList.addAll(allBookingsResponse.getCompletedBookings());
                         cancelledList.addAll(allBookingsResponse.getCanceledBookings());
 
-                        bookingDataList.addAll(allBookingsResponse.getUpcomingBookings());
-                        bookingDataList.addAll(allBookingsResponse.getCompletedBookings());
-                        bookingDataList.addAll(allBookingsResponse.getCanceledBookings());
+                        changeDataSet(upcomingList);
                     } else {
                         noDataTextView.setVisibility(View.VISIBLE);
                     }
@@ -156,6 +151,13 @@ public class BookingsFragment extends Fragment {
                 Log.d("TAG", t.toString());
             }
         });
+    }
+
+    private void clearAllLists() {
+        bookingDataList.clear();
+        upcomingList.clear();
+        completedList.clear();
+        cancelledList.clear();
     }
 
     private void changeDataSet(ArrayList<BookingData> bookingList) {
@@ -182,7 +184,6 @@ public class BookingsFragment extends Fragment {
                     CancelBookingResponse responseModel = response.body();
                     if (responseModel != null && responseModel.getCode() == 200) {
                         ((MainActivity) requireContext()).showSnack("Booking Cancelled Successfully", Snackbar.LENGTH_LONG);
-
                         getAllBookings();
                     } else {
                         ((MainActivity) requireContext()).showSnack("Something went wrong...Please try later!", Snackbar.LENGTH_LONG);
@@ -197,7 +198,6 @@ public class BookingsFragment extends Fragment {
                 progressDialog.dismiss();
                 ((MainActivity) requireContext()).showSnack("Something went wrong...Please try later!", Snackbar.LENGTH_LONG);
                 Log.d("Retro Error", t.toString());
-
             }
         });
 

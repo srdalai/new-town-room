@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.gson.Gson;
 import com.newtownroom.userapp.R;
 import com.newtownroom.userapp.restmodels.LoginInput;
 import com.newtownroom.userapp.restmodels.LoginResponse;
@@ -97,14 +98,14 @@ public class LoginFragment extends Fragment {
                 Snackbar.make(view, "Please enter a valid Phone Number!", Snackbar.LENGTH_LONG).show();
             } else {
 
-                /*preferenceManager.setPhoneNumber(phoneNumber);
+                preferenceManager.setPhoneNumber(phoneNumber);
                 progressDialog.show();
-                processLoginData(phoneNumber);*/
+                processLoginData(phoneNumber);
 
-                Bundle bundle1 = new Bundle();
+                /*Bundle bundle1 = new Bundle();
                 bundle1.putString(FLOW_FROM, FLOW_FROM_LOGIN);
                 bundle1.putString("phoneNumber", "9556798434");
-                Navigation.findNavController(requireView()).navigate(R.id.otpFragment, bundle1);
+                Navigation.findNavController(requireView()).navigate(R.id.otpFragment, bundle1);*/
             }
         });
 
@@ -121,6 +122,7 @@ public class LoginFragment extends Fragment {
                 if (response.isSuccessful() && response.code() == 200) {
                     LoginResponse logInModel = response.body();
                     if(logInModel != null) {
+                        Log.d("Login Response", new Gson().toJson(logInModel));
                         int code = logInModel.getResponseCode();
                         if (code == 200) {
                             Bundle bundle = new Bundle();

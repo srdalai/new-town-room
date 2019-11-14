@@ -15,12 +15,16 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +36,7 @@ import com.newtownroom.userapp.R;
 import com.newtownroom.userapp.adapters.InterestAdapter;
 import com.newtownroom.userapp.models.BookingData;
 import com.newtownroom.userapp.models.BookingPrice;
+import com.newtownroom.userapp.models.GstModel;
 import com.newtownroom.userapp.models.HotelData;
 import com.newtownroom.userapp.models.LocalInterest;
 import com.newtownroom.userapp.models.RulesData;
@@ -40,7 +45,9 @@ import com.newtownroom.userapp.rest.GetDataService;
 import com.newtownroom.userapp.rest.RetrofitClientInstance;
 import com.newtownroom.userapp.restmodels.BookingDetailsResponses;
 import com.newtownroom.userapp.restmodels.CancelBookingResponse;
+import com.newtownroom.userapp.restmodels.GstResponse;
 import com.newtownroom.userapp.restmodels.SingleBookingID;
+import com.newtownroom.userapp.restmodels.SingleUserID;
 import com.newtownroom.userapp.utils.PreferenceManager;
 import com.newtownroom.userapp.utils.Utilities;
 import com.payumoney.core.PayUmoneyConfig;
@@ -74,6 +81,8 @@ public class BookingComplete extends AppCompatActivity {
     String checkInDate, checkOutDate, name, hotel_name, hotel_address;
     View interest_layout, parentView;
     ImageView imageViewHotel;
+    Switch gstSwitch;
+    RelativeLayout gstRelative;
 
     //Payment View
     TextView textPrice, textPriceDrop, textCouponDiscount, couponText, textSellingPrice;
@@ -117,6 +126,7 @@ public class BookingComplete extends AppCompatActivity {
         setClickListeners();
         updateUI();
         makeAPICall();
+        getGstDetails();
     }
 
     private void setInitialData() {
@@ -188,6 +198,8 @@ public class BookingComplete extends AppCompatActivity {
         interest_layout = findViewById(R.id.interest_layout);
         parentView = findViewById(R.id.parentView);
         imageViewHotel = findViewById(R.id.imageViewHotel);
+        gstSwitch = findViewById(R.id.gstSwitch);
+        gstRelative = findViewById(R.id.gstRelative);
 
         //Payment View
         textPrice = findViewById(R.id.textPrice);
@@ -261,6 +273,10 @@ public class BookingComplete extends AppCompatActivity {
         btnShare.setOnClickListener((view -> {
             //shareIntent();
         }));
+
+        gstRelative.setOnClickListener((_view) -> {
+            showBottomSheet();
+        });
     }
 
     private void makeAPICall() {
@@ -397,10 +413,13 @@ public class BookingComplete extends AppCompatActivity {
                     Log.d(TAG, transactionResponse.getMessage());
                     Log.d(TAG, transactionResponse.getPayuResponse());
                     Log.d(TAG, transactionResponse.getTransactionDetails());
-                    showTxnSuccessDialog(transactionResponse.getMessage());
+                    //showTxnSuccessDialog(transactionResponse.getMessage());
+                    showTxnCompleteDialog(true, transactionResponse.getMessage());
+
                 } else {
                     //Failure Transaction
-                    showTxnFailedDialog(transactionResponse.getMessage());
+                    //showTxnFailedDialog(transactionResponse.getMessage());
+                    showTxnCompleteDialog(false, transactionResponse.getMessage());
                 }
 
                 // Response from Payumoney
@@ -443,6 +462,54 @@ public class BookingComplete extends AppCompatActivity {
         builder.create().show();
     }
 
+    private void showTxnCompleteDialog(boolean isSuccess, String message) {
+        AlertDialog dialog = null;
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.component_payment_finish_layout, null);
+
+        ImageView imageViewSuccess = dialogView.findViewById(R.id.imageViewSuccess);
+        ImageView imageViewFailure = dialogView.findViewById(R.id.imageViewFailure);
+        TextView textMessage = dialogView.findViewById(R.id.textMessage);
+        MaterialButton btnSuccess = dialogView.findViewById(R.id.btnSuccess);
+        MaterialButton btnFailure = dialogView.findViewById(R.id.btnFailure);
+
+        textMessage.setText(message);
+
+        AlertDialog finalDialog = dialog;
+        btnSuccess.setOnClickListener((_view) -> {
+            startActivity(new Intent(BookingComplete.this, MainActivity.class));
+            finalDialog.dismiss();
+            finish();
+        });
+
+        btnFailure.setOnClickListener((_view) -> {
+            finalDialog.dismiss();
+        });
+
+        if (isSuccess) {
+            imageViewSuccess.setVisibility(View.VISIBLE);
+            btnSuccess.setVisibility(View.VISIBLE);
+            imageViewFailure.setVisibility(View.GONE);
+            btnFailure.setVisibility(View.GONE);
+            textMessage.setTextColor(getResources().getColor(R.color.colorPrimary));
+
+        } else {
+            imageViewFailure.setVisibility(View.VISIBLE);
+            btnFailure.setVisibility(View.VISIBLE);
+            imageViewSuccess.setVisibility(View.GONE);
+            btnSuccess.setVisibility(View.GONE);
+            textMessage.setTextColor(getResources().getColor(R.color.material_red));
+
+        }
+
+        builder.setView(dialogView);
+        builder.setCancelable(false);
+
+        dialog = builder.create();
+        dialog.show();
+
+    }
+
     private void shareIntent() {
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
@@ -470,6 +537,124 @@ public class BookingComplete extends AppCompatActivity {
             return;
         }
         startActivity(intent);
+    }
+
+    private void showBottomSheet() {
+        GstBottomFragment gstBottomFragment = new GstBottomFragment();
+        if (userGstModel != null) {
+            Bundle bundle = new Bundle();
+            bundle.putString("gst_details", new Gson().toJson(userGstModel));
+            gstBottomFragment.setArguments(bundle);
+        }
+        gstBottomFragment.show(getSupportFragmentManager(), gstBottomFragment.getTag());
+    }
+
+    void gstDismissed() {
+        //gstSwitch.setChecked(false);
+    }
+
+    void setGstDetails(GstModel gstData) {
+        if (gstData != null) {
+            if (userGstModel == null) {
+                createGst(gstData);
+            } else {
+                updateGst(gstData);
+            }
+        }
+    }
+
+    GstModel userGstModel = null;
+    private void getGstDetails() {
+        Call<GstModel> call = service.getUserGst(new SingleUserID(preferenceManager.getUserID()));
+        call.enqueue(new Callback<GstModel>() {
+            @Override
+            public void onResponse(@NotNull Call<GstModel> call, @NotNull Response<GstModel> response) {
+                if (response.isSuccessful() && response.code() == 200) {
+                    GstModel gstModel = response.body();
+                    if (gstModel != null) {
+                        Log.d("getUserGst", new Gson().toJson(gstModel));
+                        Snackbar.make(parentView, gstModel.getMsg(), Snackbar.LENGTH_SHORT).show();
+                        if (gstModel.getCode() == 200) {
+                            userGstModel = gstModel;
+                            gstSwitch.setChecked(true);
+                        } else {
+                            gstSwitch.setChecked(false);
+                        }
+                    } else {
+                        Snackbar.make(parentView, "Error Occurred", Snackbar.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Snackbar.make(parentView, "Error Occurred", Snackbar.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call<GstModel> call, @NotNull Throwable t) {
+                Log.d("Error", t.toString());
+            }
+        });
+    }
+
+    private void createGst(GstModel gstModel) {
+        progressDialog.show();
+        Call<GstResponse> call = service.createUserGst(gstModel);
+        call.enqueue(new Callback<GstResponse>() {
+            @Override
+            public void onResponse(@NotNull Call<GstResponse> call, @NotNull Response<GstResponse> response) {
+                progressDialog.dismiss();
+                if (response.isSuccessful() && response.code() == 200) {
+                    GstResponse gstResponse = response.body();
+                    if (gstResponse != null) {
+                        Log.d("createGst", new Gson().toJson(gstResponse));
+                        Snackbar.make(parentView, gstResponse.getMsg(), Snackbar.LENGTH_SHORT).show();
+                        if (gstResponse.getCode() == 200) {
+                            getGstDetails();
+                        }
+                    } else {
+                        Snackbar.make(parentView, "Error Occurred", Snackbar.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Snackbar.make(parentView, "Error Occurred", Snackbar.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call<GstResponse> call, @NotNull Throwable t) {
+                progressDialog.dismiss();
+                Log.d("Error", t.toString());
+            }
+        });
+    }
+
+    private void updateGst(GstModel gstModel) {
+        progressDialog.show();
+        Call<GstResponse> call = service.updateUserGst(gstModel);
+        call.enqueue(new Callback<GstResponse>() {
+            @Override
+            public void onResponse(@NotNull Call<GstResponse> call, @NotNull Response<GstResponse> response) {
+                progressDialog.dismiss();
+                if (response.isSuccessful() && response.code() == 200) {
+                    GstResponse gstResponse = response.body();
+                    if (gstResponse != null) {
+                        Log.d("updateGst", new Gson().toJson(gstResponse));
+                        Snackbar.make(parentView, gstResponse.getMsg(), Snackbar.LENGTH_SHORT).show();
+                        if (gstResponse.getCode() == 200) {
+                            getGstDetails();
+                        }
+                    } else {
+                        Snackbar.make(parentView, "Error Occurred", Snackbar.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Snackbar.make(parentView, "Error Occurred", Snackbar.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call<GstResponse> call, @NotNull Throwable t) {
+                progressDialog.dismiss();
+                Log.d("Error", t.toString());
+            }
+        });
     }
 
     @Override
@@ -527,7 +712,7 @@ public class BookingComplete extends AppCompatActivity {
                 .setUdf3(udf3)
                 .setUdf4(udf4)
                 .setUdf5(udf5)
-                .setIsDebug(false)                              // Integration environment - true (Debug)/ false(Production)
+                .setIsDebug(true)                              // Integration environment - true (Debug)/ false(Production)
                 .setKey(key)                        // Merchant key
                 .setMerchantId(merchant_id);             // Merchant ID
 

@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.newtownroom.userapp.R;
 import com.newtownroom.userapp.models.ServiceData;
 import com.newtownroom.userapp.ui.HotelDetailsNew;
@@ -42,7 +44,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
 
         Glide.with(mContext)
                 .load(serviceData.getImage())
-                .error(R.drawable.hotel_1)
+                .error(R.drawable.ic_action_dinner)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.imageView);
 
@@ -56,6 +58,9 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
             }
             holder.btnRemove.setVisibility(View.VISIBLE);
             holder.btnAdd.setVisibility(View.GONE);
+            if (mContext instanceof HotelDetailsNew) {
+                ((HotelDetailsNew) mContext).showSnackBar("\"" + serviceList.get(holder.getAdapterPosition()).getName() + "\" has been added to Extra Services", Snackbar.LENGTH_SHORT);
+            }
         }));
 
         holder.btnRemove.setOnClickListener((view -> {
@@ -64,6 +69,9 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
             }
             holder.btnRemove.setVisibility(View.GONE);
             holder.btnAdd.setVisibility(View.VISIBLE);
+            if (mContext instanceof HotelDetailsNew) {
+                ((HotelDetailsNew) mContext).showSnackBar("\"" + serviceList.get(holder.getAdapterPosition()).getName() + "\" has been removed from Extra Services", Snackbar.LENGTH_SHORT);
+            }
         }));
 
     }

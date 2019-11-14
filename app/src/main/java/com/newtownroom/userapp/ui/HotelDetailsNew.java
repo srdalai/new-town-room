@@ -15,6 +15,7 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
@@ -167,6 +168,8 @@ public class HotelDetailsNew extends AppCompatActivity {
     String fullText = "", truncatedText = "";
     boolean bookingAvailable = false;
     private String booking_id = "";
+    StringBuilder servicesString = new StringBuilder();
+    ArrayList<Integer> servicesArray = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -505,25 +508,52 @@ public class HotelDetailsNew extends AppCompatActivity {
 
     private void processServiceData() {
         servicePrice = 0;
+        servicesString = new StringBuilder();
+        servicesArray = new ArrayList<>();
         for (int i = 0; i < selectedServices.size(); i++) {
             int selected = selectedServices.get(i) - 1;
-            float price = Float.parseFloat(serviceDataList.get(selected).getPrice());
+            ServiceData selectedServiceData = serviceDataList.get(selected);
+
+
+            float thisServicePrice = Float.parseFloat(selectedServiceData.getPrice());
+
+            /**
+             * Parsing Selected Service Price
+             */
+            float price = 0;
+            if (selectedServiceData.getCharge().equals("Per Guest")) {
+                price = thisServicePrice * guestNum * nights;
+
+            } else if (selectedServiceData.getCharge().equals("Per Room")) {
+                price = thisServicePrice * roomNum * nights;
+            }
             servicePrice = servicePrice + price;
+
+            if (i == 0) {
+                servicesString.append(selectedServiceData.getName());
+            } else {
+                servicesString.append(", ").append(selectedServiceData.getName());
+            }
+            servicesArray.add(Integer.parseInt(selectedServiceData.getId()));
+
         }
-        updateUI();
-        Toast.makeText(this, ""+servicePrice, Toast.LENGTH_SHORT).show();
+        //updateUI();
+        //Toast.makeText(this, ""+servicePrice, Toast.LENGTH_SHORT).show();
+        Log.d("Services Price",""+servicePrice);
     }
 
     public void addService(int pos) {
         selectedServices.add(pos+1);
         Collections.sort(selectedServices);
-        processServiceData();
+        //processServiceData();
+        updateUI();
     }
 
     public void removeService(int pos) {
         selectedServices.remove(selectedServices.indexOf(pos+1));
         Collections.sort(selectedServices);
-        processServiceData();
+        //processServiceData();
+        updateUI();
     }
 
     private void showDatePicker(String type /*"checkin"/"checkout"*/) {
@@ -615,6 +645,10 @@ public class HotelDetailsNew extends AppCompatActivity {
         TextView textBasePrice = itemView.findViewById(R.id.textBasePrice);
         TextView valueBasePrice = itemView.findViewById(R.id.valueBasePrice);
 
+        LinearLayout extraServiceLinear = itemView.findViewById(R.id.extraServiceLinear);
+        TextView textService = itemView.findViewById(R.id.textService);
+        TextView valueService = itemView.findViewById(R.id.valueService);
+
         LinearLayout couponLinear = itemView.findViewById(R.id.couponLinear);
         TextView textCoupon = itemView.findViewById(R.id.textCoupon);
         TextView valueCoupon = itemView.findViewById(R.id.valueCoupon);
@@ -633,6 +667,12 @@ public class HotelDetailsNew extends AppCompatActivity {
             String couponString = "Coupon applied " + appliedCoupon.getCode();
             textCoupon.setText(couponString);
             valueCoupon.setText("- \u20B9"+couponDiscount);
+        }
+
+        if (servicePrice > 0) {
+            extraServiceLinear.setVisibility(View.VISIBLE);
+            textService.setText("Extra Services\n(" + servicesString.toString() + ")");
+            valueService.setText("\u20B9"+servicePrice);
         }
 
         valuePriceDrop.setText("- \u20B9"+priceDrop);
@@ -712,9 +752,9 @@ public class HotelDetailsNew extends AppCompatActivity {
             couponLinear.setVisibility(View.GONE);
         }
 
-
+        processServiceData();
         //Updating Price Details
-        grandTotal = (sellingPrice * nights) - couponDiscount;
+        grandTotal = (sellingPrice * nights) + servicePrice - couponDiscount;
         priceDrop = (price-sellingPrice)*nights;
 
         if (sellingPrice == price) {
@@ -869,6 +909,10 @@ public class HotelDetailsNew extends AppCompatActivity {
         for (int i = 0; i < images.size(); i++) {
             imageUrls.add(images.get(i).getImageUrl());
         }
+        if (imageUrls.size() == 1) {
+            imageButtonPrev.setVisibility(View.GONE);
+            imageButtonNext.setVisibility(View.GONE);
+        }
         setImages();
     }
 
@@ -907,8 +951,7 @@ public class HotelDetailsNew extends AppCompatActivity {
     }
 
     private void prepareServices(ArrayList<ServiceData> serviceData) {
-        serviceFrame.setVisibility(View.GONE);
-        /*if (serviceData.size() > 0) {
+        if (serviceData.size() > 0) {
             ServiceAdapter serviceAdapter = new ServiceAdapter(this, serviceData);
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL,false);
             serviceRecycler.setLayoutManager(layoutManager);
@@ -917,7 +960,7 @@ public class HotelDetailsNew extends AppCompatActivity {
             serviceDataList.addAll(serviceData);
         } else {
             serviceFrame.setVisibility(View.GONE);
-        }*/
+        }
     }
 
     private void prepareRules(ArrayList<RulesData> rulesList) {
@@ -967,7 +1010,7 @@ public class HotelDetailsNew extends AppCompatActivity {
         bookingInput.setCheckOutDate(apiCheckOutDate);
         bookingInput.setRooms(roomDataArrayList);
         bookingInput.setBookedPrice(grandTotal);
-        bookingInput.setExtraServices(new ArrayList<>());
+        bookingInput.setExtraServices(servicesArray);
 
         Log.d("Booking Data", new Gson().toJson(bookingInput));
 
@@ -977,9 +1020,9 @@ public class HotelDetailsNew extends AppCompatActivity {
             public void onResponse(@NotNull Call<BookingResponse> call, @NotNull Response<BookingResponse> response) {
                 progressDialog.dismiss();
                 if (response.isSuccessful() && response.code() == 200) {
-                    Log.d("Success", response.toString());
                     BookingResponse bookingResponse = response.body();
                     if (bookingResponse != null) {
+                        Log.d("Booking Success", new Gson().toJson(bookingResponse));
                         if (bookingResponse.getCode() == 200) {
                             booking_id = bookingResponse.getBookingId();
                             showSuccessDialog(bookingResponse.getMsg(), false);
@@ -1017,7 +1060,15 @@ public class HotelDetailsNew extends AppCompatActivity {
                         bookingAvailable = checkAvailResponse.getAvailableStatus() == 1;
                         Log.d("Availability", checkAvailResponse.getMsg());
                         showSnackBar(checkAvailResponse.getMsg(), Snackbar.LENGTH_SHORT);
-                        updateUI();
+                        //updateUI();
+                        btnProceed.setClickable(bookingAvailable);
+                        if (bookingAvailable) {
+                            btnProceed.setText(getResources().getString(R.string.book_now_text));
+                            btnProceed.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimary)));
+                        } else {
+                            btnProceed.setText(getResources().getString(R.string.booking_not_available));
+                            btnProceed.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.material_red)));
+                        }
                     }
                 }
             }
@@ -1048,7 +1099,7 @@ public class HotelDetailsNew extends AppCompatActivity {
         builder.create().show();
     }
 
-    private void showSnackBar(String message, int length) {
+    public void showSnackBar(String message, int length) {
         Snackbar snack = Snackbar.make(parentView, message, length);
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) snack.getView().getLayoutParams();
 

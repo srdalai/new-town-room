@@ -104,4 +104,5 @@
     <string name="title_activity_hotel_details">HotelDetails</string>
     <string name="action_settings">Settings</string>
     <string name="book_now_text">Book Now &amp;\nPay at Hotel</string>
+    <string name="booking_not_available">Booking not\nAvailable</string>
 </resources>

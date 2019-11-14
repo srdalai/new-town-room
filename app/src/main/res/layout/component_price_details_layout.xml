@@ -32,6 +32,30 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/extraServiceLinear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/textService"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Extra Services" />
+
+            <TextView
+                android:id="@+id/valueService"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="\u20B9592"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/couponLinear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

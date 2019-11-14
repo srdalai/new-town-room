@@ -178,7 +178,7 @@ public class AccountFragment extends Fragment {
         progressDialog.setMessage("Processing Request...");
         progressDialog.show();
         UpdateUserInput updateUserInput = new UpdateUserInput();
-        updateUserInput.setUniqid(String.valueOf(preferenceManager.getUserID()));
+        updateUserInput.setUserId(preferenceManager.getUserID());
         updateUserInput.setEmail(newEmail);
         updateUserInput.setName(newName);
         updateUserInput.setUniqid(preferenceManager.getUniqueID());

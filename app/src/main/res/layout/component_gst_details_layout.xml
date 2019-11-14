@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="12dp"
+        android:paddingTop="20dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="20dp">
+
+        <TextView
+            android:id="@+id/txtGstHeading"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="@dimen/dimen_20dp"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:text="Add Your GST Details"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/editTextGstName"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edittext_height"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/edittext_rounded_grey_bg"
+            android:drawableStart="@drawable/ic_action_person_outline"
+            android:drawablePadding="@dimen/dimen_12dp"
+            android:hint="Legal Entity Name*"
+            android:inputType="textPersonName"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp" />
+
+        <EditText
+            android:id="@+id/editTextGstNumber"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edittext_height"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/edittext_rounded_grey_bg"
+            android:drawableStart="@drawable/ic_action_confirmation_num"
+            android:drawablePadding="@dimen/dimen_12dp"
+            android:hint="GST Number*"
+            android:inputType="text"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp" />
+
+        <EditText
+            android:id="@+id/editTextGstAddress"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edittext_height"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/edittext_rounded_grey_bg"
+            android:drawableStart="@drawable/ic_action_location_on"
+            android:drawablePadding="@dimen/dimen_12dp"
+            android:hint="GST Address*"
+            android:inputType="textPostalAddress"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp" />
+
+        <EditText
+            android:id="@+id/editTextGstContactNo"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edittext_height"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/edittext_rounded_grey_bg"
+            android:drawableStart="@drawable/ic_action_smartphone"
+            android:drawablePadding="@dimen/dimen_12dp"
+            android:hint="GST Contact Number*"
+            android:inputType="phone"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp" />
+
+        <EditText
+            android:id="@+id/editTextGstEmail"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edittext_height"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/edittext_rounded_grey_bg"
+            android:drawableStart="@drawable/ic_action_mail_outline"
+            android:drawablePadding="@dimen/dimen_12dp"
+            android:hint="GST Email*"
+            android:inputType="textEmailAddress"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnApplyGstDetails"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="Done"
+            android:textAllCaps="false"
+            app:cornerRadius="28dp" />
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

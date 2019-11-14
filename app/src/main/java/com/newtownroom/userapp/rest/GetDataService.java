@@ -1,5 +1,6 @@
 package com.newtownroom.userapp.rest;
 
+import com.newtownroom.userapp.models.GstModel;
 import com.newtownroom.userapp.restmodels.AllBookingsInput;
 import com.newtownroom.userapp.restmodels.AllBookingsResponse;
 import com.newtownroom.userapp.restmodels.BookingDetailsResponses;
@@ -11,6 +12,7 @@ import com.newtownroom.userapp.restmodels.CheckAvailInput;
 import com.newtownroom.userapp.restmodels.CheckAvailResponse;
 import com.newtownroom.userapp.restmodels.CouponsInput;
 import com.newtownroom.userapp.restmodels.CouponsResponse;
+import com.newtownroom.userapp.restmodels.GstResponse;
 import com.newtownroom.userapp.restmodels.HomeResponse;
 import com.newtownroom.userapp.restmodels.HotelDetailsInput;
 import com.newtownroom.userapp.restmodels.HotelDetailsResponse;
@@ -21,6 +23,7 @@ import com.newtownroom.userapp.restmodels.OtpResponse;
 import com.newtownroom.userapp.restmodels.SignUpInput;
 import com.newtownroom.userapp.restmodels.SignUpResponse;
 import com.newtownroom.userapp.restmodels.SingleBookingID;
+import com.newtownroom.userapp.restmodels.SingleUserID;
 import com.newtownroom.userapp.restmodels.TxnStatusResponse;
 import com.newtownroom.userapp.restmodels.UpdateUserInput;
 import com.newtownroom.userapp.restmodels.UpdateUserResponse;
@@ -77,6 +80,15 @@ public interface GetDataService {
 
     @POST("deleteBooking")
     Call<CancelBookingResponse> deleteBooking(@Body SingleBookingID singleBookingID);
+
+    @POST("getUserGst")
+    Call<GstModel> getUserGst(@Body SingleUserID singleUserID);
+
+    @POST("createUserGst")
+    Call<GstResponse> createUserGst(@Body GstModel gstModel);
+
+    @POST("updateUserGst")
+    Call<GstResponse> updateUserGst(@Body GstModel gstModel);
 
     /*
     *   PayMoney API requests
