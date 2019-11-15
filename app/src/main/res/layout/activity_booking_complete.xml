@@ -60,6 +60,7 @@
                     android:text="Cancel Booking"
                     android:textAllCaps="false"
                     android:textColor="@color/material_red"
+                    app:rippleColor="#CDFFB4AE"
                     app:backgroundTint="@color/white"
                     app:cornerRadius="28dp"
                     app:strokeColor="@color/default_grey"

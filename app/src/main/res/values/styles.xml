@@ -55,10 +55,25 @@
     <style name="AlertDialogGreen" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+        <item name="buttonBarNegativeButtonStyle">@style/PositiveButtonStyle</item>
     </style>
 
     <style name="PositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
         <item name="android:textColor">@color/colorPrimaryText</item>
+    </style>
+
+    <style name="AlertDialogTrans" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/trans_black</item>
+        <item name="buttonBarPositiveButtonStyle">@style/TransPositiveButtonStyle</item>
+        <item name="buttonBarNegativeButtonStyle">@style/TransNegativeButtonStyle</item>
+    </style>
+
+    <style name="TransPositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="TransNegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/material_red</item>
     </style>
 
 

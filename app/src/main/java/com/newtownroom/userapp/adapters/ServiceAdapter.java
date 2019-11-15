@@ -60,7 +60,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
             holder.btnRemove.setVisibility(View.VISIBLE);
             holder.btnAdd.setVisibility(View.GONE);
             if (mContext instanceof HotelDetailsNew) {
-                ((HotelDetailsNew) mContext).showSnackBar("\"" + serviceList.get(holder.getAdapterPosition()).getName() + "\" has been added to Extra Services", Snackbar.LENGTH_SHORT);
+                ((HotelDetailsNew) mContext).showSnackBar("\"" + serviceList.get(holder.getAdapterPosition()).getName() + "\" has been added to your booking", Snackbar.LENGTH_SHORT);
             }
         }));
 
@@ -71,7 +71,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
             holder.btnRemove.setVisibility(View.GONE);
             holder.btnAdd.setVisibility(View.VISIBLE);
             if (mContext instanceof HotelDetailsNew) {
-                ((HotelDetailsNew) mContext).showSnackBar("\"" + serviceList.get(holder.getAdapterPosition()).getName() + "\" has been removed from Extra Services", Snackbar.LENGTH_SHORT);
+                ((HotelDetailsNew) mContext).showSnackBar("\"" + serviceList.get(holder.getAdapterPosition()).getName() + "\" has been removed from your booking", Snackbar.LENGTH_SHORT);
             }
         }));
 

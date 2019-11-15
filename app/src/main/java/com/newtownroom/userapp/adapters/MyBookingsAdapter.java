@@ -1,6 +1,8 @@
 package com.newtownroom.userapp.adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -95,7 +97,8 @@ public class MyBookingsAdapter extends RecyclerView.Adapter<MyBookingsAdapter.My
         }
 
         holder.itemView.setOnLongClickListener(view -> {
-            bookingsFragment.cancelBooking(booking.getId());
+            //bookingsFragment.cancelBooking(booking.getId());
+            //showDeleteBookingDialog(mContext, booking.getId());
             return false;
         });
 
@@ -137,5 +140,21 @@ public class MyBookingsAdapter extends RecyclerView.Adapter<MyBookingsAdapter.My
             txtCompleted = itemView.findViewById(R.id.txtCompleted);
             txtCancelled = itemView.findViewById(R.id.txtCancelled);
         }
+    }
+
+    private void showDeleteBookingDialog(Context cxt, String bookingID) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(cxt, R.style.AlertDialogTrans);
+        builder.setMessage("This action will delete this booking. Do you want to continue?");
+
+        builder.setPositiveButton("Yes", (dialogInterface, position) -> {
+            dialogInterface.dismiss();
+            bookingsFragment.cancelBooking(bookingID);
+        });
+        builder.setNegativeButton("No", null);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+
     }
 }
