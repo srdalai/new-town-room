@@ -45,6 +45,9 @@ public class BookingDetailsResponses {
     @SerializedName("interests")
     private ArrayList<LocalInterest> interests;
 
+    @SerializedName("shareUrl")
+    private String shareUrl;
+
     public int getCode() {
         return code;
     }
@@ -131,5 +134,13 @@ public class BookingDetailsResponses {
 
     public void setInterests(ArrayList<LocalInterest> interests) {
         this.interests = interests;
+    }
+
+    public String getShareUrl() {
+        return shareUrl;
+    }
+
+    public void setShareUrl(String shareUrl) {
+        this.shareUrl = shareUrl;
     }
 }

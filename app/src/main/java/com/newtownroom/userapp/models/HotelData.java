@@ -70,6 +70,9 @@ public class HotelData {
     @SerializedName("meta_description")
     private String metaDescription;
 
+    @SerializedName("phone")
+    private String phone;
+
     public String getId() {
         return id;
     }
@@ -244,5 +247,13 @@ public class HotelData {
 
     public void setMetaDescription(String metaDescription) {
         this.metaDescription = metaDescription;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

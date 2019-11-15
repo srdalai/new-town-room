@@ -54,7 +54,13 @@
 
     <style name="AlertDialogGreen" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorAccent">@color/colorPrimary</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
     </style>
+
+    <style name="PositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/colorPrimaryText</item>
+    </style>
+
 
     <style name="DatePickerDialogGreen" parent="Theme.AppCompat.DayNight.Dialog">
         <item name="colorAccent">@color/colorAccent</item>                   <!--header background-->

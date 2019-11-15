@@ -57,6 +57,16 @@
         android:text="TextView"
         android:textColor="@color/black" />
 
+    <TextView
+        android:id="@+id/textViewCharge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dimen_8dp"
+        android:layout_marginEnd="@dimen/dimen_8dp"
+        android:gravity="center"
+        android:text="TextView"
+        android:textColor="@color/black" />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnAdd"
         android:layout_width="wrap_content"

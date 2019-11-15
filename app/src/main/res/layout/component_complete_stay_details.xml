@@ -65,7 +65,11 @@
                     android:layout_below="@id/textSuccessMsg"
                     android:layout_alignParentEnd="true"
                     android:text="Update"
-                    android:textColor="@color/material_red" />
+                    android:textColor="@color/material_red"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:onClick="@null"
+                    android:visibility="invisible" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/matBtnSave"
@@ -140,7 +144,8 @@
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     android:layout_toStartOf="@+id/imageViewHotel"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="4dp">
 
                     <TextView
                         android:id="@+id/textHotelName"
@@ -156,7 +161,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="ZOYO 10439 MS Residency" />
+                        android:text="ZOYO 10439 MS Residency"
+                        android:visibility="gone" />
                 </LinearLayout>
 
                 <ImageView
@@ -323,7 +329,8 @@
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
                     android:text="Call Hotel"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <TextView

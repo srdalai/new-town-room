@@ -12,6 +12,8 @@ import com.newtownroom.userapp.restmodels.CheckAvailInput;
 import com.newtownroom.userapp.restmodels.CheckAvailResponse;
 import com.newtownroom.userapp.restmodels.CouponsInput;
 import com.newtownroom.userapp.restmodels.CouponsResponse;
+import com.newtownroom.userapp.restmodels.DeleteGstInput;
+import com.newtownroom.userapp.restmodels.DeleteGstResponse;
 import com.newtownroom.userapp.restmodels.GstResponse;
 import com.newtownroom.userapp.restmodels.HomeResponse;
 import com.newtownroom.userapp.restmodels.HotelDetailsInput;
@@ -89,6 +91,9 @@ public interface GetDataService {
 
     @POST("updateUserGst")
     Call<GstResponse> updateUserGst(@Body GstModel gstModel);
+
+    @POST("deleteUserGst")
+    Call<DeleteGstResponse> deleteUserGst(@Body DeleteGstInput deleteGstInput);
 
     /*
     *   PayMoney API requests

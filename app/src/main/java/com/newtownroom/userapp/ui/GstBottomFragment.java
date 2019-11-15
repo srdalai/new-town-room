@@ -67,7 +67,8 @@ public class GstBottomFragment extends BottomSheetDialogFragment {
         }
 
         btnApplyGstDetails.setOnClickListener((_view) -> {
-            setGstData();
+            //setGstData();
+            setEmptyGstData();
         });
 
 
@@ -111,6 +112,29 @@ public class GstBottomFragment extends BottomSheetDialogFragment {
             dismiss();
         }
     }
+
+    private void setEmptyGstData() {
+        String name = editTextGstName.getText().toString();
+        String gstNum = editTextGstNumber.getText().toString();
+        String gstAddr = editTextGstAddress.getText().toString();
+        String gstContact = editTextGstContactNo.getText().toString();
+        String gstEmail = editTextGstEmail.getText().toString();
+
+        gstModel = new GstModel();
+        gstModel.setUserId(preferenceManager.getUserID());
+        gstModel.setLegalName(name);
+        gstModel.setGstNumber(gstNum);
+        gstModel.setGstAddress(gstAddr);
+        gstModel.setGstContact(gstContact);
+        gstModel.setGstEmail(gstEmail);
+
+        if (requireActivity() instanceof BookingComplete) {
+            ((BookingComplete)requireContext()).setGstDetails(gstModel);
+        }
+
+        dismiss();
+    }
+
 
 
 

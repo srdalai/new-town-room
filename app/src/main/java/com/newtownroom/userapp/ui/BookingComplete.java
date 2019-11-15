@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -29,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
@@ -45,6 +47,8 @@ import com.newtownroom.userapp.rest.GetDataService;
 import com.newtownroom.userapp.rest.RetrofitClientInstance;
 import com.newtownroom.userapp.restmodels.BookingDetailsResponses;
 import com.newtownroom.userapp.restmodels.CancelBookingResponse;
+import com.newtownroom.userapp.restmodels.DeleteGstInput;
+import com.newtownroom.userapp.restmodels.DeleteGstResponse;
 import com.newtownroom.userapp.restmodels.GstResponse;
 import com.newtownroom.userapp.restmodels.SingleBookingID;
 import com.newtownroom.userapp.restmodels.SingleUserID;
@@ -81,8 +85,7 @@ public class BookingComplete extends AppCompatActivity {
     String checkInDate, checkOutDate, name, hotel_name, hotel_address;
     View interest_layout, parentView;
     ImageView imageViewHotel;
-    Switch gstSwitch;
-    RelativeLayout gstRelative;
+    MaterialButton btnGstUpdate;
 
     //Payment View
     TextView textPrice, textPriceDrop, textCouponDiscount, couponText, textSellingPrice;
@@ -103,6 +106,9 @@ public class BookingComplete extends AppCompatActivity {
     double lat, lang;
     boolean can_go_back = false;
     int paymentPercent = 100;
+    GstModel userGstModel = null;
+    String hotelPhone = null;
+    String shareText = "", shareTitle = "Share Your Stay Details";
 
     //PayU variables
     String merchant_id = "6836640", key = "0lMDzMDB", salt = "48VSE2mGKk", txnid = "ORDER-OD-201900001", amount = "999", productinfo = "Hotel", phone = "9556798434", firstname = "John", email = "user@email.com", udf1 = "", udf2 = "", udf3 = "", udf4 = "", udf5 = "";
@@ -119,7 +125,7 @@ public class BookingComplete extends AppCompatActivity {
 
         setInitialData();
 
-        getSupportActionBar().setTitle(activity_title);
+        getSupportActionBar().setTitle("Your Booking Details");
         getSupportActionBar().setDisplayHomeAsUpEnabled(can_go_back);
 
         initView();
@@ -198,8 +204,7 @@ public class BookingComplete extends AppCompatActivity {
         interest_layout = findViewById(R.id.interest_layout);
         parentView = findViewById(R.id.parentView);
         imageViewHotel = findViewById(R.id.imageViewHotel);
-        gstSwitch = findViewById(R.id.gstSwitch);
-        gstRelative = findViewById(R.id.gstRelative);
+        btnGstUpdate = findViewById(R.id.btnGstUpdate);
 
         //Payment View
         textPrice = findViewById(R.id.textPrice);
@@ -263,7 +268,11 @@ public class BookingComplete extends AppCompatActivity {
         }));
 
         btnGetAssistance.setOnClickListener((view -> {
-            //emailIntent();
+            if (hotelPhone != null) {
+                callIntent();
+            } else {
+                Snackbar.make(parentView, "No Contact Details Available", Snackbar.LENGTH_SHORT).show();
+            }
         }));
 
         btnCancel.setOnClickListener((view -> {
@@ -271,10 +280,10 @@ public class BookingComplete extends AppCompatActivity {
         }));
 
         btnShare.setOnClickListener((view -> {
-            //shareIntent();
+            shareIntent();
         }));
 
-        gstRelative.setOnClickListener((_view) -> {
+        btnGstUpdate.setOnClickListener((_view) -> {
             showBottomSheet();
         });
     }
@@ -295,6 +304,7 @@ public class BookingComplete extends AppCompatActivity {
                         processPricing(bookingDetails.getBookingPrice());
                         processHotelRules(bookingDetails.getHotel_rules());
                         processInterestsData(bookingDetails.getInterests());
+                        shareText = bookingDetails.getShareUrl();
                         updateUI();
                     }
                 }
@@ -331,7 +341,9 @@ public class BookingComplete extends AppCompatActivity {
                 .load(hotelData.getImage())
                 .placeholder(R.drawable.hotel_1)
                 .error(R.drawable.hotel_1)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imageViewHotel);
+        hotelPhone = hotelData.getPhone();
     }
 
     private void processPricing(BookingPrice bookingPrice) {
@@ -463,7 +475,6 @@ public class BookingComplete extends AppCompatActivity {
     }
 
     private void showTxnCompleteDialog(boolean isSuccess, String message) {
-        AlertDialog dialog = null;
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.component_payment_finish_layout, null);
 
@@ -474,17 +485,6 @@ public class BookingComplete extends AppCompatActivity {
         MaterialButton btnFailure = dialogView.findViewById(R.id.btnFailure);
 
         textMessage.setText(message);
-
-        AlertDialog finalDialog = dialog;
-        btnSuccess.setOnClickListener((_view) -> {
-            startActivity(new Intent(BookingComplete.this, MainActivity.class));
-            finalDialog.dismiss();
-            finish();
-        });
-
-        btnFailure.setOnClickListener((_view) -> {
-            finalDialog.dismiss();
-        });
 
         if (isSuccess) {
             imageViewSuccess.setVisibility(View.VISIBLE);
@@ -505,16 +505,26 @@ public class BookingComplete extends AppCompatActivity {
         builder.setView(dialogView);
         builder.setCancelable(false);
 
-        dialog = builder.create();
+        AlertDialog dialog = builder.create();
         dialog.show();
+
+        btnSuccess.setOnClickListener((_view) -> {
+            startActivity(new Intent(BookingComplete.this, MainActivity.class));
+            dialog.dismiss();
+            finish();
+        });
+
+        btnFailure.setOnClickListener((_view) -> {
+            dialog.dismiss();
+        });
 
     }
 
     private void shareIntent() {
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
-        sendIntent.putExtra(Intent.EXTRA_TITLE, "This is my title.");
+        sendIntent.putExtra(Intent.EXTRA_TEXT, shareText);
+        sendIntent.putExtra(Intent.EXTRA_TITLE, shareTitle);
         sendIntent.setType("text/plain");
 
         Intent shareIntent = Intent.createChooser(sendIntent, null);
@@ -530,7 +540,7 @@ public class BookingComplete extends AppCompatActivity {
     }
 
     private void callIntent() {
-        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + "198"));
+        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + hotelPhone));
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             String[] PERMISSIONS = {Manifest.permission.CALL_PHONE};
             ActivityCompat.requestPermissions(this, PERMISSIONS, REQUEST_PERMISSION_KEY);
@@ -563,7 +573,6 @@ public class BookingComplete extends AppCompatActivity {
         }
     }
 
-    GstModel userGstModel = null;
     private void getGstDetails() {
         Call<GstModel> call = service.getUserGst(new SingleUserID(preferenceManager.getUserID()));
         call.enqueue(new Callback<GstModel>() {
@@ -576,9 +585,6 @@ public class BookingComplete extends AppCompatActivity {
                         Snackbar.make(parentView, gstModel.getMsg(), Snackbar.LENGTH_SHORT).show();
                         if (gstModel.getCode() == 200) {
                             userGstModel = gstModel;
-                            gstSwitch.setChecked(true);
-                        } else {
-                            gstSwitch.setChecked(false);
                         }
                     } else {
                         Snackbar.make(parentView, "Error Occurred", Snackbar.LENGTH_SHORT).show();
@@ -657,6 +663,41 @@ public class BookingComplete extends AppCompatActivity {
         });
     }
 
+    private void deleteGst() {
+        progressDialog.show();
+        DeleteGstInput deleteGstInput = new DeleteGstInput();
+        deleteGstInput.setUserId(preferenceManager.getUserID());
+        //deleteGstInput.setGstId(userGstModel.get);
+        Call<DeleteGstResponse> call = service.deleteUserGst(deleteGstInput);
+        call.enqueue(new Callback<DeleteGstResponse>() {
+            @Override
+            public void onResponse(@NotNull Call<DeleteGstResponse> call, @NotNull Response<DeleteGstResponse> response) {
+                progressDialog.dismiss();
+                if (response.isSuccessful() && response.code() == 200) {
+                    DeleteGstResponse deleteGstResponse = response.body();
+                    if (deleteGstResponse != null) {
+                        Log.d("deleteGst", new Gson().toJson(deleteGstResponse));
+                        Snackbar.make(parentView, deleteGstResponse.getMsg(), Snackbar.LENGTH_SHORT).show();
+                        if (deleteGstResponse.getCode() == 200) {
+                            userGstModel = null;
+                        }
+                    } else {
+                        Snackbar.make(parentView, "Error Occurred", Snackbar.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Snackbar.make(parentView, "Error Occurred", Snackbar.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call<DeleteGstResponse> call, @NotNull Throwable t) {
+                progressDialog.dismiss();
+                Log.d("Error", t.toString());
+            }
+        });
+
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -673,15 +714,17 @@ public class BookingComplete extends AppCompatActivity {
     }
 
     private void initPaymentData() {
-        /*merchant_id = "6836640";
+        merchant_id = "6836640";
         key = "L7C9MBeV";
-        salt = "aj9Eu3B0kU";*/
+        salt = "aj9Eu3B0kU";
+
         txnid = booking_id;
         amount = String.valueOf(payable_amount);
         productinfo = "Hotel Booking";
-        /*phone = preferenceManager.getPhoneNumber();
+
+        phone = preferenceManager.getPhoneNumber();
         firstname = preferenceManager.getName();
-        email = preferenceManager.getEmail();*/
+        email = preferenceManager.getEmail();
     }
 
     //PayU Methods
@@ -712,7 +755,7 @@ public class BookingComplete extends AppCompatActivity {
                 .setUdf3(udf3)
                 .setUdf4(udf4)
                 .setUdf5(udf5)
-                .setIsDebug(true)                              // Integration environment - true (Debug)/ false(Production)
+                .setIsDebug(false)                              // Integration environment - true (Debug)/ false(Production)
                 .setKey(key)                        // Merchant key
                 .setMerchantId(merchant_id);             // Merchant ID
 

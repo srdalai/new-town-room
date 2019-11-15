@@ -34,7 +34,7 @@ public class BookingInput {
     @SerializedName("coupon")
     private String coupon;
 
-    @SerializedName("extra_services")
+    @SerializedName("extra_service")
     private ArrayList<Integer> extraServices;
 
     public BookingInput() {

@@ -50,6 +50,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
 
         holder.textViewName.setText(serviceData.getName());
         holder.textViewDesc.setText(serviceData.getDescription());
+        holder.textViewCharge.setText(serviceData.getCharge());
         holder.textViewPrice.setText(mContext.getResources().getString(R.string.rupees_sign) + serviceData.getPrice());
 
         holder.btnAdd.setOnClickListener((view -> {
@@ -84,7 +85,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
     public class ServiceViewHolder extends RecyclerView.ViewHolder {
 
         ImageView imageView;
-        TextView textViewName, textViewDesc, textViewPrice;
+        TextView textViewName, textViewDesc, textViewPrice, textViewCharge;
         MaterialButton btnAdd, btnRemove;
 
         public ServiceViewHolder(@NonNull View itemView) {
@@ -95,6 +96,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
             textViewPrice = itemView.findViewById(R.id.textViewPrice);
             btnAdd = itemView.findViewById(R.id.btnAdd);
             btnRemove = itemView.findViewById(R.id.btnRemove);
+            textViewCharge = itemView.findViewById(R.id.textViewCharge);
         }
     }
 }
