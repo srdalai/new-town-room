@@ -75,7 +75,8 @@
             android:hint="GST Contact Number*"
             android:inputType="phone"
             android:paddingStart="12dp"
-            android:paddingEnd="12dp" />
+            android:paddingEnd="12dp"
+            android:maxLength="10"/>
 
         <EditText
             android:id="@+id/editTextGstEmail"
