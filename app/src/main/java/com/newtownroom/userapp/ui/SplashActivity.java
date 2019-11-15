@@ -43,16 +43,13 @@ public class SplashActivity extends AppCompatActivity {
         AppSignatureHelper appSignatureHelper = new AppSignatureHelper(this);
         appSignatureHelper.getAppSignatures();
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (preferenceManager.isLoggedIn()) {
-                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
-                } else {
-                    startActivity(new Intent(SplashActivity.this, UserAuthentication.class));
-                }
-                finish();
+        new Handler().postDelayed(() -> {
+            if (preferenceManager.isLoggedIn()) {
+                startActivity(new Intent(SplashActivity.this, MainActivity.class));
+            } else {
+                startActivity(new Intent(SplashActivity.this, UserAuthentication.class));
             }
+            finish();
         }, 1000);
     }
 

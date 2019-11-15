@@ -41,6 +41,7 @@ import com.newtownroom.userapp.models.BookingPrice;
 import com.newtownroom.userapp.models.GstModel;
 import com.newtownroom.userapp.models.HotelData;
 import com.newtownroom.userapp.models.LocalInterest;
+import com.newtownroom.userapp.models.PayUResponse;
 import com.newtownroom.userapp.models.RulesData;
 import com.newtownroom.userapp.models.UserData;
 import com.newtownroom.userapp.rest.GetDataService;
@@ -50,8 +51,11 @@ import com.newtownroom.userapp.restmodels.CancelBookingResponse;
 import com.newtownroom.userapp.restmodels.DeleteGstInput;
 import com.newtownroom.userapp.restmodels.DeleteGstResponse;
 import com.newtownroom.userapp.restmodels.GstResponse;
+import com.newtownroom.userapp.restmodels.PaymentInput;
+import com.newtownroom.userapp.restmodels.PaymentResponse;
 import com.newtownroom.userapp.restmodels.SingleBookingID;
 import com.newtownroom.userapp.restmodels.SingleUserID;
+import com.newtownroom.userapp.utils.PayUMoneyConstants;
 import com.newtownroom.userapp.utils.PreferenceManager;
 import com.newtownroom.userapp.utils.Utilities;
 import com.payumoney.core.PayUmoneyConfig;
@@ -111,7 +115,7 @@ public class BookingComplete extends AppCompatActivity {
     String shareText = "", shareTitle = "Share Your Stay Details";
 
     //PayU variables
-    String merchant_id = "6836640", key = "0lMDzMDB", salt = "48VSE2mGKk", txnid = "ORDER-OD-201900001", amount = "999", productinfo = "Hotel", phone = "9556798434", firstname = "John", email = "user@email.com", udf1 = "", udf2 = "", udf3 = "", udf4 = "", udf5 = "";
+    String txnid = "ORDER-OD-201900001", amount = "999", productinfo = "Hotel Booking", phone = "9556798434", firstname = "John", email = "user@email.com", udf1 = "", udf2 = "", udf3 = "", udf4 = "", udf5 = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -263,7 +267,7 @@ public class BookingComplete extends AppCompatActivity {
             payable_amount = sellingPrice*paymentPercent/100;
             Toast.makeText(this, "You will pay "+payable_amount, Toast.LENGTH_SHORT).show();
             amount = String.valueOf(payable_amount);
-            initPaymentData();
+            //initPaymentData();
             processPayment();
         }));
 
@@ -425,12 +429,11 @@ public class BookingComplete extends AppCompatActivity {
                     Log.d(TAG, transactionResponse.getMessage());
                     Log.d(TAG, transactionResponse.getPayuResponse());
                     Log.d(TAG, transactionResponse.getTransactionDetails());
-                    //showTxnSuccessDialog(transactionResponse.getMessage());
+                    //processPaymentData(transactionResponse.getPayuResponse());
                     showTxnCompleteDialog(true, transactionResponse.getMessage());
 
                 } else {
                     //Failure Transaction
-                    //showTxnFailedDialog(transactionResponse.getMessage());
                     showTxnCompleteDialog(false, transactionResponse.getMessage());
                 }
 
@@ -445,33 +448,6 @@ public class BookingComplete extends AppCompatActivity {
                 Log.d(TAG, "Both objects are null!");
             }
         }
-    }
-
-    private void showTxnSuccessDialog(String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(message);
-        builder.setCancelable(false);
-        builder.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                startActivity(new Intent(BookingComplete.this, MainActivity.class));
-                finish();
-            }
-        });
-        builder.create().show();
-    }
-
-    private void showTxnFailedDialog(String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(message);
-        builder.setCancelable(false);
-        builder.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
-        builder.create().show();
     }
 
     private void showTxnCompleteDialog(boolean isSuccess, String message) {
@@ -557,10 +533,6 @@ public class BookingComplete extends AppCompatActivity {
             gstBottomFragment.setArguments(bundle);
         }
         gstBottomFragment.show(getSupportFragmentManager(), gstBottomFragment.getTag());
-    }
-
-    void gstDismissed() {
-        //gstSwitch.setChecked(false);
     }
 
     void setGstDetails(GstModel gstData) {
@@ -698,6 +670,37 @@ public class BookingComplete extends AppCompatActivity {
 
     }
 
+    private void processPaymentData(String paymentResponse) {
+
+        progressDialog.show();
+
+        PayUResponse payUResponse = new Gson().fromJson(paymentResponse, PayUResponse.class);
+
+        PaymentInput paymentInput = new PaymentInput();
+        paymentInput.setAmount(Float.parseFloat(payUResponse.getResult().getAmount()));
+        paymentInput.setBookingId(Integer.parseInt(payUResponse.getResult().getTxnid()));
+        paymentInput.setPayPercent(String.valueOf(paymentPercent));
+        paymentInput.setReponse(paymentResponse);
+        paymentInput.setStatus(payUResponse.getResult().getStatus());
+        paymentInput.setTxnid(payUResponse.getResult().getPayuMoneyId());
+        paymentInput.setUniqid(preferenceManager.getUniqueID());
+        paymentInput.setUserId(preferenceManager.getUserID());
+
+
+        Call<PaymentResponse> call = service.paymentProcess(paymentInput);
+        call.enqueue(new Callback<PaymentResponse>() {
+            @Override
+            public void onResponse(@NotNull Call<PaymentResponse> call, @NotNull Response<PaymentResponse> response) {
+
+            }
+
+            @Override
+            public void onFailure(@NotNull Call<PaymentResponse> call, @NotNull Throwable t) {
+
+            }
+        });
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -714,9 +717,6 @@ public class BookingComplete extends AppCompatActivity {
     }
 
     private void initPaymentData() {
-        merchant_id = "6836640";
-        key = "L7C9MBeV";
-        salt = "aj9Eu3B0kU";
 
         txnid = booking_id;
         amount = String.valueOf(payable_amount);
@@ -755,11 +755,11 @@ public class BookingComplete extends AppCompatActivity {
                 .setUdf3(udf3)
                 .setUdf4(udf4)
                 .setUdf5(udf5)
-                .setIsDebug(false)                              // Integration environment - true (Debug)/ false(Production)
-                .setKey(key)                        // Merchant key
-                .setMerchantId(merchant_id);             // Merchant ID
+                .setIsDebug(true)                              // Integration environment - true (Debug)/ false(Production)
+                .setKey(PayUMoneyConstants.SANDBOX_MERCHANT_KEY)                        // Merchant key
+                .setMerchantId(PayUMoneyConstants.MERCHANT_ID);             // Merchant ID
 
-        String hashSequence = key+"|"+txnid+"|"+amount+"|"+productinfo+"|"+firstname+"|"+email+"|"+udf1+"|"+udf2+"|"+udf3+"|"+udf4+"|"+udf5+"||||||"+salt;
+        String hashSequence = PayUMoneyConstants.SANDBOX_MERCHANT_KEY+"|"+txnid+"|"+amount+"|"+productinfo+"|"+firstname+"|"+email+"|"+udf1+"|"+udf2+"|"+udf3+"|"+udf4+"|"+udf5+"||||||"+PayUMoneyConstants.SANDBOX_SALT;
         String serverCalculatedHash= hashCal("SHA-512", hashSequence);
 
         //declare paymentParam object

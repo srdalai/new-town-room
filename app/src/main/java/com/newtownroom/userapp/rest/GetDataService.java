@@ -22,6 +22,8 @@ import com.newtownroom.userapp.restmodels.LoginInput;
 import com.newtownroom.userapp.restmodels.LoginResponse;
 import com.newtownroom.userapp.restmodels.OtpInput;
 import com.newtownroom.userapp.restmodels.OtpResponse;
+import com.newtownroom.userapp.restmodels.PaymentInput;
+import com.newtownroom.userapp.restmodels.PaymentResponse;
 import com.newtownroom.userapp.restmodels.SignUpInput;
 import com.newtownroom.userapp.restmodels.SignUpResponse;
 import com.newtownroom.userapp.restmodels.SingleBookingID;
@@ -94,6 +96,9 @@ public interface GetDataService {
 
     @POST("deleteUserGst")
     Call<DeleteGstResponse> deleteUserGst(@Body DeleteGstInput deleteGstInput);
+
+    @POST("paymentProcess")
+    Call<PaymentResponse> paymentProcess(@Body PaymentInput paymentInput);
 
     /*
     *   PayMoney API requests

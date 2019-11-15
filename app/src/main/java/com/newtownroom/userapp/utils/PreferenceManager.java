@@ -11,6 +11,7 @@ public class PreferenceManager {
     private static final String PHONE_NUMBER = "phone_number";
     private static final String EMAIL = "email";
     private static final String UNIQUE_ID = "uuid";
+    private static final String IS_PAYMENT_COMPLETE = "is_payment_complete";
 
     private Context mContext;
     private SharedPreferences sharedPreferences;
@@ -69,6 +70,14 @@ public class PreferenceManager {
 
     public String getUniqueID() {
         return sharedPreferences.getString(UNIQUE_ID, "");
+    }
+
+    public void setIsPaymentComplete(boolean value) {
+        editor.putBoolean(IS_PAYMENT_COMPLETE, value).commit();
+    }
+
+    public boolean isPaymentComplete() {
+        return sharedPreferences.getBoolean(IS_PAYMENT_COMPLETE, true);
     }
 
     public void clearSharedPrefs() {

@@ -134,15 +134,4 @@ public class GstBottomFragment extends BottomSheetDialogFragment {
 
         dismiss();
     }
-
-
-
-
-    @Override
-    public void onCancel(@NonNull DialogInterface dialog) {
-        super.onCancel(dialog);
-        if (requireActivity() instanceof BookingComplete) {
-            ((BookingComplete)requireContext()).gstDismissed();
-        }
-    }
 }
