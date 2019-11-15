@@ -92,7 +92,7 @@ public class BookingComplete extends AppCompatActivity {
     MaterialButton btnGstUpdate;
 
     //Payment View
-    TextView textPrice, textPriceDrop, textCouponDiscount, couponText, textSellingPrice;
+    TextView textPrice, textPriceDrop, textCouponDiscount, couponText, textSellingPrice, textServicePrice;
     RadioGroup paymentRadioGroup;
     MaterialButton matBtnPayNow;
     RadioButton radioFull, radio75, radioHalf, radio25;
@@ -103,7 +103,7 @@ public class BookingComplete extends AppCompatActivity {
     private String opDateFormat = "EEE, d MMM";
     PreferenceManager preferenceManager;
 
-    float price = 0, priceDrop = 0, couponDiscount = 0, sellingPrice = 0, payable_amount = 0;
+    float price = 0, priceDrop = 0, couponDiscount = 0, sellingPrice = 0, payable_amount = 0, servicePrice = 0;
     int numOfGuests = 0, numOfRooms = 0, nights = 0;
     String booking_id;
     String applied_coupon = "", activity_title = "";
@@ -115,7 +115,7 @@ public class BookingComplete extends AppCompatActivity {
     String shareText = "", shareTitle = "Share Your Stay Details";
 
     //PayU variables
-    String txnid = "ORDER-OD-201900001", amount = "999", productinfo = "Hotel Booking", phone = "9556798434", firstname = "John", email = "user@email.com", udf1 = "", udf2 = "", udf3 = "", udf4 = "", udf5 = "";
+    String txnid, amount, productinfo = "Hotel Booking", phone, firstname, email, udf1 = "", udf2 = "", udf3 = "", udf4 = "", udf5 = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,6 +161,7 @@ public class BookingComplete extends AppCompatActivity {
         textCouponDiscount.setText("-\u20B9 " + formattedString(couponDiscount));
         textSellingPrice.setText("\u20B9 " + formattedString(sellingPrice));
         txtPrice.setText("\u20B9 " + formattedString(sellingPrice));
+        textServicePrice.setText("\u20B9 " + formattedString(servicePrice));
 
         couponText.setText(applied_coupon);
 
@@ -222,6 +223,7 @@ public class BookingComplete extends AppCompatActivity {
         radio75 = findViewById(R.id.radio75);
         radioHalf = findViewById(R.id.radioHalf);
         radio25 = findViewById(R.id.radio25);
+        textServicePrice = findViewById(R.id.textServicePrice);
 
         radioFull.setChecked(true);
     }
@@ -267,7 +269,7 @@ public class BookingComplete extends AppCompatActivity {
             payable_amount = sellingPrice*paymentPercent/100;
             Toast.makeText(this, "You will pay "+payable_amount, Toast.LENGTH_SHORT).show();
             amount = String.valueOf(payable_amount);
-            //initPaymentData();
+            initPaymentData();
             processPayment();
         }));
 
@@ -329,6 +331,7 @@ public class BookingComplete extends AppCompatActivity {
         nights = Integer.parseInt(bookingData.getNights());
         checkInDate = Utilities.parseDate(bookingData.getUserCheckin(), ipDateFormat, opDateFormat);
         checkOutDate = Utilities.parseDate(bookingData.getUserCheckout(), ipDateFormat, opDateFormat);
+        servicePrice = Integer.parseInt(bookingData.getExtraServicePrice());
     }
 
     private void processUserData(UserData userData) {

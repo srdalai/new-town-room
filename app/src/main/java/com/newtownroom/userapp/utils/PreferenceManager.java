@@ -29,7 +29,9 @@ public class PreferenceManager {
     }
 
     public int getUserID() {
-        return sharedPreferences.getInt(USER_ID, 19);
+        int user_id = sharedPreferences.getInt(USER_ID, 0);
+        //user_id = 19;
+        return user_id;
     }
 
     public void setName(String name) {
@@ -37,7 +39,9 @@ public class PreferenceManager {
     }
 
     public String getName() {
-        return sharedPreferences.getString(NAME, null);
+        String name = sharedPreferences.getString(NAME, null);
+        //name = "John Doe";
+        return name;
     }
 
     public void setIsLoggedIn(boolean isLoggedIn) {
@@ -45,7 +49,7 @@ public class PreferenceManager {
     }
 
     public boolean isLoggedIn() {
-        return sharedPreferences.getBoolean(IS_LOGGED_IN, true);
+        return sharedPreferences.getBoolean(IS_LOGGED_IN, false);
     }
 
     public void setPhoneNumber(String phoneNumber) {
@@ -53,7 +57,9 @@ public class PreferenceManager {
     }
 
     public String getPhoneNumber() {
-        return sharedPreferences.getString(PHONE_NUMBER, null);
+        String phone = sharedPreferences.getString(PHONE_NUMBER, null);
+        //phone = "9090090900";
+        return phone;
     }
 
     public void setEmail(String email) {
@@ -61,7 +67,9 @@ public class PreferenceManager {
     }
 
     public String getEmail() {
-        return sharedPreferences.getString(EMAIL, null);
+        String email = sharedPreferences.getString(EMAIL, null);
+        //email = "email@email.com";
+        return email;
     }
 
     public void setUniqueID(String uniqueID) {

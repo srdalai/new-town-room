@@ -18,17 +18,20 @@
             android:orientation="vertical">
 
             <include
+                android:id="@+id/details_layout"
                 layout="@layout/component_complete_stay_details"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <include
+                android:id="@+id/payment_layout"
                 layout="@layout/component_pay_online_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp" />
 
             <include
+                android:id="@+id/help_layout"
                 layout="@layout/component_need_help_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
