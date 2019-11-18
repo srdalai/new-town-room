@@ -12,8 +12,12 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -83,7 +87,7 @@ public class BookingComplete extends AppCompatActivity {
 
     MaterialButton btnCancel, btnShare, btnGetAssistance;
     TextView txtPrice, txtNumGuests, txtNumOfNights, txtRomDetails, txtStartDate, txtEndDate;
-    TextView txtUserName, textSuccessMsg, textHotelName, textHotelAddress, textViewMessage, textLocalInterest;
+    TextView txtUserName, textSuccessMsg, textHotelName, textHotelAddress, textViewMessage, textLocalInterest, txtOnlineDiscount;
     TextView textDirections, textCallNow;
     RecyclerView interestRecycler;
     String checkInDate, checkOutDate, name, hotel_name, hotel_address;
@@ -105,14 +109,15 @@ public class BookingComplete extends AppCompatActivity {
 
     float price = 0, priceDrop = 0, couponDiscount = 0, sellingPrice = 0, payable_amount = 0, servicePrice = 0;
     int numOfGuests = 0, numOfRooms = 0, nights = 0;
-    String booking_id;
-    String applied_coupon = "", activity_title = "";
+    String booking_id, applied_coupon = "", activity_title = "", onlinePayDiscountText = "", onlinePayDiscountType = "", payStatus = "0";
     double lat, lang;
     boolean can_go_back = false;
     int paymentPercent = 100;
     GstModel userGstModel = null;
     String hotelPhone = null;
     String shareText = "", shareTitle = "Share Your Stay Details";
+    float onlinePayDiscountAmount = 0;
+    int onlinePayDiscountId = 0;
 
     //PayU variables
     String txnid, amount, productinfo = "Hotel Booking", phone, firstname, email, udf1 = "", udf2 = "", udf3 = "", udf4 = "", udf5 = "";
@@ -164,6 +169,7 @@ public class BookingComplete extends AppCompatActivity {
         textServicePrice.setText("\u20B9 " + formattedString(servicePrice));
 
         couponText.setText(applied_coupon);
+        txtOnlineDiscount.setText(onlinePayDiscountText);
 
         txtNumGuests.setText(String.valueOf(numOfGuests));
 
@@ -183,6 +189,12 @@ public class BookingComplete extends AppCompatActivity {
         textSuccessMsg.setText(successMsg);
         textHotelName.setText(hotel_name);
         textHotelAddress.setText(hotel_address);
+
+        if (payStatus.equals("1")) {
+            matBtnPayNow.setText("Paid");
+            matBtnPayNow.setEnabled(false);
+            matBtnPayNow.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.button_gray)));
+        }
     }
 
     private void initView() {
@@ -210,6 +222,7 @@ public class BookingComplete extends AppCompatActivity {
         parentView = findViewById(R.id.parentView);
         imageViewHotel = findViewById(R.id.imageViewHotel);
         btnGstUpdate = findViewById(R.id.btnGstUpdate);
+        txtOnlineDiscount = findViewById(R.id.txtOnlineDiscount);
 
         //Payment View
         textPrice = findViewById(R.id.textPrice);
@@ -267,10 +280,21 @@ public class BookingComplete extends AppCompatActivity {
                     paymentPercent = 100;
             }
             payable_amount = sellingPrice*paymentPercent/100;
-            Toast.makeText(this, "You will pay "+payable_amount, Toast.LENGTH_SHORT).show();
-            amount = String.valueOf(payable_amount);
             initPaymentData();
-            processPayment();
+            Snackbar snackbar = Snackbar.make(parentView, "You will Pay \u20B9" + amount, Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction("Continue", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    processPayment();
+                }
+            });
+            snackbar.show();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    snackbar.dismiss();
+                }
+            }, 5000);
         }));
 
         btnGetAssistance.setOnClickListener((view -> {
@@ -332,6 +356,7 @@ public class BookingComplete extends AppCompatActivity {
         checkInDate = Utilities.parseDate(bookingData.getUserCheckin(), ipDateFormat, opDateFormat);
         checkOutDate = Utilities.parseDate(bookingData.getUserCheckout(), ipDateFormat, opDateFormat);
         servicePrice = Integer.parseInt(bookingData.getExtraServicePrice());
+        payStatus = bookingData.getPayStatus();
     }
 
     private void processUserData(UserData userData) {
@@ -360,6 +385,11 @@ public class BookingComplete extends AppCompatActivity {
         couponDiscount = bookingPrice.getCouponPrice();
         sellingPrice = bookingPrice.getPayablePrice();
         applied_coupon = bookingPrice.getCouponLabel();
+        onlinePayDiscountId = bookingPrice.getOnlinePayDiscountId();
+        onlinePayDiscountText = bookingPrice.getOnlinePayDiscountText();
+        onlinePayDiscountType = bookingPrice.getOnlinePayDiscountType();
+        onlinePayDiscountAmount =bookingPrice.getOnlinePayDiscountAmount();
+
         amount = String.valueOf(sellingPrice);
     }
 
@@ -426,13 +456,13 @@ public class BookingComplete extends AppCompatActivity {
             TransactionResponse transactionResponse = data.getParcelableExtra(PayUmoneyFlowManager.INTENT_EXTRA_TRANSACTION_RESPONSE);
 
             if (transactionResponse != null && transactionResponse.getPayuResponse() != null) {
+                processPaymentData(transactionResponse.getPayuResponse());
 
                 if (transactionResponse.getTransactionStatus().equals(TransactionResponse.TransactionStatus.SUCCESSFUL)) {
                     //Success Transaction
                     Log.d(TAG, transactionResponse.getMessage());
                     Log.d(TAG, transactionResponse.getPayuResponse());
                     Log.d(TAG, transactionResponse.getTransactionDetails());
-                    //processPaymentData(transactionResponse.getPayuResponse());
                     showTxnCompleteDialog(true, transactionResponse.getMessage());
 
                 } else {
@@ -675,26 +705,26 @@ public class BookingComplete extends AppCompatActivity {
 
     private void processPaymentData(String paymentResponse) {
 
-        progressDialog.show();
-
         PayUResponse payUResponse = new Gson().fromJson(paymentResponse, PayUResponse.class);
 
         PaymentInput paymentInput = new PaymentInput();
         paymentInput.setAmount(Float.parseFloat(payUResponse.getResult().getAmount()));
-        paymentInput.setBookingId(Integer.parseInt(payUResponse.getResult().getTxnid()));
+        paymentInput.setBookingId(Integer.parseInt(booking_id));
         paymentInput.setPayPercent(String.valueOf(paymentPercent));
-        paymentInput.setReponse(paymentResponse);
+        paymentInput.setReponse(payUResponse.getResult().getHash());
         paymentInput.setStatus(payUResponse.getResult().getStatus());
         paymentInput.setTxnid(payUResponse.getResult().getPayuMoneyId());
         paymentInput.setUniqid(preferenceManager.getUniqueID());
         paymentInput.setUserId(preferenceManager.getUserID());
+
+        Log.d("Payment Input", new Gson().toJson(paymentInput));
 
 
         Call<PaymentResponse> call = service.paymentProcess(paymentInput);
         call.enqueue(new Callback<PaymentResponse>() {
             @Override
             public void onResponse(@NotNull Call<PaymentResponse> call, @NotNull Response<PaymentResponse> response) {
-
+                Log.d("Payment Response", new Gson().toJson(response.body()));
             }
 
             @Override
@@ -721,8 +751,17 @@ public class BookingComplete extends AppCompatActivity {
 
     private void initPaymentData() {
 
-        txnid = booking_id;
-        amount = String.valueOf(payable_amount);
+        float payAfterDiscount;
+        if (onlinePayDiscountType.equals("percent")) {
+            payAfterDiscount = payable_amount - (payable_amount*onlinePayDiscountAmount/100);
+        } else {
+            payAfterDiscount = payable_amount - onlinePayDiscountAmount;
+        }
+
+        //txnid = booking_id;
+        txnid = String.valueOf(System.currentTimeMillis());
+
+        amount = String.format("%.02f", payAfterDiscount);
         productinfo = "Hotel Booking";
 
         phone = preferenceManager.getPhoneNumber();

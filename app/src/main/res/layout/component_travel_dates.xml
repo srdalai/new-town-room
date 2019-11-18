@@ -38,7 +38,8 @@
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textViewTravelDates">
+                app:layout_constraintTop_toBottomOf="@id/textViewTravelDates"
+                android:gravity="center_vertical">
 
                 <RelativeLayout
                     android:id="@+id/dateRelative"
@@ -60,12 +61,11 @@
                     <TextView
                         android:id="@+id/txtStayTime"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_alignTop="@id/imageViewCal"
-                        android:layout_alignBottom="@id/imageViewCal"
+                        android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dimen_8dp"
                         android:layout_toEndOf="@id/imageViewCal"
                         android:gravity="center_vertical"
+                        android:layout_centerVertical="true"
                         android:text="Today - Tomorrow" />
 
                     <View
@@ -95,12 +95,11 @@
                     <TextView
                         android:id="@+id/txtRoomsGuests"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_alignTop="@id/imageViewPerson"
-                        android:layout_alignBottom="@id/imageViewPerson"
+                        android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dimen_8dp"
                         android:layout_toEndOf="@id/imageViewPerson"
                         android:gravity="center_vertical"
+                        android:layout_centerVertical="true"
                         android:text="1 Room, 1 Guest" />
 
                 </RelativeLayout>

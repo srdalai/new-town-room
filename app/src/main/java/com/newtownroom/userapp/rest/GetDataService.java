@@ -7,6 +7,7 @@ import com.newtownroom.userapp.restmodels.BookingDetailsResponses;
 import com.newtownroom.userapp.restmodels.BookingInput;
 import com.newtownroom.userapp.restmodels.BookingResponse;
 import com.newtownroom.userapp.models.HotelData;
+import com.newtownroom.userapp.restmodels.CancelBookingInput;
 import com.newtownroom.userapp.restmodels.CancelBookingResponse;
 import com.newtownroom.userapp.restmodels.CheckAvailInput;
 import com.newtownroom.userapp.restmodels.CheckAvailResponse;
@@ -84,6 +85,10 @@ public interface GetDataService {
 
     @POST("deleteBooking")
     Call<CancelBookingResponse> deleteBooking(@Body SingleBookingID singleBookingID);
+
+    @POST("cancelBooking")
+    Call<CancelBookingResponse> cancelBooking(@Body CancelBookingInput cancelBookingInput);
+
 
     @POST("getUserGst")
     Call<GstModel> getUserGst(@Body SingleUserID singleUserID);

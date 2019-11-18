@@ -19,6 +19,19 @@ public class BookingPrice {
     @SerializedName("payable_price")
     private float payablePrice;
 
+    @SerializedName("onlinePayDiscountId")
+    private int onlinePayDiscountId;
+
+    @SerializedName("onlinePayDiscountText")
+    private String onlinePayDiscountText;
+
+    @SerializedName("onlinePayDiscountType")
+    private String onlinePayDiscountType;
+
+    @SerializedName("onlinePayDiscountAmount")
+    private float onlinePayDiscountAmount;
+
+
     public float getBookingPrice() {
         return bookingPrice;
     }
@@ -67,4 +80,35 @@ public class BookingPrice {
         this.payablePrice = payablePrice;
     }
 
+    public int getOnlinePayDiscountId() {
+        return onlinePayDiscountId;
+    }
+
+    public void setOnlinePayDiscountId(int onlinePayDiscountId) {
+        this.onlinePayDiscountId = onlinePayDiscountId;
+    }
+
+    public String getOnlinePayDiscountText() {
+        return onlinePayDiscountText;
+    }
+
+    public void setOnlinePayDiscountText(String onlinePayDiscountText) {
+        this.onlinePayDiscountText = onlinePayDiscountText;
+    }
+
+    public String getOnlinePayDiscountType() {
+        return onlinePayDiscountType;
+    }
+
+    public void setOnlinePayDiscountType(String onlinePayDiscountType) {
+        this.onlinePayDiscountType = onlinePayDiscountType;
+    }
+
+    public float getOnlinePayDiscountAmount() {
+        return onlinePayDiscountAmount;
+    }
+
+    public void setOnlinePayDiscountAmount(float onlinePayDiscountAmount) {
+        this.onlinePayDiscountAmount = onlinePayDiscountAmount;
+    }
 }
