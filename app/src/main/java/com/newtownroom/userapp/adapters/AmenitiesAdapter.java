@@ -46,7 +46,7 @@ public class AmenitiesAdapter extends RecyclerView.Adapter<AmenitiesAdapter.Amen
 
         Glide.with(mContext)
                 .load(data.getIconImage())
-                .error(sampleImages[position])
+                /*.error(sampleImages[position])*/
                 .into(holder.imageView);
 
     }

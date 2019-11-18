@@ -51,6 +51,7 @@ import com.newtownroom.userapp.models.UserData;
 import com.newtownroom.userapp.rest.GetDataService;
 import com.newtownroom.userapp.rest.RetrofitClientInstance;
 import com.newtownroom.userapp.restmodels.BookingDetailsResponses;
+import com.newtownroom.userapp.restmodels.CancelBookingInput;
 import com.newtownroom.userapp.restmodels.CancelBookingResponse;
 import com.newtownroom.userapp.restmodels.DeleteGstInput;
 import com.newtownroom.userapp.restmodels.DeleteGstResponse;
@@ -109,7 +110,7 @@ public class BookingComplete extends AppCompatActivity {
 
     float price = 0, priceDrop = 0, couponDiscount = 0, sellingPrice = 0, payable_amount = 0, servicePrice = 0;
     int numOfGuests = 0, numOfRooms = 0, nights = 0;
-    String booking_id, applied_coupon = "", activity_title = "", onlinePayDiscountText = "", onlinePayDiscountType = "", payStatus = "0";
+    String booking_id, applied_coupon = "", activity_title = "", onlinePayDiscountText = "", onlinePayDiscountType = "", payStatus = "0", booking_status = "1";
     double lat, lang;
     boolean can_go_back = false;
     int paymentPercent = 100;
@@ -118,6 +119,7 @@ public class BookingComplete extends AppCompatActivity {
     String shareText = "", shareTitle = "Share Your Stay Details";
     float onlinePayDiscountAmount = 0;
     int onlinePayDiscountId = 0;
+    String intent_booking_status = "";
 
     //PayU variables
     String txnid, amount, productinfo = "Hotel Booking", phone, firstname, email, udf1 = "", udf2 = "", udf3 = "", udf4 = "", udf5 = "";
@@ -148,6 +150,7 @@ public class BookingComplete extends AppCompatActivity {
         booking_id = getIntent().getStringExtra("booking_id");
         can_go_back = getIntent().getBooleanExtra("can_go_back", false);
         activity_title = getIntent().getStringExtra("activity_title");
+        intent_booking_status = getIntent().getStringExtra("intent_booking_status");
         /*price = getIntent().getFloatExtra("price", 0);
         couponDiscount = getIntent().getFloatExtra("discount", 0);
         sellingPrice = getIntent().getFloatExtra("sellingPrice", 0);
@@ -190,10 +193,18 @@ public class BookingComplete extends AppCompatActivity {
         textHotelName.setText(hotel_name);
         textHotelAddress.setText(hotel_address);
 
-        if (payStatus.equals("1")) {
+        if (!booking_status.equals("1")) {
+            matBtnPayNow.setText(intent_booking_status);
+            matBtnPayNow.setEnabled(false);
+            matBtnPayNow.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.button_gray)));
+
+            btnCancel.setVisibility(View.GONE);
+
+        } else if (payStatus.equals("1")) {
             matBtnPayNow.setText("Paid");
             matBtnPayNow.setEnabled(false);
             matBtnPayNow.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.button_gray)));
+
         }
     }
 
@@ -357,6 +368,7 @@ public class BookingComplete extends AppCompatActivity {
         checkOutDate = Utilities.parseDate(bookingData.getUserCheckout(), ipDateFormat, opDateFormat);
         servicePrice = Integer.parseInt(bookingData.getExtraServicePrice());
         payStatus = bookingData.getPayStatus();
+        booking_status = bookingData.getBookingStatus();
     }
 
     private void processUserData(UserData userData) {
@@ -408,7 +420,7 @@ public class BookingComplete extends AppCompatActivity {
         interestRecycler.setAdapter(interestAdapter);
     }
 
-    private void cancelBooking() {
+    private void deleteBooking() {
         progressDialog.show();
         Call<CancelBookingResponse> call = service.deleteBooking(new SingleBookingID(Integer.parseInt(booking_id)));
         call.enqueue(new Callback<CancelBookingResponse>() {
@@ -418,12 +430,42 @@ public class BookingComplete extends AppCompatActivity {
                 if (response.code() == 200) {
                     CancelBookingResponse responseModel = response.body();
                     if (responseModel != null && responseModel.getCode() == 200) {
-                        /*Snackbar.make(parentView, "Booking Cancelled Successfully", Snackbar.LENGTH_INDEFINITE)
-                                .setAction("Continue", (view -> {
-                                    startActivity(new Intent(BookingComplete.this, MainActivity.class));
-                                    finish();
-                                }))
-                                .show();*/
+                        showSuccessDialog("Booking Cancelled Successfully", false);
+
+                    } else {
+                        Snackbar.make(parentView, "Something went wrong...Please try later!", Snackbar.LENGTH_LONG).show();
+                    }
+                } else {
+                    Snackbar.make(parentView, "Something went wrong...Please try later!", Snackbar.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call<CancelBookingResponse> call, @NotNull Throwable t) {
+                progressDialog.dismiss();
+                Snackbar.make(parentView, "Something went wrong...Please try later!", Snackbar.LENGTH_LONG).show();
+                Log.d(TAG, t.toString());
+
+            }
+        });
+
+    }
+
+    private void cancelBooking() {
+        progressDialog.show();
+        CancelBookingInput cancelBookingInput = new CancelBookingInput();
+        cancelBookingInput.setUserId(preferenceManager.getUserID());
+        cancelBookingInput.setBookingId(Integer.parseInt(booking_id));
+        cancelBookingInput.setUniqid(preferenceManager.getUniqueID());
+        Log.d("Cancel Input", new Gson().toJson(cancelBookingInput));
+        Call<CancelBookingResponse> call = service.cancelBooking(cancelBookingInput);
+        call.enqueue(new Callback<CancelBookingResponse>() {
+            @Override
+            public void onResponse(@NotNull Call<CancelBookingResponse> call, @NotNull Response<CancelBookingResponse> response) {
+                progressDialog.dismiss();
+                if (response.code() == 200) {
+                    CancelBookingResponse responseModel = response.body();
+                    if (responseModel != null && responseModel.getCode() == 200) {
                         showSuccessDialog("Booking Cancelled Successfully", false);
 
                     } else {
@@ -797,11 +839,11 @@ public class BookingComplete extends AppCompatActivity {
                 .setUdf3(udf3)
                 .setUdf4(udf4)
                 .setUdf5(udf5)
-                .setIsDebug(true)                              // Integration environment - true (Debug)/ false(Production)
-                .setKey(PayUMoneyConstants.SANDBOX_MERCHANT_KEY)                        // Merchant key
+                .setIsDebug(false)                              // Integration environment - true (Debug)/ false(Production)
+                .setKey(PayUMoneyConstants.MERCHANT_KEY)                        // Merchant key
                 .setMerchantId(PayUMoneyConstants.MERCHANT_ID);             // Merchant ID
 
-        String hashSequence = PayUMoneyConstants.SANDBOX_MERCHANT_KEY+"|"+txnid+"|"+amount+"|"+productinfo+"|"+firstname+"|"+email+"|"+udf1+"|"+udf2+"|"+udf3+"|"+udf4+"|"+udf5+"||||||"+PayUMoneyConstants.SANDBOX_SALT;
+        String hashSequence = PayUMoneyConstants.MERCHANT_KEY+"|"+txnid+"|"+amount+"|"+productinfo+"|"+firstname+"|"+email+"|"+udf1+"|"+udf2+"|"+udf3+"|"+udf4+"|"+udf5+"||||||"+PayUMoneyConstants.SALT;
         String serverCalculatedHash= hashCal("SHA-512", hashSequence);
 
         //declare paymentParam object

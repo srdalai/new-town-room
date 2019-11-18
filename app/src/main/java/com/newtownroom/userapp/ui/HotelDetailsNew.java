@@ -425,6 +425,7 @@ public class HotelDetailsNew extends AppCompatActivity {
         intent.putExtra("checkOutDate", checkOutDate);
         intent.putExtra("can_go_back", false);
         intent.putExtra("activity_title", "Booking Complete");
+        intent.putExtra("intent_booking_status", "Pay Now");
         startActivity(intent);
     }
 

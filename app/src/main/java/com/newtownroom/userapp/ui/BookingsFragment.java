@@ -51,6 +51,7 @@ public class BookingsFragment extends Fragment {
     private ProgressDialog progressDialog;
     private PreferenceManager preferenceManager;
     private TextView noDataTextView;
+    TabLayout tabLayout;
 
     @Nullable
     @Override
@@ -69,7 +70,7 @@ public class BookingsFragment extends Fragment {
         bookingsRecycler = view.findViewById(R.id.bookingsRecycler);
         noDataTextView = view.findViewById(R.id.noDataTextView);
 
-        TabLayout tabLayout = view.findViewById(R.id.tablayout);
+        tabLayout = view.findViewById(R.id.tablayout);
         /*TabItem tabUpcoming = view.findViewById(R.id.tabUpcoming);
         TabItem tabCompleted = view.findViewById(R.id.tabCompleted);
         TabItem tabCancelled = view.findViewById(R.id.tabCancelled);
@@ -137,7 +138,16 @@ public class BookingsFragment extends Fragment {
                         completedList.addAll(allBookingsResponse.getCompletedBookings());
                         cancelledList.addAll(allBookingsResponse.getCanceledBookings());
 
-                        changeDataSet(upcomingList);
+                        switch (tabLayout.getSelectedTabPosition()) {
+                            case 1:
+                                changeDataSet(completedList);
+                            break;
+                            case 2:
+                                changeDataSet(cancelledList);
+                            break;
+                            default:
+                                changeDataSet(upcomingList);
+                        }
                     } else {
                         noDataTextView.setVisibility(View.VISIBLE);
                     }

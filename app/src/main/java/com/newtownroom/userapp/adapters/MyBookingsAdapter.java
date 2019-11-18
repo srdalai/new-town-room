@@ -86,13 +86,13 @@ public class MyBookingsAdapter extends RecyclerView.Adapter<MyBookingsAdapter.My
             holder.txtActive.setVisibility(View.GONE);
             holder.txtCompleted.setVisibility(View.VISIBLE);
             holder.txtCancelled.setVisibility(View.GONE);
-            holder.bookAgain.setVisibility(View.VISIBLE);
+            holder.bookAgain.setVisibility(View.GONE);
 
         } else {
             holder.txtActive.setVisibility(View.GONE);
             holder.txtCompleted.setVisibility(View.GONE);
             holder.txtCancelled.setVisibility(View.VISIBLE);
-            holder.bookAgain.setVisibility(View.VISIBLE);
+            holder.bookAgain.setVisibility(View.GONE);
 
         }
 
@@ -107,6 +107,14 @@ public class MyBookingsAdapter extends RecyclerView.Adapter<MyBookingsAdapter.My
             intent.putExtra("booking_id", booking.getId());
             intent.putExtra("can_go_back", true);
             intent.putExtra("activity_title", "Booking Details");
+            if (booking.getBookingStatus().equals("1")) {
+                intent.putExtra("intent_booking_status", "Pay Now");
+            } else if (booking.getBookingStatus().equals("4")) {
+                intent.putExtra("intent_booking_status", "Cancelled");
+            } else {
+                intent.putExtra("intent_booking_status", "Completed");
+            }
+
             mContext.startActivity(intent);
         }));
 
