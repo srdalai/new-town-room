@@ -296,6 +296,7 @@ public class BookingComplete extends AppCompatActivity {
             snackbar.setAction("Continue", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    amount = "1";
                     processPayment();
                 }
             });

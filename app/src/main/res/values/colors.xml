@@ -20,6 +20,7 @@
     <color name="keep_in_mind_box_border_color">#A3A3A3</color>
     <color name="price_drop_orange">#F4A725</color>
     <color name="colorPrimaryText">#FFFFFF</color>
+    <color name="appBarThemeColor">#FF01BEA0</color>
 
     <!--PayU Colors-->
     <color name="primary">#7AA4D5</color>
