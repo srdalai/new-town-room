@@ -55,7 +55,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:tint="@color/colorPrimary"
+                        android:tint="@color/appBarThemeColor"
                         app:srcCompat="@drawable/ic_action_event" />
 
                     <TextView
@@ -89,7 +89,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:tint="@color/colorPrimary"
+                        android:tint="@color/appBarThemeColor"
                         app:srcCompat="@drawable/ic_action_person" />
 
                     <TextView

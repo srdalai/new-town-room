@@ -11,8 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="visible"
-        app:tabIndicatorColor="@color/colorPrimary"
-        app:tabSelectedTextColor="@color/colorPrimary">
+        app:tabIndicatorColor="@color/appBarThemeColor"
+        app:tabSelectedTextColor="@color/appBarThemeColor">
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/tabUpcoming"

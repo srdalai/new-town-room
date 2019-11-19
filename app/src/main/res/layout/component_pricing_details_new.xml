@@ -81,7 +81,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:buttonTint="@color/colorPrimary"
+                        android:buttonTint="@color/appBarThemeColor"
                         android:checked="true"
                         android:clickable="false" />
 
@@ -130,7 +130,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:buttonTint="@color/colorPrimary"
+                        android:buttonTint="@color/appBarThemeColor"
                         android:clickable="false"
                         android:checked="true" />
 

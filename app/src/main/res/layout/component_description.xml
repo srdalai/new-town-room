@@ -43,7 +43,7 @@
                 android:layout_marginTop="8dp"
                 android:text="Read More"
                 android:textAllCaps="false"
-                android:textColor="@color/colorPrimary" />
+                android:textColor="@color/appBarThemeColor" />
 
             <com.google.android.material.button.MaterialButton
                 style="@style/Widget.MaterialComponents.Button.TextButton"
@@ -54,7 +54,7 @@
                 android:layout_marginTop="8dp"
                 android:text="Show Less"
                 android:textAllCaps="false"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/appBarThemeColor"
                 android:visibility="gone"/>
 
 
