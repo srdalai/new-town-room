@@ -23,6 +23,8 @@ public class PaymentInput {
     private String uniqid;
     @SerializedName("user_id")
     private int userId;
+    @SerializedName("online_payment_discount_id")
+    private int onlinePaymentDiscountID;
 
     public float getAmount() {
         return amount;
@@ -88,4 +90,11 @@ public class PaymentInput {
         this.userId = userId;
     }
 
+    public int getOnlinePaymentDiscountID() {
+        return onlinePaymentDiscountID;
+    }
+
+    public void setOnlinePaymentDiscountID(int onlinePaymentDiscountID) {
+        this.onlinePaymentDiscountID = onlinePaymentDiscountID;
+    }
 }

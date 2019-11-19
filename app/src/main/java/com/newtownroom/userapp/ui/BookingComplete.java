@@ -758,6 +758,7 @@ public class BookingComplete extends AppCompatActivity {
         paymentInput.setTxnid(payUResponse.getResult().getPayuMoneyId());
         paymentInput.setUniqid(preferenceManager.getUniqueID());
         paymentInput.setUserId(preferenceManager.getUserID());
+        paymentInput.setOnlinePaymentDiscountID(onlinePayDiscountId);
 
         Log.d("Payment Input", new Gson().toJson(paymentInput));
 
